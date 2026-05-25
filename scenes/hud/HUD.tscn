@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhudscene001"]
+
+[ext_resource type="Script" path="res://scenes/hud/HUD.gd" id="1_hud"]
+[ext_resource type="PackedScene" uid="uid://bjoysticksc01" path="res://scenes/hud/DynamicJoystick.tscn" id="2_joystick"]
+
+[node name="HUD" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_hud")
+
+[node name="DynamicJoystick" parent="." instance=ExtResource("2_joystick")]

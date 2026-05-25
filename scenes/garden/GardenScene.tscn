@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://bgardensc001"]
+
+[ext_resource type="Script" path="res://scenes/garden/GardenScene.gd" id="1_garden"]
+[ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/shared/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
+[ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
+
+[node name="GardenScene" type="Node2D"]
+script = ExtResource("1_garden")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="."]
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(160, 280)
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="Portal" parent="." instance=ExtResource("4_portal")]
+position = Vector2(160, 80)
+target_scene = "res://scenes/school/SchoolScene.tscn"
