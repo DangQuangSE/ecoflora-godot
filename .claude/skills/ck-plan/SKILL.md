@@ -68,31 +68,33 @@ Before spawning the planner, validate the proposed approach against the project'
 ```
 # Architecture Gate:
 #   Layer mapping:
-#     Domain      → [files that are pure C#, zero UnityEngine, [Serializable] only]
-#     Application → [Use Cases + MonoBehaviour Managers]
-#     Infra       → [service impls, ScriptableObject data, mock services]
-#     Presentation→ [Views, Presenters, UI Toolkit controllers]
+#     domain/     → [RefCounted classes only — no Node, no autoload imports]
+#     services/   → [mock + real API — imports domain only]
+#     autoloads/  → [Singleton managers — imports domain + services]
+#     scenes/     → [Nodes/Controls — imports autoloads + domain]
 #
-#   Dependency arrows: Presentation → Application → Infra; Domain knows nothing above it.
+#   Dependency arrows: scenes → autoloads → services → domain; domain imports nothing above it.
 #   Violations? → [list any file that crosses a boundary, or "none"]
 #
 #   Anti-pattern flags:
-#     Hardcoded fallback IDs in C# logic?     → [YES/NO]
-#     FindObjectOfType / GameObject.Find?      → [YES/NO]
-#     Input.GetKey* (legacy Input)?            → [YES/NO]
-#     async void on non-Unity-event methods?   → [YES/NO]
-#     Magic strings for ActionType >2 times?  → [YES/NO]
+#     extends Node in domain/ files?                     → [YES/NO]
+#     get_tree() / $child / get_node() in domain/?       → [YES/NO]
+#     print() in any file?                               → [YES/NO]
+#     Direct Manager→View call (not via signal)?         → [YES/NO]
+#     yield (deprecated)?                                → [YES/NO]
+#     Autoload imported from domain/ or services/?       → [YES/NO]
 #
 #   Verdict: [PASS | BLOCK (list violations)]
 ```
 
 **BLOCK rules:**
-- Any `MonoBehaviour` or `using UnityEngine` proposed in a Domain file → BLOCK; lift logic to Application/Use Case.
-- Any hardcoded fallback ID in C# logic → BLOCK; replace with `LogError` + early-return.
-- Any `FindObjectOfType` / `GameObject.Find` → BLOCK; use `[SerializeField]` or Singleton-lite.
-- `async void` outside Unity event callbacks (`Start`, `OnEnable`, `OnClick`) → BLOCK; use `async Task`.
+- `extends Node` (or any Node subclass) in `domain/` → BLOCK; use `extends RefCounted`.
+- `get_tree()`, `$child`, or `get_node()` inside `domain/` → BLOCK; domain must be pure data.
+- `print()` anywhere → BLOCK; use `push_warning()` or `push_error()`.
+- Manager calling a View method directly → BLOCK; emit a signal instead.
+- `yield` keyword → BLOCK; use `await`.
 
-**Phase slice order** — phases must flow: `Domain → Application → Infrastructure → Presentation`. Flag and split any phase that mixes multiple layers unless the change is trivially small (≤ 5 lines across layers).
+**Phase slice order** — phases must flow: `domain → services → autoloads → scenes`. Flag and split any phase that mixes multiple layers unless the change is trivially small (≤ 5 lines across layers).
 
 On PASS (or after BLOCK is resolved): proceed to Step 2.
 
@@ -148,23 +150,46 @@ Ready to cook:
 
 ---
 
-### Step 5 — Unity Config Doc (if applicable)
+### Step 5 — Godot Editor Guide (if applicable)
 
-After `/ck:cook` completes: if the feature requires any **Unity Editor configuration** (new components, prefab setup, ScriptableObject assets, scene wiring, Inspector assignments), create:
+After `/ck:cook` completes: if the feature requires any **Godot Editor configuration** (creating nodes, assigning resources, painting tiles, setting Inspector fields, wiring signals), create:
 
 ```
-docs/{slug}/unity_implement.md
+docs/{slug}/godot_implement.md
 ```
 
-Include:
-- What assets to create (ScriptableObjects, prefabs, materials) — file names, menu paths
-- Which components to attach and to which GameObjects
-- Which Inspector fields to fill in and with what values
-- How to wire drag-and-drop references between GameObjects
-- A smoke test checklist to verify the config works end-to-end
-- A troubleshooting table for common mistakes
+**Write entirely in Vietnamese.** Target audience: người mới dùng Godot, chưa quen với Editor workflow. Use numbered steps with exact menu paths and field names.
 
-**Skip Step 5** if the feature is pure C# logic with no Editor interaction (e.g. domain entity, use case, repository).
+Include these sections (adapt to what was actually implemented):
+
+**1. Mở Scene và kiểm tra cấu trúc Node**
+- Scene nào cần mở (đường dẫn `res://...`)
+- Scene tree trông như thế nào — liệt kê từng node và vai trò của nó
+
+**2. Gán Script và Resource**
+- Node nào cần gán script (drag từ FileSystem hoặc click biểu tượng script)
+- Resource nào cần tạo hoặc gán (TileSet, SpriteFrames, Material, ...) — chỉ rõ cách tạo qua menu `Inspector > [empty] > New ...`
+
+**3. Cài đặt Inspector**
+- Từng trường `@export` hoặc property cần set — tên chính xác, giá trị đúng, lý do
+
+**4. Wiring Signals (nếu có)**
+- Node phát signal → Node nhận signal
+- Cách kết nối: tab Node → Signals → Connect, hoặc qua code (ghi rõ nếu đã wire qua code)
+
+**5. Thiết lập TileSet / TileMapLayer (nếu có)**
+- Tạo TileSet mới: chọn TileMapLayer → Inspector → TileSet → New TileSet
+- Thêm atlas source: chọn texture PNG → đặt tile size
+- Thêm Physics Layer: Project Settings → ... (nếu cần collision)
+- Vẽ tiles: tab TileMap ở bottom panel → chọn tile → paint lên viewport
+
+**6. Smoke Test Checklist**
+- Danh sách checkbox kiểm tra nhanh sau khi setup xong (chạy scene, thử từng tính năng chính)
+
+**7. Lỗi thường gặp**
+- Bảng: Triệu chứng | Nguyên nhân | Cách fix — tập trung vào lỗi phổ biến với người mới
+
+**Skip Step 5** if the feature touches only `domain/` or `services/` with zero Editor interaction (e.g., pure RefCounted entity, mock service).
 
 ---
 

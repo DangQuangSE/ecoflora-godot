@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bgardensc001"]
+[gd_scene format=3 uid="uid://bgardensc001"]
 
 [ext_resource type="Script" path="res://scenes/garden/GardenScene.gd" id="1_garden"]
 [ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/shared/Player.tscn" id="2_player"]
