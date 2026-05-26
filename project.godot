@@ -21,9 +21,14 @@ SceneTransition="*res://autoloads/SceneTransition.gd"
 InteractionManager="*res://autoloads/InteractionManager.gd"
 InventoryManager="*res://autoloads/InventoryManager.gd"
 GardenManager="*res://autoloads/GardenManager.gd"
+ItemIconRegistry="*res://autoloads/ItemIconRegistry.gd"
 
 [display]
 
+window/size/viewport_width=720
+window/size/viewport_height=920
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 window/handheld/orientation=1
 
 [physics]

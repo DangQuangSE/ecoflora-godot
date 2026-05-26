@@ -106,8 +106,27 @@ func _find_plot(plot_id: String) -> Plot:
 			return p
 	return null
 
+func debug_next_stage(plot_id: String) -> void:
+	var plot := _find_plot(plot_id)
+	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+		return
+	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
+	if template == null:
+		return
+	var next_xp := template.get_next_stage_xp(plot.current_plant.current_stage)
+	if next_xp < 0:
+		return
+	plot.is_pending_sync = true
+	plot.current_plant.current_xp = next_xp
+	plot.current_plant.current_stage = template.compute_stage_for_xp(next_xp)
+	plots_updated.emit(_plots)
+	await get_tree().process_frame
+	plot.is_pending_sync = false
+	plots_updated.emit(_plots)
+
 func _on_plot_action(plot_id: String, action: String, data: Dictionary) -> void:
 	match action:
-		"plant":   plant(plot_id, data.get("template_id", ""))
-		"harvest": harvest(plot_id)
-		"add_xp":  debug_add_xp(plot_id, data.get("amount", 150))
+		"plant":        plant(plot_id, data.get("template_id", ""))
+		"harvest":      harvest(plot_id)
+		"add_xp":       debug_add_xp(plot_id, data.get("amount", 500))
+		"next_stage":   debug_next_stage(plot_id)
