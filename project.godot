@@ -11,13 +11,16 @@ config_version=5
 [application]
 
 config/name="flow-flora-godot"
+run/main_scene="res://scenes/garden/GardenScene.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
-run/main_scene="res://scenes/garden/GardenScene.tscn"
 
 [autoload]
 
 SceneTransition="*res://autoloads/SceneTransition.gd"
+InteractionManager="*res://autoloads/InteractionManager.gd"
+InventoryManager="*res://autoloads/InventoryManager.gd"
+GardenManager="*res://autoloads/GardenManager.gd"
 
 [display]
 
