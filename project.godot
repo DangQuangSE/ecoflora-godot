@@ -21,6 +21,7 @@ SceneTransition="*res://autoloads/SceneTransition.gd"
 InteractionManager="*res://autoloads/InteractionManager.gd"
 InventoryManager="*res://autoloads/InventoryManager.gd"
 GardenManager="*res://autoloads/GardenManager.gd"
+UserManager="*res://autoloads/UserManager.gd"
 ItemIconRegistry="*res://autoloads/ItemIconRegistry.gd"
 
 [display]

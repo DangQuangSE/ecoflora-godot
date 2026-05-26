@@ -25,7 +25,7 @@ Clean Architecture 4 layers — strictly NO upward imports:
 ```
 domain/        ← RefCounted classes, no Node, no autoload imports
 services/      ← mock + real API, imports domain only
-autoloads/     ← Singletons (GardenManager, InventoryManager, InteractionManager)
+autoloads/     ← Singletons (GardenManager, InventoryManager, InteractionManager, UserManager)
 scenes/        ← Nodes/Controls, imports autoloads and domain
 ```
 
@@ -34,6 +34,7 @@ Autoloads registered in project.godot:
 - `GardenManager` → res://autoloads/GardenManager.gd
 - `InventoryManager` → res://autoloads/InventoryManager.gd
 - `InteractionManager` → res://autoloads/InteractionManager.gd
+- `UserManager` → res://autoloads/UserManager.gd (must load AFTER GardenManager)
 
 ## Code Style
 
