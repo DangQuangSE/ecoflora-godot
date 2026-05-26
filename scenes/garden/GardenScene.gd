@@ -4,7 +4,7 @@ const PlotScene := preload("res://scenes/garden/Plot.tscn")
 
 @onready var _player: Player        = $Player
 @onready var _hud: HUD              = $HUD
-@onready var _tilemap: TileMapLayer = $TileMapLayer
+@onready var _tilemap: TileMapLayer = $GameTileMap/grass
 
 var _plot_nodes: Array[PlotNode] = []
 

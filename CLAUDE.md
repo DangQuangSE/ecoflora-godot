@@ -50,24 +50,24 @@ Autoloads registered in project.godot:
 
 ```gdscript
 func optimistic_action(plot_id: String) -> void:
-    var plot := get_plot(plot_id)
-    if not plot or plot.is_pending_sync:
-        return
-    # 1. Local predict
-    plot.is_pending_sync = true
-    # ... mutate local state ...
-    some_signal.emit(current_data)
-    # 2. Async sync
-    var result = await mock_service.sync_async(...)
-    if result != null:
-        plot.is_pending_sync = false
-        current_data = result
-        some_signal.emit(current_data)
-    else:
-        # 3. Rollback
-        plot.is_pending_sync = false
-        # ... restore state ...
-        some_signal.emit(current_data)
+	var plot := get_plot(plot_id)
+	if not plot or plot.is_pending_sync:
+		return
+	# 1. Local predict
+	plot.is_pending_sync = true
+	# ... mutate local state ...
+	some_signal.emit(current_data)
+	# 2. Async sync
+	var result = await mock_service.sync_async(...)
+	if result != null:
+		plot.is_pending_sync = false
+		current_data = result
+		some_signal.emit(current_data)
+	else:
+		# 3. Rollback
+		plot.is_pending_sync = false
+		# ... restore state ...
+		some_signal.emit(current_data)
 ```
 
 ### Domain classes (no Node)

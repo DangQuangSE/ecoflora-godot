@@ -4,6 +4,7 @@ extends CharacterBody2D
 const SPEED := 120.0
 
 var move_direction: Vector2 = Vector2.ZERO
+var _last_facing: String = "down"
 
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var _camera: Camera2D = $Camera2D
@@ -34,14 +35,20 @@ func _physics_process(_delta: float) -> void:
 
 func _update_animation() -> void:
 	if move_direction.length() < 0.1:
-		_sprite.play("idle")
+		var idle := "idle_down" if _last_facing != "up" else "idle_up"
+		if _sprite.animation != idle:
+			_sprite.play(idle)
 		return
 	var angle := move_direction.angle()
 	if abs(angle) < PI / 4.0:
+		_last_facing = "right"
 		_sprite.play("walk_right")
 	elif abs(angle) > 3.0 * PI / 4.0:
+		_last_facing = "left"
 		_sprite.play("walk_left")
 	elif angle > 0.0:
+		_last_facing = "down"
 		_sprite.play("walk_down")
 	else:
+		_last_facing = "up"
 		_sprite.play("walk_up")

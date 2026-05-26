@@ -11,10 +11,10 @@ func get_initial_inventory() -> UserInventory:
 func _make_seeds(flower_template_id: String, count: int) -> Array[InventoryItem]:
 	var result: Array[InventoryItem] = []
 	for i in range(count):
-		var seed := InventoryItem.new()
-		seed.id = "seed_%s_%d" % [flower_template_id, i]
-		seed.flower_template_id = flower_template_id
-		seed.category = InventoryItem.Category.SEED
-		seed.quantity = 1
-		result.append(seed)
+		var item := InventoryItem.new()
+		item.id = "seed_%s_%d" % [flower_template_id, i]
+		item.flower_template_id = flower_template_id
+		item.category = InventoryItem.Category.SEED
+		item.quantity = 1
+		result.append(item)
 	return result

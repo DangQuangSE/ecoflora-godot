@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d4i1x44kdhshm"
-path="res://.godot/imported/Pink_Monster_Run.png-0646a19b8e2aabf682152f5129bdf5b5.ctex"
+uid="uid://c3s6ucwf2ygl4"
+path="res://.godot/imported/Water.png-5d495df27bb23a6ee125cceb21575ea9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/characters/Pink_Monster_Run.png"
-dest_files=["res://.godot/imported/Pink_Monster_Run.png-0646a19b8e2aabf682152f5129bdf5b5.ctex"]
+source_file="res://assets/tilesets/Tilemap/Water.png"
+dest_files=["res://.godot/imported/Water.png-5d495df27bb23a6ee125cceb21575ea9.ctex"]
 
 [params]
 

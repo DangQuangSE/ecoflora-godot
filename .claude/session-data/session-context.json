@@ -1,6 +1,6 @@
 {
   "project": "flow-flora-godot",
-  "branch": "main",
+  "branch": "feat/migrate-function",
   "rules": "YAGNI \u00b7 KISS \u00b7 DRY \u00b7 Brutal honesty \u00b7 Challenge assumptions",
-  "updated_at": "2026-05-26T00:29:55.340432"
+  "updated_at": "2026-05-26T12:53:45.767063"
 }
