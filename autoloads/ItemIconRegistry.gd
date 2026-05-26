@@ -5,9 +5,12 @@ var _fallback: Texture2D
 
 func _ready() -> void:
 	_fallback = load("res://assets/icon/bag.png")
-	_try_register("lotus",      "res://assets/flowers/lotus/lotus 3.png")
-	_try_register("rose",       "res://assets/flowers/rose/rose 3.png")
-	_try_register("periwinkle", "res://assets/flowers/periwinkle/periwinkle 3.png")
+	_try_register("lotus",        "res://assets/flowers/lotus/lotus 3.png")
+	_try_register("rose",         "res://assets/flowers/rose/rose 3.png")
+	_try_register("periwinkle",   "res://assets/flowers/periwinkle/periwinkle 3.png")
+	_try_register("watering_can", "res://assets/icon/watering_can.PNG")
+	_try_register("fertilizer",   "res://assets/icon/fertilizer.png")
+	_try_register("sickle",       "res://assets/icon/sickle.png")
 
 func register(ref_id: String, texture: Texture2D) -> void:
 	_icons[ref_id] = texture

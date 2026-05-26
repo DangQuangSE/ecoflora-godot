@@ -17,7 +17,7 @@ func _ready() -> void:
 	_background.visible = false
 	mouse_filter = MOUSE_FILTER_IGNORE
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventScreenTouch:
 		if event.pressed:
 			_try_start(event.position, event.index)
@@ -36,6 +36,8 @@ func _input(event: InputEvent) -> void:
 		_move_knob(event.position)
 
 func _try_start(pos: Vector2, index: int) -> void:
+	if InventoryManager.get_selected_item() != null:
+		return
 	var zone_y := get_viewport().get_visible_rect().size.y * ZONE_Y_RATIO
 	if pos.y < zone_y:
 		return

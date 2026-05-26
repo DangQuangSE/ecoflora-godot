@@ -3,6 +3,7 @@ extends Node
 signal plots_updated(plots: Array[Plot])
 signal plant_failed(plot_id: String, reason: String)
 signal harvest_completed(plot_id: String, product_id: String)
+signal plant_xp_gained(plot_id: String, xp_amount: int)
 
 const GARDEN_ID := "main_garden"
 
@@ -37,6 +38,43 @@ func get_plot_position(index: int) -> Vector2:
 
 func get_templates() -> Dictionary:
 	return _templates
+
+func get_plot(plot_id: String) -> Plot:
+	return _find_plot(plot_id)
+
+func water(plot_id: String) -> void:
+	const WATER_XP := 20
+	var plot := _find_plot(plot_id)
+	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+		return
+	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
+	if template == null:
+		return
+	plot.is_pending_sync = true
+	plot.current_plant.current_xp += WATER_XP
+	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
+	plant_xp_gained.emit(plot_id, WATER_XP)
+	plots_updated.emit(_plots)
+	await get_tree().process_frame
+	plot.is_pending_sync = false
+	plots_updated.emit(_plots)
+
+func fertilize(plot_id: String) -> void:
+	const FERTILIZE_XP := 50
+	var plot := _find_plot(plot_id)
+	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+		return
+	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
+	if template == null:
+		return
+	plot.is_pending_sync = true
+	plot.current_plant.current_xp += FERTILIZE_XP
+	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
+	plant_xp_gained.emit(plot_id, FERTILIZE_XP)
+	plots_updated.emit(_plots)
+	await get_tree().process_frame
+	plot.is_pending_sync = false
+	plots_updated.emit(_plots)
 
 func plant(plot_id: String, flower_template_id: String) -> void:
 	var plot := _find_plot(plot_id)
@@ -126,7 +164,9 @@ func debug_next_stage(plot_id: String) -> void:
 
 func _on_plot_action(plot_id: String, action: String, data: Dictionary) -> void:
 	match action:
-		"plant":        plant(plot_id, data.get("template_id", ""))
-		"harvest":      harvest(plot_id)
-		"add_xp":       debug_add_xp(plot_id, data.get("amount", 500))
-		"next_stage":   debug_next_stage(plot_id)
+		"plant":      plant(plot_id, data.get("template_id", ""))
+		"harvest":    harvest(plot_id)
+		"water":      water(plot_id)
+		"fertilize":  fertilize(plot_id)
+		"add_xp":     debug_add_xp(plot_id, data.get("amount", 500))
+		"next_stage": debug_next_stage(plot_id)

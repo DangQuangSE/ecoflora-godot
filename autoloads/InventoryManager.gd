@@ -31,6 +31,21 @@ func has_seed(flower_template_id: String) -> bool:
 	var item := _inventory.find_by_reference_id(flower_template_id)
 	return item != null and item.quantity > 0
 
+func has_item(ref_id: String) -> bool:
+	var item := _inventory.find_by_reference_id(ref_id)
+	return item != null and item.quantity > 0
+
+func consume_item(ref_id: String) -> bool:
+	var item := _inventory.find_by_reference_id(ref_id)
+	if item == null or item.quantity <= 0:
+		return false
+	item.quantity -= 1
+	if item.quantity == 0 and _selected_item != null and _selected_item.id == item.id:
+		_selected_item = null
+		item_selected.emit(null)
+	inventory_updated.emit(_inventory)
+	return true
+
 func consume_seed(flower_template_id: String) -> bool:
 	var item := _inventory.find_by_reference_id(flower_template_id)
 	if item == null or item.quantity <= 0:

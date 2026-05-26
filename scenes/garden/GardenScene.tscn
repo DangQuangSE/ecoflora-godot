@@ -146,7 +146,7 @@ script = ExtResource("1_garden")
 [node name="Player" parent="." unique_id=1544198641 instance=ExtResource("2_player")]
 z_index = 1
 position = Vector2(203, 188)
-scale = Vector2(2, 2)
+scale = Vector2(3, 3)
 
 [node name="HUD" parent="." unique_id=1409293532 instance=ExtResource("3_hud")]
 
