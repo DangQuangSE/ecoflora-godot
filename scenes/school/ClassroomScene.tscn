@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://bclassrm001"]
+
+[ext_resource type="Script" path="res://scenes/school/ClassroomScene.gd" id="1_class"]
+[ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/shared/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
+[ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(200.0, 80.0)
+
+[node name="ClassroomScene" type="Node2D"]
+script = ExtResource("1_class")
+
+[node name="Background" type="ColorRect" parent="."]
+z_index = -2
+offset_right = 720.0
+offset_bottom = 920.0
+color = Color(0.55, 0.45, 0.35, 1)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+position = Vector2(360.0, 700.0)
+
+[node name="HUD" parent="." instance=ExtResource("3_hud")]
+
+[node name="ClassroomTrigger" type="Area2D" parent="."]
+position = Vector2(360.0, 400.0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClassroomTrigger"]
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="PortalToSchool" parent="." instance=ExtResource("4_portal")]
+position = Vector2(360.0, 880.0)
+target_scene = "res://scenes/school/SchoolScene.tscn"

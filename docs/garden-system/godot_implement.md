@@ -11,16 +11,17 @@ Autoloads đã được tự động thêm vào `project.godot` trong quá trìn
 
 1. Mở **Project → Project Settings** (menu bar trên cùng)
 2. Chọn tab **Autoload**
-3. Bạn phải thấy 5 entries:
+3. Bạn phải thấy 6 entries:
    - `SceneTransition` → `res://autoloads/SceneTransition.gd`
    - `InteractionManager` → `res://autoloads/InteractionManager.gd`
    - `InventoryManager` → `res://autoloads/InventoryManager.gd`
    - `GardenManager` → `res://autoloads/GardenManager.gd`
    - `ZoneManager` → `res://autoloads/ZoneManager.gd`
+   - `FocusManager` → `res://autoloads/FocusManager.gd`
 
 Nếu thiếu, nhấn nút **+** (Add) ở góc phải, điền đường dẫn và tên autoload.
 
-> **Lưu ý thứ tự quan trọng:** `InteractionManager` và `InventoryManager` phải đứng **trước** `GardenManager` vì `GardenManager._ready()` gọi đến hai manager kia. `ZoneManager` phải đứng **sau** `UserManager` để xác định zone unlock dựa trên user XP.
+> **Lưu ý thứ tự quan trọng:** `InteractionManager` và `InventoryManager` phải đứng **trước** `GardenManager` vì `GardenManager._ready()` gọi đến hai manager kia. `ZoneManager` phải đứng **sau** `UserManager` để xác định zone unlock dựa trên user XP. `FocusManager` phải đứng **sau** `ZoneManager` để tích hợp với hệ thống Focus Mode.
 
 ---
 

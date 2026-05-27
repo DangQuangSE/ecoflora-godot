@@ -23,6 +23,7 @@ InventoryManager="*res://autoloads/InventoryManager.gd"
 GardenManager="*res://autoloads/GardenManager.gd"
 UserManager="*res://autoloads/UserManager.gd"
 ZoneManager="*res://autoloads/ZoneManager.gd"
+FocusManager="*res://autoloads/FocusManager.gd"
 ItemIconRegistry="*res://autoloads/ItemIconRegistry.gd"
 
 [display]

@@ -143,6 +143,26 @@ func harvest(plot_id: String) -> void:
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
 
+func apply_focus_xp_bulk(xp_delta: int) -> void:
+	for plot: Plot in _plots:
+		if not plot.is_occupied or plot.is_pending_sync:
+			push_warning("GardenManager.apply_focus_xp_bulk: skipping plot %s (pending=%s)" % [plot.id, plot.is_pending_sync])
+			continue
+		var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
+		if template == null:
+			push_warning("GardenManager.apply_focus_xp_bulk: no template for plot %s" % plot.id)
+			continue
+		plot.current_plant.current_xp = maxi(0, plot.current_plant.current_xp + xp_delta)
+		plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
+		plant_xp_gained.emit(plot.id, xp_delta)
+	plots_updated.emit(_plots)
+
+func _on_focus_session_completed(minutes: int) -> void:
+	apply_focus_xp_bulk(minutes)
+
+func _on_focus_session_failed() -> void:
+	apply_focus_xp_bulk(-20)
+
 func _find_plot(plot_id: String) -> Plot:
 	for p: Plot in _plots:
 		if p.id == plot_id:

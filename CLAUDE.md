@@ -36,6 +36,7 @@ Autoloads registered in project.godot:
 - `InteractionManager` → res://autoloads/InteractionManager.gd
 - `UserManager` → res://autoloads/UserManager.gd (must load AFTER GardenManager)
 - `ZoneManager` → res://autoloads/ZoneManager.gd (must load AFTER UserManager)
+- `FocusManager` → res://autoloads/FocusManager.gd (must load AFTER ZoneManager)
 
 ## Code Style
 

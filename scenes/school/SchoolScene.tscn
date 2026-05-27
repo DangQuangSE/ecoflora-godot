@@ -15,6 +15,10 @@ position = Vector2(160, 280)
 
 [node name="HUD" parent="." instance=ExtResource("3_hud")]
 
-[node name="Portal" parent="." instance=ExtResource("4_portal")]
+[node name="PortalToGarden" parent="." instance=ExtResource("4_portal")]
 position = Vector2(160, 80)
 target_scene = "res://scenes/garden/GardenScene.tscn"
+
+[node name="PortalToClassroom" parent="." instance=ExtResource("4_portal")]
+position = Vector2(360, 300)
+target_scene = "res://scenes/school/ClassroomScene.tscn"
