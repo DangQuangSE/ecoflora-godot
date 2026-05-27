@@ -65,6 +65,9 @@ func _on_plot_gui_input(event: InputEvent) -> void:
 	if _current_plot == null:
 		return
 
+	if ZoneManager.is_plot_locked(plot_id):
+		return
+
 	get_viewport().set_input_as_handled()
 
 	var selected := InventoryManager.get_selected_item()
