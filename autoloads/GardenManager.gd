@@ -10,12 +10,17 @@ const GARDEN_ID := "main_garden"
 var _plots: Array[Plot] = []
 var _templates: Dictionary = {}
 
-# World positions for 8 plots (2×4 grid) — adjust to fit TileMap layout
+# World positions for 16 plots — initial 8 (2×4 grid) + zone_1 (plots 8–11) + zone_2 (plots 12–15)
+# Zone positions are placeholders — adjust to fit TileMap layout in Godot Editor
 const PLOT_POSITIONS: Array[Vector2] = [
 	Vector2(80, 80),   Vector2(200, 80),
 	Vector2(80, 200),  Vector2(200, 200),
 	Vector2(80, 320),  Vector2(200, 320),
 	Vector2(80, 440),  Vector2(200, 440),
+	Vector2(360, 80),  Vector2(480, 80),
+	Vector2(360, 200), Vector2(480, 200),
+	Vector2(360, 320), Vector2(480, 320),
+	Vector2(360, 440), Vector2(480, 440),
 ]
 
 func _ready() -> void:

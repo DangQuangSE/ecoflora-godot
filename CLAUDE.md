@@ -35,6 +35,7 @@ Autoloads registered in project.godot:
 - `InventoryManager` → res://autoloads/InventoryManager.gd
 - `InteractionManager` → res://autoloads/InteractionManager.gd
 - `UserManager` → res://autoloads/UserManager.gd (must load AFTER GardenManager)
+- `ZoneManager` → res://autoloads/ZoneManager.gd (must load AFTER UserManager)
 
 ## Code Style
 
