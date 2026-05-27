@@ -17,10 +17,10 @@ func set_move_direction(dir: Vector2) -> void:
 
 func setup_camera_limits(used_rect: Rect2i, tile_size: Vector2i) -> void:
 	if used_rect == Rect2i():
-		_camera.limit_left   = -10000
-		_camera.limit_top    = -10000
-		_camera.limit_right  = 10000
-		_camera.limit_bottom = 10000
+		_camera.limit_left   = -100000
+		_camera.limit_top    = -100000
+		_camera.limit_right  = 100000
+		_camera.limit_bottom = 100000
 		push_warning("Player.setup_camera_limits: used_rect is empty, using defaults")
 		return
 	_camera.limit_left   = used_rect.position.x * tile_size.x

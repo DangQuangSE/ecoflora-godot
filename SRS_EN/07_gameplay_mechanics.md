@@ -139,14 +139,36 @@ The soil color reflects the last watering time:
 
 ---
 
+## Zone System (Region Unlock)
+
+### Overview
+The garden is divided into 4 zones (4×4 grid = 16 plots). Each zone can be unlocked when the user accumulates enough total XP.
+
+### Zone Layout
+
+| Zone | Plot Range | XP Requirement | Status |
+|------|-----------|----------------|--------|
+| zone_0 | plot_0 .. plot_3 | 0 (always open) | Unlocked |
+| zone_1 | plot_4 .. plot_7 | 100 | Locked until unlocked |
+| zone_2 | plot_8 .. plot_11 | 300 | Locked until unlocked |
+| zone_3 | plot_12 .. plot_15 | 600 | Locked until unlocked |
+
+### Visual Indicators
+- **CloudOverlay**: Mist/cloud animation covers locked plots
+- **UnlockBanner**: Notification displayed when a zone is unlocked
+- Locked plots cannot be planted on until the zone is unlocked
+
+---
+
 ## Mock Initial State
 
 On game start (MockGardenService):
 
-| Plot | State | Flower | XP |
-|------|-------|--------|----|
-| plot_0 | Occupied | flower_sunflower | 50 |
-| plot_1 .. plot_8 | Empty | — | — |
+| Plot | State | Flower | XP | Zone |
+|------|-------|--------|----|------|
+| plot_0 | Occupied | flower_sunflower | 50 | zone_0 |
+| plot_1 .. plot_3 | Empty | — | — | zone_0 |
+| plot_4 .. plot_15 | Empty (Locked) | — | — | zone_1, zone_2, zone_3 |
 
 Initial inventory (MockInventoryService):
 - 3× Sunflower Seed

@@ -5,9 +5,8 @@ const FlowerInfoCardScene := preload("res://scenes/garden/FlowerInfoCard.tscn")
 const CloudOverlayScene   := preload("res://scenes/garden/CloudOverlay.tscn")
 const UnlockBannerScene   := preload("res://scenes/garden/UnlockBanner.tscn")
 
-@onready var _player: Player        = $Player
-@onready var _hud: HUD              = $HUD
-@onready var _tilemap: TileMapLayer = $GameTileMap/grass
+@onready var _player: Player = $Player
+@onready var _hud: HUD       = $HUD
 
 var _plot_nodes: Array[PlotNode] = []
 var _flower_info_card: CanvasLayer = null
@@ -26,13 +25,7 @@ func _ready() -> void:
 	ZoneManager.zone_unlocked.connect(_on_zone_unlocked)
 
 func _setup_camera() -> void:
-	if not _tilemap.tile_set:
-		push_error("GardenScene: TileMapLayer has no TileSet assigned")
-		_player.setup_camera_limits(Rect2i(), Vector2i(16, 16))
-		return
-	var used_rect: Rect2i   = _tilemap.get_used_rect()
-	var tile_size: Vector2i = _tilemap.tile_set.tile_size
-	_player.setup_camera_limits(used_rect, tile_size)
+	_player.setup_camera_limits(Rect2i(), Vector2i(16, 16))
 
 func _spawn_plots() -> void:
 	var plots := GardenManager.get_plots()

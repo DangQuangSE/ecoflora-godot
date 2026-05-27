@@ -1,15 +1,12 @@
 [gd_scene format=3 uid="uid://c4l74y6q2t33a"]
 
-[ext_resource type="Script" path="res://scenes/garden/CloudOverlay.gd" id="1_overlay"]
+[ext_resource type="Script" uid="uid://b60somq07xdvq" path="res://scenes/garden/CloudOverlay.gd" id="1_overlay"]
 
-[node name="CloudOverlay" type="Node2D"]
+[node name="CloudOverlay" type="Node2D" unique_id=1973085058]
 z_index = 5
 script = ExtResource("1_overlay")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-offset_left = 0.0
-offset_top = 0.0
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1741568919]
 offset_right = 240.0
 offset_bottom = 240.0
 color = Color(0.75, 0.85, 0.95, 0.92)
-mouse_filter = 0
