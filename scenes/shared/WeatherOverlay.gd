@@ -10,7 +10,13 @@ const TRANSITION_SEC := 0.6
 var _tween: Tween = null
 
 func _ready() -> void:
-	pass  # WeatherManager pushes initial state via apply_state() immediately after add_child()
+	# Emit rain across full screen width from above, wind from left side
+	_rain.position = Vector2(360, -30)
+	_rain.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	_rain.emission_rect_extents = Vector2(400, 1)
+	_wind.position = Vector2(-50, 460)
+	_wind.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	_wind.emission_rect_extents = Vector2(1, 500)
 
 func apply_state(state: WeatherState) -> void:
 	if state == null:
@@ -26,18 +32,18 @@ func apply_state(state: WeatherState) -> void:
 
 		WeatherState.Condition.CLOUDY:
 			_set_particles(false, false, 150, 100)
-			var base_alpha := 0.15 if state.is_day else 0.5
-			_tween_overlay(Color(0.15, 0.15, 0.15, base_alpha))
+			var base_alpha := 0.35 if state.is_day else 0.6
+			_tween_overlay(Color(0.2, 0.22, 0.28, base_alpha))
 
 		WeatherState.Condition.RAINY:
 			_set_particles(true, false, 150, 100,
-				Vector3(0.0, 1.0, 0.0), 5.0)
+				Vector2(0.0, 1.0), 5.0)
 			var night_extra := 0.0 if state.is_day else 0.3
 			_tween_overlay(Color(0.0, 0.05, 0.1, 0.1 + night_extra))
 
 		WeatherState.Condition.STORM:
 			_set_particles(true, true, 300, 100,
-				Vector3(sin(deg_to_rad(25.0)), cos(deg_to_rad(25.0)), 0.0), 15.0)
+				Vector2(sin(deg_to_rad(25.0)), cos(deg_to_rad(25.0))), 15.0)
 			var night_extra := 0.0 if state.is_day else 0.3
 			_tween_overlay(Color(0.0, 0.0, 0.05, 0.2 + night_extra))
 
@@ -45,7 +51,7 @@ func apply_state(state: WeatherState) -> void:
 			push_warning("WeatherOverlay.apply_state: unhandled condition %d" % state.condition)
 
 func _set_particles(rain_on: bool, wind_on: bool, rain_amt: int, wind_amt: int,
-		rain_dir: Vector3 = Vector3(0, 1, 0), rain_spread: float = 5.0) -> void:
+		rain_dir: Vector2 = Vector2(0, 1), rain_spread: float = 5.0) -> void:
 	if rain_on:
 		_rain.direction = rain_dir
 		_rain.spread = rain_spread

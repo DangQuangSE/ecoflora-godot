@@ -1,4 +1,3 @@
-class_name WeatherManager
 extends Node
 
 signal weather_changed(state: WeatherState)
@@ -84,7 +83,7 @@ func _on_request_completed(result: int, code: int, _headers: PackedStringArray, 
 	if parse_error != OK:
 		push_warning("WeatherManager: JSON parse error — keeping current state")
 		return
-	var data := json.get_data()
+	var data: Variant = json.get_data()
 	if not data is Dictionary:
 		push_warning("WeatherManager: JSON root is not a Dictionary — keeping current state")
 		return

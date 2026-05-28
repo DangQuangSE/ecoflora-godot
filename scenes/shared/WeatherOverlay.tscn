@@ -10,19 +10,19 @@ script = ExtResource("1_script")
 emitting = false
 amount = 150
 lifetime = 2.5
-direction = Vector3(0, 1, 0)
+direction = Vector2(0, 1)
 spread = 5.0
 initial_velocity_min = 200.0
 initial_velocity_max = 300.0
 scale_amount_min = 2.0
 scale_amount_max = 4.0
-color = Color(0.6, 0.7, 1.0, 0.7)
+color = Color(0.15, 0.35, 0.7, 0.35)
 
 [node name="WindParticles" type="CPUParticles2D" parent="."]
 emitting = false
 amount = 100
 lifetime = 1.2
-direction = Vector3(1, 0.3, 0)
+direction = Vector2(1, 0.3)
 spread = 15.0
 initial_velocity_min = 300.0
 initial_velocity_max = 500.0
@@ -31,6 +31,7 @@ scale_amount_max = 2.0
 color = Color(0.8, 0.8, 0.9, 0.4)
 
 [node name="DayNightOverlay" type="ColorRect" parent="."]
+mouse_filter = 2
 offset_right = 720.0
 offset_bottom = 1600.0
 color = Color(0, 0, 0, 0)

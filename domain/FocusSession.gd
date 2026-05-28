@@ -14,7 +14,7 @@ func get_remaining_seconds() -> int:
 	return maxi(0, duration_seconds - int(elapsed_seconds))
 
 func get_minutes_focused() -> int:
-	return int(elapsed_seconds) / 60
+	return int(elapsed_seconds / 60.0)
 
 func is_completed() -> bool:
 	return elapsed_seconds >= float(duration_seconds)
