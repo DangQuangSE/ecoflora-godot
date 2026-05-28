@@ -1,0 +1,96 @@
+[gd_scene format=3 uid="uid://bfocustui01"]
+
+[ext_resource type="Script" path="res://scenes/school/FocusTimerUI.gd" id="1_ui"]
+
+[node name="FocusTimerUI" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_ui")
+
+[node name="Panel" type="Panel" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="SetupPanel" type="Control" parent="Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="SetupBox" type="VBoxContainer" parent="Panel/SetupPanel"]
+anchor_left = 0.1
+anchor_top = 0.25
+anchor_right = 0.9
+anchor_bottom = 0.75
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="TitleLabel" type="Label" parent="Panel/SetupPanel/SetupBox"]
+text = "Chọn thời gian tập trung"
+horizontal_alignment = 1
+
+[node name="DurationSlider" type="HSlider" parent="Panel/SetupPanel/SetupBox"]
+min_value = 5.0
+max_value = 120.0
+step = 5.0
+value = 25.0
+custom_minimum_size = Vector2(0, 40)
+
+[node name="DurationLabel" type="Label" parent="Panel/SetupPanel/SetupBox"]
+text = "25 phút"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="Panel/SetupPanel/SetupBox"]
+text = "Bắt đầu"
+custom_minimum_size = Vector2(0, 60)
+
+[node name="RunningPanel" type="Control" parent="Panel"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="RunningBox" type="VBoxContainer" parent="Panel/RunningPanel"]
+anchor_left = 0.1
+anchor_top = 0.25
+anchor_right = 0.9
+anchor_bottom = 0.75
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="CountdownLabel" type="Label" parent="Panel/RunningPanel/RunningBox"]
+text = "25:00"
+horizontal_alignment = 1
+
+[node name="ViolationLabel" type="Label" parent="Panel/RunningPanel/RunningBox"]
+text = "Vi phạm: 0 / 3"
+horizontal_alignment = 1
+
+[node name="CancelButton" type="Button" parent="Panel/RunningPanel/RunningBox"]
+text = "Hủy"
+custom_minimum_size = Vector2(0, 60)
+
+[node name="ResultPanel" type="Control" parent="Panel"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ResultBox" type="VBoxContainer" parent="Panel/ResultPanel"]
+anchor_left = 0.1
+anchor_top = 0.3
+anchor_right = 0.9
+anchor_bottom = 0.7
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="ResultLabel" type="Label" parent="Panel/ResultPanel/ResultBox"]
+text = ""
+horizontal_alignment = 1
+
+[node name="ReturnButton" type="Button" parent="Panel/ResultPanel/ResultBox"]
+text = "Quay lại trường"
+custom_minimum_size = Vector2(0, 60)

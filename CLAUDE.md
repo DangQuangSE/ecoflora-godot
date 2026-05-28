@@ -25,7 +25,7 @@ Clean Architecture 4 layers — strictly NO upward imports:
 ```
 domain/        ← RefCounted classes, no Node, no autoload imports
 services/      ← mock + real API, imports domain only
-autoloads/     ← Singletons (GardenManager, InventoryManager, InteractionManager)
+autoloads/     ← Singletons (GardenManager, InventoryManager, InteractionManager, UserManager)
 scenes/        ← Nodes/Controls, imports autoloads and domain
 ```
 
@@ -34,6 +34,9 @@ Autoloads registered in project.godot:
 - `GardenManager` → res://autoloads/GardenManager.gd
 - `InventoryManager` → res://autoloads/InventoryManager.gd
 - `InteractionManager` → res://autoloads/InteractionManager.gd
+- `UserManager` → res://autoloads/UserManager.gd (must load AFTER GardenManager)
+- `ZoneManager` → res://autoloads/ZoneManager.gd (must load AFTER UserManager)
+- `FocusManager` → res://autoloads/FocusManager.gd (must load AFTER ZoneManager)
 
 ## Code Style
 
@@ -50,24 +53,24 @@ Autoloads registered in project.godot:
 
 ```gdscript
 func optimistic_action(plot_id: String) -> void:
-    var plot := get_plot(plot_id)
-    if not plot or plot.is_pending_sync:
-        return
-    # 1. Local predict
-    plot.is_pending_sync = true
-    # ... mutate local state ...
-    some_signal.emit(current_data)
-    # 2. Async sync
-    var result = await mock_service.sync_async(...)
-    if result != null:
-        plot.is_pending_sync = false
-        current_data = result
-        some_signal.emit(current_data)
-    else:
-        # 3. Rollback
-        plot.is_pending_sync = false
-        # ... restore state ...
-        some_signal.emit(current_data)
+	var plot := get_plot(plot_id)
+	if not plot or plot.is_pending_sync:
+		return
+	# 1. Local predict
+	plot.is_pending_sync = true
+	# ... mutate local state ...
+	some_signal.emit(current_data)
+	# 2. Async sync
+	var result = await mock_service.sync_async(...)
+	if result != null:
+		plot.is_pending_sync = false
+		current_data = result
+		some_signal.emit(current_data)
+	else:
+		# 3. Rollback
+		plot.is_pending_sync = false
+		# ... restore state ...
+		some_signal.emit(current_data)
 ```
 
 ### Domain classes (no Node)

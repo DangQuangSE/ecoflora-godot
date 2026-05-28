@@ -11,8 +11,28 @@ config_version=5
 [application]
 
 config/name="flow-flora-godot"
+run/main_scene="res://scenes/garden/GardenScene.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SceneTransition="*res://autoloads/SceneTransition.gd"
+InteractionManager="*res://autoloads/InteractionManager.gd"
+InventoryManager="*res://autoloads/InventoryManager.gd"
+GardenManager="*res://autoloads/GardenManager.gd"
+UserManager="*res://autoloads/UserManager.gd"
+ZoneManager="*res://autoloads/ZoneManager.gd"
+FocusManager="*res://autoloads/FocusManager.gd"
+ItemIconRegistry="*res://autoloads/ItemIconRegistry.gd"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=920
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
 
 [physics]
 
@@ -22,3 +42,4 @@ config/icon="res://icon.svg"
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+textures/decals/filter=0

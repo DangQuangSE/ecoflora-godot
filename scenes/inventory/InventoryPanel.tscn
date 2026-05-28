@@ -1,0 +1,161 @@
+[gd_scene format=3 uid="uid://binvpanel01"]
+
+[ext_resource type="Script" path="res://scenes/inventory/InventoryPanel.gd" id="1_panel"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.08, 0.1, 0.08, 0.97)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.38, 0.52, 0.28, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_title"]
+bg_color = Color(0.14, 0.18, 0.1, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab"]
+bg_color = Color(0.18, 0.22, 0.13, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.38, 0.52, 0.28, 0.5)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close"]
+bg_color = Color(0.55, 0.18, 0.18, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scroll"]
+bg_color = Color(0.06, 0.08, 0.06, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[node name="InventoryPanel" type="Control"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_panel")
+
+[node name="BGDimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.55)
+mouse_filter = 0
+
+[node name="PanelRoot" type="Panel" parent="."]
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -280.0
+offset_right = 170.0
+offset_bottom = 280.0
+mouse_filter = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="PanelRoot"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
+theme_override_constants/separation = 8
+
+[node name="TitleBar" type="HBoxContainer" parent="PanelRoot/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 44)
+theme_override_styles/panel = SubResource("StyleBoxFlat_title")
+theme_override_constants/separation = 6
+
+[node name="TitleLabel" type="Label" parent="PanelRoot/VBox/TitleBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Kho Đồ"
+horizontal_alignment = 1
+vertical_alignment = 1
+theme_override_font_sizes/font_size = 17
+
+[node name="CloseBtn" type="Button" parent="PanelRoot/VBox/TitleBar"]
+layout_mode = 2
+custom_minimum_size = Vector2(38, 38)
+text = "✕"
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_close")
+
+[node name="Divider" type="HSeparator" parent="PanelRoot/VBox"]
+layout_mode = 2
+modulate = Color(0.38, 0.52, 0.28, 0.5)
+
+[node name="Tabs" type="HBoxContainer" parent="PanelRoot/VBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+theme_override_constants/separation = 4
+
+[node name="BtnAll" type="Button" parent="PanelRoot/VBox/Tabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Tất Cả"
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab")
+
+[node name="BtnSeed" type="Button" parent="PanelRoot/VBox/Tabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hạt Giống"
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab")
+
+[node name="BtnItem" type="Button" parent="PanelRoot/VBox/Tabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Vật Phẩm"
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab")
+
+[node name="BtnHarvest" type="Button" parent="PanelRoot/VBox/Tabs"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Thu Hoạch"
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab")
+
+[node name="Scroll" type="ScrollContainer" parent="PanelRoot/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_scroll")
+
+[node name="SlotGrid" type="GridContainer" parent="PanelRoot/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+columns = 3
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 6
+
+[node name="EmptyLabel" type="Label" parent="PanelRoot/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Trống"
+horizontal_alignment = 1
+modulate = Color(1, 1, 1, 0.4)
+theme_override_font_sizes/font_size = 14
+visible = false

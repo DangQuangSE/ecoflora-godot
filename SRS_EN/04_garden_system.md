@@ -9,14 +9,16 @@ The Garden System manages the complete lifecycle of a flower: planting → carin
 ## Entities
 
 ### Plot
-One plot tile in the garden. The grid is 3×3 = 9 tiles.
+One plot tile in the garden. The grid is 4×4 = 16 tiles. Each plot can be locked or unlocked based on zone progression.
 
 ```
-id:             "plot_0" .. "plot_8"
+id:             "plot_0" .. "plot_15"
 gardenId:       "garden_default"
-plotIndex:      0 .. 8
+plotIndex:      0 .. 15
+zoneId:         string  ← determines unlock requirement (e.g., "zone_0", "zone_1")
 isOccupied:     bool
-isPendingSync:  bool   ← guard flag, prevents duplicate concurrent actions
+isLocked:       bool    ← if true, cannot plant until zone is unlocked
+isPendingSync:  bool    ← guard flag, prevents duplicate concurrent actions
 currentPlant:   PlantedFlower | null
 ```
 
@@ -168,7 +170,9 @@ Preconditions: plot.IsOccupied == true, plot.IsPendingSync == false
 | `flower_rose` | Rose | 1→0, 4→120, 7→360 | `harvest_rose_bloom` |
 
 ### Initial Plots
-- 9 plots: `plot_0` .. `plot_8` in `garden_default`
+- 16 plots: `plot_0` .. `plot_15` in `garden_default`
+- Plots are organized into zones (e.g., plots 0-3 in zone_0, plots 4-7 in zone_1, etc.)
+- Plots in higher zones start locked until their zone is unlocked
 - `plot_0` pre-planted with `flower_sunflower`, `currentXp = 50`
 - All other plots: empty
 

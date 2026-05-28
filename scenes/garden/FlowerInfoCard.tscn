@@ -1,0 +1,145 @@
+[gd_scene format=3 uid="uid://bflowercard01"]
+
+[ext_resource type="Script" path="res://scenes/garden/FlowerInfoCard.gd" id="1_card"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.08, 0.1, 0.06, 0.97)
+border_width_top = 2
+border_color = Color(0.5, 0.7, 0.3, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xpbg"]
+bg_color = Color(0.2, 0.22, 0.16, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xpfill"]
+bg_color = Color(0.4, 0.75, 0.2, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_harvest"]
+bg_color = Color(0.3, 0.65, 0.15, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close"]
+bg_color = Color(0.45, 0.15, 0.15, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="FlowerInfoCard" type="CanvasLayer"]
+layer = 8
+visible = false
+script = ExtResource("1_card")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 0.68
+color = Color(0, 0, 0, 0.25)
+mouse_filter = 0
+
+[node name="Card" type="Panel" parent="."]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -300.0
+mouse_filter = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="CloseBtn" type="Button" parent="Card"]
+layout_mode = 1
+anchor_left = 1.0
+anchor_top = 0.0
+anchor_right = 1.0
+anchor_bottom = 0.0
+offset_left = -50.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 44.0
+text = "✕"
+flat = true
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_close")
+
+[node name="Content" type="VBoxContainer" parent="Card"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = 14.0
+offset_right = -14.0
+offset_bottom = -14.0
+theme_override_constants/separation = 10
+
+[node name="HBox" type="HBoxContainer" parent="Card/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 72)
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Card/Content/HBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(64, 64)
+size_flags_vertical = 0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="InfoVBox" type="VBoxContainer" parent="Card/Content/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 4
+
+[node name="NameLabel" type="Label" parent="Card/Content/HBox/InfoVBox"]
+layout_mode = 2
+text = "Hoa Sen"
+theme_override_font_sizes/font_size = 18
+
+[node name="LevelLabel" type="Label" parent="Card/Content/HBox/InfoVBox"]
+layout_mode = 2
+text = "Lv.1"
+theme_override_font_sizes/font_size = 14
+modulate = Color(0.75, 0.9, 0.55, 1)
+
+[node name="XPBar" type="ProgressBar" parent="Card/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 16)
+value = 40.0
+theme_override_styles/background = SubResource("StyleBoxFlat_xpbg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_xpfill")
+show_percentage = false
+
+[node name="XPLabel" type="Label" parent="Card/Content"]
+layout_mode = 2
+text = "0 / 100 XP"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+modulate = Color(1, 1, 1, 0.7)
+
+[node name="DescLabel" type="Label" parent="Card/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+text = "Mô tả hoa..."
+autowrap_mode = 3
+theme_override_font_sizes/font_size = 13
+modulate = Color(1, 1, 1, 0.85)
+
+[node name="ActionBtn" type="Button" parent="Card/Content"]
+layout_mode = 2
+visible = false
+custom_minimum_size = Vector2(0, 44)
+text = "Thu Hoạch"
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxFlat_harvest")
