@@ -28,7 +28,8 @@ flow_flora_godot/
 ├── autoloads/                  ← Singleton Managers (registered in Project Settings)
 │   ├── GardenManager.gd
 │   ├── InventoryManager.gd
-│   └── InteractionManager.gd
+│   ├── InteractionManager.gd
+│   └── WeatherManager.gd
 ├── domain/                     ← Pure data classes (RefCounted, no Node)
 │   ├── Plot.gd
 │   ├── PlantedFlower.gd
@@ -36,10 +37,13 @@ flow_flora_godot/
 │   ├── StageDefinition.gd
 │   ├── CareAction.gd
 │   ├── InventoryItem.gd
-│   └── UserInventory.gd
+│   ├── UserInventory.gd
+│   └── WeatherState.gd
 ├── services/                   ← Infrastructure (mock + real API)
 │   ├── MockGardenService.gd
-│   └── MockInventoryService.gd
+│   ├── MockInventoryService.gd
+│   ├── MockWeatherService.gd
+│   └── WeatherService.gd
 ├── scenes/
 │   ├── garden/
 │   │   ├── PlotView.tscn + PlotView.gd
@@ -203,11 +207,15 @@ func _init(pid: String = "", atype: String = "", ref_id: String = "") -> void:
 
 Register in **Project → Project Settings → Autoload**:
 
-| Name | Path |
-|------|------|
-| `GardenManager` | `res://autoloads/GardenManager.gd` |
-| `InventoryManager` | `res://autoloads/InventoryManager.gd` |
-| `InteractionManager` | `res://autoloads/InteractionManager.gd` |
+| Name | Path | Load Order |
+|------|------|------------|
+| `GardenManager` | `res://autoloads/GardenManager.gd` | 1st |
+| `InventoryManager` | `res://autoloads/InventoryManager.gd` | 2nd |
+| `InteractionManager` | `res://autoloads/InteractionManager.gd` | 3rd |
+| `UserManager` | `res://autoloads/UserManager.gd` | 4th |
+| `ZoneManager` | `res://autoloads/ZoneManager.gd` | 5th |
+| `FocusManager` | `res://autoloads/FocusManager.gd` | 6th |
+| `WeatherManager` | `res://autoloads/WeatherManager.gd` | 7th |
 
 ### GardenManager.gd (skeleton)
 ```gdscript

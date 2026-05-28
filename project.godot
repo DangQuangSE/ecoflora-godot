@@ -25,6 +25,7 @@ UserManager="*res://autoloads/UserManager.gd"
 ZoneManager="*res://autoloads/ZoneManager.gd"
 FocusManager="*res://autoloads/FocusManager.gd"
 ItemIconRegistry="*res://autoloads/ItemIconRegistry.gd"
+WeatherManager="*res://autoloads/WeatherManager.gd"
 
 [display]
 

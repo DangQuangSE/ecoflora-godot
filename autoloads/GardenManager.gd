@@ -28,9 +28,6 @@ func _ready() -> void:
 	_plots = garden_svc.get_initial_plots(GARDEN_ID)
 	for t: FlowerTemplate in garden_svc.get_flower_templates():
 		_templates[t.id] = t
-	harvest_completed.connect(func(_plot_id: String, product_id: String) -> void:
-		InventoryManager.add_harvest_product(product_id)
-	)
 	InteractionManager.plot_action_requested.connect(_on_plot_action)
 
 func get_plots() -> Array[Plot]:
