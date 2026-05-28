@@ -159,8 +159,8 @@ scale = Vector2(3, 3)
 [node name="HUD" parent="." unique_id=1409293532 instance=ExtResource("3_hud")]
 
 [node name="Portal" parent="." unique_id=279835275 instance=ExtResource("4_portal")]
-visible = false
-position = Vector2(160, 80)
+z_index = 2
+position = Vector2(52, 825)
 target_scene = "res://scenes/school/SchoolScene.tscn"
 
 [node name="GameTileMap" type="TileMapLayer" parent="." unique_id=384456007]
