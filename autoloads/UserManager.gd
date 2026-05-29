@@ -10,13 +10,16 @@ signal login_required
 signal login_succeeded
 signal login_failed(reason: String)
 
-@export var use_mock: bool = true
-@export var base_url: String = "http://localhost:5226"
+@export var use_mock: bool = false
+@export var base_url: String = "https://localhost:7034"
 
 const _XP_TABLE: Dictionary = {
 	"harvest_lotus_bloom":      80,
 	"harvest_rose_bloom":       120,
 	"harvest_periwinkle_bloom": 60,
+	"harvest_sunflower_bloom":  100,
+	"harvest_daisy_bloom":      70,
+	"harvest_tulip_bloom":      90,
 }
 
 var _profile: UserProfile = UserProfile.new()

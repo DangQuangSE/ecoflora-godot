@@ -10,7 +10,7 @@ enum State { IDLE, ACTIVE, COMPLETED, FAILED }
 
 const MAX_VIOLATIONS := 3
 
-@export var use_mock: bool = true
+@export var use_mock: bool = false
 @export var bypass_violation_detection: bool = false
 
 const _FocusServiceScript = preload("res://services/FocusService.gd")
@@ -59,7 +59,7 @@ func start_session(duration_sec: int) -> void:
 	if not use_mock:
 		_create_in_flight = true
 		var token: String = UserManager.get_access_token()
-		var minutes: int = max(1, duration_sec / 60)
+		var minutes: int = maxi(1, int(duration_sec / 60.0))
 		var result: Dictionary = await _focus_service.create_async(UserManager.base_url, token, minutes)
 		_create_in_flight = false
 		if not result.is_empty():
