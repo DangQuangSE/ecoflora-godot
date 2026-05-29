@@ -10,6 +10,7 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _selected_slot: Panel            = $SelectedItemSlot
 @onready var _selected_icon: TextureRect      = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button            = $SelectedItemSlot/DeselectBtn
+@onready var _harvest_icon: TextureRect       = $HarvestButton/Icon
 
 func _ready() -> void:
 	_joystick.direction_changed.connect(_on_joystick_direction)
@@ -17,6 +18,8 @@ func _ready() -> void:
 	_deselect_btn.pressed.connect(InventoryManager.deselect)
 	InventoryManager.item_selected.connect(_on_item_selected)
 	_inv_icon.texture = preload("res://assets/icon/bag.png")
+	if _harvest_icon != null:
+		_harvest_icon.texture = preload("res://assets/icon/sickle.png")
 	_selected_slot.visible = false
 
 func _on_joystick_direction(dir: Vector2) -> void:
