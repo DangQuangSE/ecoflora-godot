@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://gechl1pk41u4"
-path="res://.godot/imported/watering_can.png-d2858b0e5c0533346c562d4e57d29140.ctex"
+uid="uid://doh7xoy6i3wrs"
+path="res://.godot/imported/purple_bellflower 1.png-af33fcaf58eec92506e2d6316ae60c6d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icon/watering_can.png"
-dest_files=["res://.godot/imported/watering_can.png-d2858b0e5c0533346c562d4e57d29140.ctex"]
+source_file="res://assets/flowers/purple_bellflower/purple_bellflower 1.png"
+dest_files=["res://.godot/imported/purple_bellflower 1.png-af33fcaf58eec92506e2d6316ae60c6d.ctex"]
 
 [params]
 
