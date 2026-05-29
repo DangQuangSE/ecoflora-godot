@@ -11,9 +11,10 @@ var _http: HTTPRequest
 var _request_in_flight: bool = false
 
 func _ready() -> void:
-	_inventory = MockInventoryService.new().get_initial_inventory()
-
-	if not use_mock:
+	if use_mock:
+		_inventory = MockInventoryService.new().get_initial_inventory()
+	else:
+		_inventory = UserInventory.new()
 		_http = HTTPRequest.new()
 		_http.timeout = 10.0
 		add_child(_http)

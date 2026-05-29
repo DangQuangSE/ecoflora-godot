@@ -7,13 +7,28 @@ extends RefCounted
 # Stage system: 0=sprout(0xp), 1=early(50xp), 2=mid(150xp), 3=full/harvestable(300xp)
 # Keys must match BE template names (lowercase) AND asset folder names exactly.
 const _FLOWER_DEFAULTS: Dictionary = {
-	"anthurium":         { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_anthurium_bloom" },
-	"lotus":             { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_lotus_bloom" },
-	"periwinkle":        { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_periwinkle_bloom" },
-	"purple_bellflower": { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_purple_bellflower_bloom" },
-	"rose":              { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_rose_bloom" },
-	"sun_flower":        { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_sun_flower_bloom" },
-	"tulip":             { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_tulip_bloom" },
+	# Base flowers
+	"anthurium":           { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_anthurium_bloom" },
+	"lotus":               { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_lotus_bloom" },
+	"periwinkle":          { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_periwinkle_bloom" },
+	"purple_bellflower":   { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_purple_bellflower_bloom" },
+	"rose":                { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_rose_bloom" },
+	"sun_flower":          { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_sun_flower_bloom" },
+	"tulip":               { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_tulip_bloom" },
+	# Variant flowers — higher XP thresholds, unique harvest ids, reuse base assets
+	"golden_rose":         { "stages": [[0, 0], [1, 80], [2, 220], [3, 450]], "harvest_id": "harvest_golden_rose_bloom" },
+	"blue_lotus":          { "stages": [[0, 0], [1, 80], [2, 220], [3, 450]], "harvest_id": "harvest_blue_lotus_bloom" },
+	"rainbow_tulip":       { "stages": [[0, 0], [1, 80], [2, 220], [3, 450]], "harvest_id": "harvest_rainbow_tulip_bloom" },
+	"midnight_periwinkle": { "stages": [[0, 0], [1, 80], [2, 220], [3, 450]], "harvest_id": "harvest_midnight_periwinkle_bloom" },
+	"crimson_anthurium":   { "stages": [[0, 0], [1, 80], [2, 220], [3, 450]], "harvest_id": "harvest_crimson_anthurium_bloom" },
+	"sunset_sunflower":    { "stages": [[0, 0], [1, 80], [2, 220], [3, 450]], "harvest_id": "harvest_sunset_sunflower_bloom" },
+	"violet_bellflower":   { "stages": [[0, 0], [1, 80], [2, 220], [3, 450]], "harvest_id": "harvest_violet_bellflower_bloom" },
+	"moonlit_rose":        { "stages": [[0, 0], [1, 120], [2, 320], [3, 600]], "harvest_id": "harvest_moonlit_rose_bloom" },
+	"crystal_lotus":       { "stages": [[0, 0], [1, 120], [2, 320], [3, 600]], "harvest_id": "harvest_crystal_lotus_bloom" },
+	"fire_tulip":          { "stages": [[0, 0], [1, 120], [2, 320], [3, 600]], "harvest_id": "harvest_fire_tulip_bloom" },
+	"silver_anthurium":    { "stages": [[0, 0], [1, 120], [2, 320], [3, 600]], "harvest_id": "harvest_silver_anthurium_bloom" },
+	"jade_periwinkle":     { "stages": [[0, 0], [1, 120], [2, 320], [3, 600]], "harvest_id": "harvest_jade_periwinkle_bloom" },
+	"star_sunflower":      { "stages": [[0, 0], [1, 120], [2, 320], [3, 600]], "harvest_id": "harvest_star_sunflower_bloom" },
 }
 
 # Parses GET /api/flowertemplates response array into FlowerTemplate domain objects.

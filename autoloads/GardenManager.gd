@@ -120,20 +120,28 @@ func _fetch_one(url: String, auth_header: String) -> Array:
 # Keys = BE template name (lowercase), values = asset folder name.
 # Names match directly since BE names were set to match asset folders.
 const _FLOWER_NAME_TO_ASSET: Dictionary = {
-	"anthurium":         "anthurium",
-	"lotus":             "lotus",
-	"periwinkle":        "periwinkle",
-	"purple_bellflower": "purple_bellflower",
-	"rose":              "rose",
-	"sun_flower":        "sun_flower",
-	"tulip":             "tulip",
-}
-
-# Maps BE item name (lowercased, stripped of "super ") to icon path.
-const _ITEM_NAME_TO_ICON: Dictionary = {
-	"watering can": "res://assets/icon/watering_can.PNG",
-	"fertilizer":   "res://assets/icon/fertilizer.png",
-	"pesticide":    "res://assets/icon/sickle.png",
+	# Base flowers
+	"anthurium":           "anthurium",
+	"lotus":               "lotus",
+	"periwinkle":          "periwinkle",
+	"purple_bellflower":   "purple_bellflower",
+	"rose":                "rose",
+	"sun_flower":          "sun_flower",
+	"tulip":               "tulip",
+	# Variant flowers — reuse base asset folder
+	"golden_rose":         "rose",
+	"blue_lotus":          "lotus",
+	"rainbow_tulip":       "tulip",
+	"midnight_periwinkle": "periwinkle",
+	"crimson_anthurium":   "anthurium",
+	"sunset_sunflower":    "sun_flower",
+	"violet_bellflower":   "purple_bellflower",
+	"moonlit_rose":        "rose",
+	"crystal_lotus":       "lotus",
+	"fire_tulip":          "tulip",
+	"silver_anthurium":    "anthurium",
+	"jade_periwinkle":     "periwinkle",
+	"star_sunflower":      "sun_flower",
 }
 
 func _register_be_icons() -> void:
@@ -149,15 +157,22 @@ func _register_be_icons() -> void:
 		if ResourceLoader.exists(icon_path):
 			ItemIconRegistry.register(tid, load(icon_path))
 
-	# Register item icons by UUID
+	# Register item icons by UUID using keyword-contains matching.
+	# sickle.png is the harvest UI button — NOT an item icon.
 	for iid: String in _item_cache:
 		var item: Dictionary = _item_cache[iid]
 		var raw_name: String = str(item.get("name", "")).to_lower()
-		var base_name: String = raw_name.replace("super ", "")
-		var icon_path: String = _ITEM_NAME_TO_ICON.get(base_name, "")
-		if icon_path.is_empty() or not ResourceLoader.exists(icon_path):
+		var icon_path: String
+		if "watering can" in raw_name:
+			icon_path = "res://assets/icon/watering_can.PNG"
+		elif "fertilizer" in raw_name:
+			icon_path = "res://assets/icon/fertilizer.png"
+		elif "pesticide" in raw_name:
+			icon_path = "res://assets/icon/pesticide.png"
+		else:
 			continue
-		ItemIconRegistry.register(iid, load(icon_path))
+		if ResourceLoader.exists(icon_path):
+			ItemIconRegistry.register(iid, load(icon_path))
 
 func _fetch_garden() -> void:
 	if _garden_in_flight:
