@@ -5,13 +5,23 @@ signal plant_failed(plot_id: String, reason: String)
 signal harvest_completed(plot_id: String, product_id: String)
 signal plant_xp_gained(plot_id: String, xp_amount: int)
 
+@export var use_mock: bool = true
+
 const GARDEN_ID := "main_garden"
 
 var _plots: Array[Plot] = []
 var _templates: Dictionary = {}
+var _item_cache: Dictionary = {}
+var _synergy_cache: Dictionary = {}
+
+var _http_catalog: HTTPRequest
+var _http_garden: HTTPRequest
+var _garden_in_flight: bool = false
+var _ref_svc  # ReferenceDataService instance (preloaded to avoid autoload parse-order issue)
+
+const _RefDataScript = preload("res://services/ReferenceDataService.gd")
 
 # World positions for 16 plots — initial 8 (2×4 grid) + zone_1 (plots 8–11) + zone_2 (plots 12–15)
-# Zone positions are placeholders — adjust to fit TileMap layout in Godot Editor
 const PLOT_POSITIONS: Array[Vector2] = [
 	Vector2(80, 80),   Vector2(200, 80),
 	Vector2(80, 200),  Vector2(200, 200),
@@ -24,11 +34,143 @@ const PLOT_POSITIONS: Array[Vector2] = [
 ]
 
 func _ready() -> void:
+	_ref_svc = _RefDataScript.new()
+
+	# Always load mock data first so _templates is never empty
 	var garden_svc := MockGardenService.new()
 	_plots = garden_svc.get_initial_plots(GARDEN_ID)
 	for t: FlowerTemplate in garden_svc.get_flower_templates():
 		_templates[t.id] = t
+
 	InteractionManager.plot_action_requested.connect(_on_plot_action)
+
+	if not use_mock:
+		_http_catalog = HTTPRequest.new()
+		_http_catalog.timeout = 10.0
+		add_child(_http_catalog)
+		_http_garden = HTTPRequest.new()
+		_http_garden.timeout = 10.0
+		add_child(_http_garden)
+		# Fetch catalogs + garden after login — never before
+		UserManager.login_succeeded.connect(_on_login_succeeded)
+
+func _on_login_succeeded() -> void:
+	await _fetch_catalogs()
+	await _fetch_garden()
+
+func _fetch_catalogs() -> void:
+	var base: String = UserManager.base_url
+	var auth: String = UserManager.get_auth_header()
+
+	# Flower templates
+	var templates_ok := await _fetch_one(
+		base + "/api/flowertemplates?isDeleted=false&pageSize=1000", auth)
+	if templates_ok.size() > 0:
+		var parsed: Dictionary = _ref_svc.parse_flower_templates(templates_ok)
+		if not parsed.is_empty():
+			_templates = parsed
+			plots_updated.emit(_plots)
+
+	# Items catalog
+	var items_ok := await _fetch_one(
+		base + "/api/items?isDeleted=false&pageSize=1000", auth)
+	if items_ok.size() > 0:
+		_item_cache = _ref_svc.parse_items(items_ok)
+
+	# Synergies
+	var synergies_ok := await _fetch_one(
+		base + "/api/synergies?pageSize=1000", auth)
+	if synergies_ok.size() > 0:
+		_synergy_cache = _ref_svc.parse_synergies(synergies_ok)
+
+# Returns the parsed data Array on success, empty Array on failure (never throws).
+func _fetch_one(url: String, auth_header: String) -> Array:
+	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
+	if not auth_header.is_empty():
+		headers.append(auth_header)
+	var error: int = _http_catalog.request(url, headers)
+	if error != OK:
+		push_warning("GardenManager._fetch_one: request error %d for %s" % [error, url])
+		return []
+	var raw: Variant = await _http_catalog.request_completed
+	var http_result: int = raw[0]
+	var status_code: int  = raw[1]
+	var body: PackedByteArray = raw[3]
+	if http_result != HTTPRequest.RESULT_SUCCESS or status_code != 200:
+		if status_code == 401:
+			UserManager.handle_401()
+		push_warning("GardenManager._fetch_one: HTTP %d for %s" % [status_code, url])
+		return []
+	var json := JSON.new()
+	if json.parse(body.get_string_from_utf8()) != OK:
+		push_warning("GardenManager._fetch_one: JSON parse error for %s" % url)
+		return []
+	var envelope: Variant = json.get_data()
+	if not envelope is Dictionary:
+		return []
+	var data: Variant = HttpHelper.unwrap_envelope(envelope)
+	if data == null or not data is Array:
+		push_warning("GardenManager._fetch_one: data is not an Array for %s" % url)
+		return []
+	return data
+
+func _fetch_garden() -> void:
+	if _garden_in_flight:
+		return
+	_garden_in_flight = true
+	var url: String = UserManager.base_url + "/api/garden"
+	var auth_header: String = UserManager.get_auth_header()
+	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
+	if not auth_header.is_empty():
+		headers.append(auth_header)
+	var error: int = _http_garden.request(url, headers)
+	if error != OK:
+		_garden_in_flight = false
+		push_warning("GardenManager._fetch_garden: request error %d" % error)
+		return
+	var raw: Variant = await _http_garden.request_completed
+	_garden_in_flight = false
+	var http_result: int  = raw[0]
+	var status_code: int  = raw[1]
+	var body: PackedByteArray = raw[3]
+	if http_result != HTTPRequest.RESULT_SUCCESS or status_code != 200:
+		if status_code == 401:
+			UserManager.handle_401()
+		push_warning("GardenManager._fetch_garden: HTTP %d" % status_code)
+		return  # keep mock-loaded plots on any error
+	var json := JSON.new()
+	if json.parse(body.get_string_from_utf8()) != OK:
+		push_warning("GardenManager._fetch_garden: JSON parse error")
+		return
+	var envelope: Variant = json.get_data()
+	if not envelope is Dictionary:
+		return
+	var data: Variant = HttpHelper.unwrap_envelope(envelope)
+	if not data is Dictionary:
+		push_warning("GardenManager._fetch_garden: data is not a Dictionary")
+		return
+	var plots_arr: Variant = data.get("plots", null)
+	if not plots_arr is Array:
+		push_warning("GardenManager._fetch_garden: missing 'plots' array in response")
+		return
+	var garden_svc := GardenService.new()
+	var parsed_plots: Array[Plot] = garden_svc.parse_plots(plots_arr, _templates)
+	if parsed_plots.is_empty():
+		push_warning("GardenManager._fetch_garden: BE returned 0 plots — keeping mock plots")
+		return
+	_plots = parsed_plots
+	plots_updated.emit(_plots)
+
+func _exit_tree() -> void:
+	if _garden_in_flight and _http_garden != null:
+		_http_garden.cancel_request()
+		_garden_in_flight = false
+
+func get_item_cache() -> Dictionary:
+	return _item_cache
+
+func get_synergy_cache() -> Dictionary:
+	return _synergy_cache
 
 func get_plots() -> Array[Plot]:
 	return _plots
@@ -44,6 +186,7 @@ func get_templates() -> Dictionary:
 func get_plot(plot_id: String) -> Plot:
 	return _find_plot(plot_id)
 
+# TODO: sync mutation to BE — POST /api/garden/plots/{plot_id}/care { action: 0 }
 func water(plot_id: String) -> void:
 	const WATER_XP := 20
 	var plot := _find_plot(plot_id)
@@ -61,6 +204,7 @@ func water(plot_id: String) -> void:
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
 
+# TODO: sync mutation to BE — POST /api/garden/plots/{plot_id}/care { action: 1 }
 func fertilize(plot_id: String) -> void:
 	const FERTILIZE_XP := 50
 	var plot := _find_plot(plot_id)
@@ -78,6 +222,7 @@ func fertilize(plot_id: String) -> void:
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
 
+# TODO: sync mutation to BE — POST /api/garden/plots/{plot_id}/plant { flowerTemplateId }
 func plant(plot_id: String, flower_template_id: String) -> void:
 	var plot := _find_plot(plot_id)
 	if plot == null or plot.is_occupied or plot.is_pending_sync:
@@ -120,6 +265,7 @@ func debug_add_xp(plot_id: String, xp_amount: int) -> void:
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
 
+# TODO: sync mutation to BE — POST /api/garden/plots/{plot_id}/harvest
 func harvest(plot_id: String) -> void:
 	var plot := _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:

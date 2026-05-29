@@ -2,6 +2,7 @@ class_name UserProfile
 extends RefCounted
 
 var level: int = 1
+var currency: int = 0
 var current_xp: int = 0
 var total_xp_earned: int = 0
 var harvest_count: int = 0
