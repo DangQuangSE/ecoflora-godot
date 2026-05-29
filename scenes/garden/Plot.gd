@@ -70,7 +70,7 @@ func _on_plot_gui_input(event: InputEvent) -> void:
 
 	get_viewport().set_input_as_handled()
 
-	var selected := InventoryManager.get_selected_item()
+	var selected: InventoryItem = InventoryManager.get_selected_item()
 
 	if is_tap:
 		_applied_this_gesture = false
@@ -104,9 +104,9 @@ func _apply_item(ref_id: String, category: InventoryItem.Category) -> void:
 			"watering_can": InteractionManager.request_plot_action(plot_id, "water")
 			"fertilizer":   InteractionManager.request_plot_action(plot_id, "fertilize")
 			"sickle":
-				var stage := _current_plot.current_plant.current_stage if _current_plot.current_plant else 0
-				var max_stage := GardenManager.get_templates() \
-					.get(_current_plot.current_plant.flower_template_id if _current_plot.current_plant else "", null)
+				var stage: int = _current_plot.current_plant.current_stage if _current_plot.current_plant else 0
+				var max_stage: FlowerTemplate = GardenManager.get_templates() \
+					.get(_current_plot.current_plant.flower_template_id if _current_plot.current_plant else "", null) as FlowerTemplate
 				var threshold: int = max_stage.get_max_stage_level() if max_stage else 7
 				if stage >= threshold:
 					InteractionManager.request_plot_action(plot_id, "harvest")

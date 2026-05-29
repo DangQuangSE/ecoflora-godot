@@ -88,7 +88,7 @@ func _on_request_completed(result: int, code: int, _headers: PackedStringArray, 
 		push_warning("WeatherManager: JSON root is not a Dictionary — keeping current state")
 		return
 	var typed_data: Dictionary = data
-	var new_state := _weather_service.parse_response(typed_data)
+	var new_state: WeatherState = _weather_service.parse_response(typed_data)
 	if new_state == null:
 		push_warning("WeatherManager: parse_response returned null — keeping current state")
 		return
