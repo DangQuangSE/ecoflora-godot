@@ -3,7 +3,7 @@ extends Node
 signal inventory_updated(inventory: UserInventory)
 signal item_selected(item: InventoryItem)
 
-@export var use_mock: bool = true
+@export var use_mock: bool = false
 
 var _inventory: UserInventory
 var _selected_item: InventoryItem = null

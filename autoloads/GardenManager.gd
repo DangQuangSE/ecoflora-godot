@@ -5,7 +5,7 @@ signal plant_failed(plot_id: String, reason: String)
 signal harvest_completed(plot_id: String, product_id: String)
 signal plant_xp_gained(plot_id: String, xp_amount: int)
 
-@export var use_mock: bool = true
+@export var use_mock: bool = false
 
 const GARDEN_ID := "main_garden"
 
@@ -83,6 +83,8 @@ func _fetch_catalogs() -> void:
 	if synergies_ok.size() > 0:
 		_synergy_cache = _ref_svc.parse_synergies(synergies_ok)
 
+	_register_be_icons()
+
 # Returns the parsed data Array on success, empty Array on failure (never throws).
 func _fetch_one(url: String, auth_header: String) -> Array:
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
@@ -113,6 +115,49 @@ func _fetch_one(url: String, auth_header: String) -> Array:
 		push_warning("GardenManager._fetch_one: data is not an Array for %s" % url)
 		return []
 	return data
+
+# Maps BE flower name to the local asset folder name.
+# Keys = BE template name (lowercase), values = asset folder name.
+# Names match directly since BE names were set to match asset folders.
+const _FLOWER_NAME_TO_ASSET: Dictionary = {
+	"anthurium":         "anthurium",
+	"lotus":             "lotus",
+	"periwinkle":        "periwinkle",
+	"purple_bellflower": "purple_bellflower",
+	"rose":              "rose",
+	"sun_flower":        "sun_flower",
+	"tulip":             "tulip",
+}
+
+# Maps BE item name (lowercased, stripped of "super ") to icon path.
+const _ITEM_NAME_TO_ICON: Dictionary = {
+	"watering can": "res://assets/icon/watering_can.PNG",
+	"fertilizer":   "res://assets/icon/fertilizer.png",
+	"pesticide":    "res://assets/icon/sickle.png",
+}
+
+func _register_be_icons() -> void:
+	# Register flower template icons and plant textures by UUID
+	for tid: String in _templates:
+		var t: FlowerTemplate = _templates[tid]
+		var name_lower: String = t.name.to_lower()
+		var asset_name: String = _FLOWER_NAME_TO_ASSET.get(name_lower, "")
+		if asset_name.is_empty():
+			continue
+		ItemIconRegistry.register_plant_name(tid, asset_name)
+		var icon_path := "res://assets/flowers/%s/%s 3.png" % [asset_name, asset_name]
+		if ResourceLoader.exists(icon_path):
+			ItemIconRegistry.register(tid, load(icon_path))
+
+	# Register item icons by UUID
+	for iid: String in _item_cache:
+		var item: Dictionary = _item_cache[iid]
+		var raw_name: String = str(item.get("name", "")).to_lower()
+		var base_name: String = raw_name.replace("super ", "")
+		var icon_path: String = _ITEM_NAME_TO_ICON.get(base_name, "")
+		if icon_path.is_empty() or not ResourceLoader.exists(icon_path):
+			continue
+		ItemIconRegistry.register(iid, load(icon_path))
 
 func _fetch_garden() -> void:
 	if _garden_in_flight:

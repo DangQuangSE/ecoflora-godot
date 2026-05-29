@@ -14,12 +14,13 @@ signal login_failed(reason: String)
 @export var base_url: String = "https://localhost:7034"
 
 const _XP_TABLE: Dictionary = {
-	"harvest_lotus_bloom":      80,
-	"harvest_rose_bloom":       120,
-	"harvest_periwinkle_bloom": 60,
-	"harvest_sunflower_bloom":  100,
-	"harvest_daisy_bloom":      70,
-	"harvest_tulip_bloom":      90,
+	"harvest_anthurium_bloom":         100,
+	"harvest_lotus_bloom":             80,
+	"harvest_periwinkle_bloom":        60,
+	"harvest_purple_bellflower_bloom": 90,
+	"harvest_rose_bloom":              120,
+	"harvest_sun_flower_bloom":        110,
+	"harvest_tulip_bloom":             70,
 }
 
 var _profile: UserProfile = UserProfile.new()

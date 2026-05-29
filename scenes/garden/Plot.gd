@@ -90,15 +90,26 @@ func _apply_item(ref_id: String, category: InventoryItem.Category) -> void:
 			InteractionManager.request_plot_action(plot_id, "plant", {"template_id": ref_id})
 		return
 
-	match ref_id:
-		"watering_can":
-			InteractionManager.request_plot_action(plot_id, "water")
-		"fertilizer":
-			InteractionManager.request_plot_action(plot_id, "fertilize")
-		"sickle":
-			var stage := _current_plot.current_plant.current_stage if _current_plot.current_plant else 0
-			if stage >= 7:
-				InteractionManager.request_plot_action(plot_id, "harvest")
+	if category == InventoryItem.Category.CONSUMABLE:
+		# BE mode: look up item type (0=water, 1=fertilize, 2=pesticide) from cache
+		var item_data: Dictionary = GardenManager.get_item_cache().get(ref_id, {})
+		if not item_data.is_empty():
+			match int(item_data.get("type", -1)):
+				0: InteractionManager.request_plot_action(plot_id, "water")
+				1: InteractionManager.request_plot_action(plot_id, "fertilize")
+				2: InteractionManager.request_plot_action(plot_id, "fertilize")  # pesticide → fertilize XP for now
+			return
+		# Mock mode fallback: string-based matching
+		match ref_id:
+			"watering_can": InteractionManager.request_plot_action(plot_id, "water")
+			"fertilizer":   InteractionManager.request_plot_action(plot_id, "fertilize")
+			"sickle":
+				var stage := _current_plot.current_plant.current_stage if _current_plot.current_plant else 0
+				var max_stage := GardenManager.get_templates() \
+					.get(_current_plot.current_plant.flower_template_id if _current_plot.current_plant else "", null)
+				var threshold: int = max_stage.get_max_stage_level() if max_stage else 7
+				if stage >= threshold:
+					InteractionManager.request_plot_action(plot_id, "harvest")
 
 func _on_plant_xp_gained(gained_plot_id: String, xp_amount: int) -> void:
 	if gained_plot_id == plot_id:

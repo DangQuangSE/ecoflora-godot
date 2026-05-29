@@ -74,8 +74,15 @@ func _on_plots_updated(plots: Array[Plot]) -> void:
 		return
 
 func _get_description(template_id: String) -> String:
-	match template_id:
-		"lotus":      return "Hoa sen — biểu tượng của sự thanh khiết và vẻ đẹp tinh khôi."
-		"rose":       return "Hoa hồng — loài hoa của tình yêu và sự lãng mạn."
-		"periwinkle": return "Hoa dừa cạn — sức sống bền bỉ, nở hoa quanh năm."
-		_:            return ""
+	var template: FlowerTemplate = GardenManager.get_templates().get(template_id)
+	if template == null:
+		return ""
+	match template.name.to_lower():
+		"anthurium":         return "Hoa anthurium — sắc đỏ rực rỡ, biểu tượng của lòng nhiệt thành."
+		"lotus":             return "Hoa sen — biểu tượng của sự thanh khiết và vẻ đẹp tinh khôi."
+		"periwinkle":        return "Hoa dừa cạn — sức sống bền bỉ, nở hoa quanh năm."
+		"purple_bellflower": return "Hoa chuông tím — thanh lịch và nhẹ nhàng như tiếng chuông chiều."
+		"rose":              return "Hoa hồng — loài hoa của tình yêu và sự lãng mạn."
+		"sun_flower":        return "Hoa hướng dương — luôn hướng về ánh sáng, tràn đầy năng lượng."
+		"tulip":             return "Hoa tulip — vẻ đẹp thanh tao, biểu tượng của sự hoàn hảo."
+		_:                   return ""

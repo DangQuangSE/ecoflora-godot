@@ -4,14 +4,16 @@ extends RefCounted
 # Stage thresholds and harvest product IDs for known flower names.
 # Keyed by lowercase template name as returned by BE.
 # Format: { "name": { "stages": [[level, xp], ...], "harvest_id": "harvest_X_bloom" } }
+# Stage system: 0=sprout(0xp), 1=early(50xp), 2=mid(150xp), 3=full/harvestable(300xp)
+# Keys must match BE template names (lowercase) AND asset folder names exactly.
 const _FLOWER_DEFAULTS: Dictionary = {
-	"sunflower":  { "stages": [[1, 0], [4, 100], [7, 300]], "harvest_id": "harvest_sunflower_bloom" },
-	"rose":       { "stages": [[1, 0], [4, 120], [7, 360]], "harvest_id": "harvest_rose_bloom" },
-	"daisy":      { "stages": [[1, 0], [4, 80],  [7, 250]], "harvest_id": "harvest_daisy_bloom" },
-	"tulip":      { "stages": [[1, 0], [4, 110], [7, 320]], "harvest_id": "harvest_tulip_bloom" },
-	# Keep legacy mock names for backward compatibility
-	"lotus":      { "stages": [[1, 0], [4, 100], [7, 300]], "harvest_id": "harvest_lotus_bloom" },
-	"periwinkle": { "stages": [[1, 0], [4, 80],  [7, 250]], "harvest_id": "harvest_periwinkle_bloom" },
+	"anthurium":         { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_anthurium_bloom" },
+	"lotus":             { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_lotus_bloom" },
+	"periwinkle":        { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_periwinkle_bloom" },
+	"purple_bellflower": { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_purple_bellflower_bloom" },
+	"rose":              { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_rose_bloom" },
+	"sun_flower":        { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_sun_flower_bloom" },
+	"tulip":             { "stages": [[0, 0], [1, 50], [2, 150], [3, 300]], "harvest_id": "harvest_tulip_bloom" },
 }
 
 # Parses GET /api/flowertemplates response array into FlowerTemplate domain objects.
