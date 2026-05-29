@@ -82,7 +82,7 @@ func get_selected_item() -> InventoryItem:
 	return _selected_item
 
 func select_item(item_id: String) -> void:
-	var item := _inventory.find_by_id(item_id)
+	var item: InventoryItem = _inventory.find_by_id(item_id)
 	if _selected_item != null and _selected_item.id == item_id:
 		_selected_item = null
 	else:
@@ -94,15 +94,15 @@ func deselect() -> void:
 	item_selected.emit(null)
 
 func has_seed(flower_template_id: String) -> bool:
-	var item := _inventory.find_by_reference_id(flower_template_id)
+	var item: InventoryItem = _inventory.find_by_reference_id(flower_template_id)
 	return item != null and item.quantity > 0
 
 func has_item(ref_id: String) -> bool:
-	var item := _inventory.find_by_reference_id(ref_id)
+	var item: InventoryItem = _inventory.find_by_reference_id(ref_id)
 	return item != null and item.quantity > 0
 
 func consume_item(ref_id: String) -> bool:
-	var item := _inventory.find_by_reference_id(ref_id)
+	var item: InventoryItem = _inventory.find_by_reference_id(ref_id)
 	if item == null or item.quantity <= 0:
 		return false
 	item.quantity -= 1
@@ -113,7 +113,7 @@ func consume_item(ref_id: String) -> bool:
 	return true
 
 func consume_seed(flower_template_id: String) -> bool:
-	var item := _inventory.find_by_reference_id(flower_template_id)
+	var item: InventoryItem = _inventory.find_by_reference_id(flower_template_id)
 	if item == null or item.quantity <= 0:
 		return false
 	item.quantity -= 1
@@ -125,7 +125,7 @@ func consume_seed(flower_template_id: String) -> bool:
 
 # BE-local only — harvest products are appended in-memory and never synced to BE
 func add_harvest_product(product_id: String) -> void:
-	var existing := _inventory.find_harvest_product(product_id)
+	var existing: InventoryItem = _inventory.find_harvest_product(product_id)
 	if existing != null:
 		existing.quantity += 1
 	else:

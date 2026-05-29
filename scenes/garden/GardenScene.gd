@@ -42,7 +42,7 @@ func _spawn_flower_info_card() -> void:
 	InteractionManager.show_flower_info.connect(_on_show_flower_info)
 
 func _on_show_flower_info(plot_id: String) -> void:
-	var plot := GardenManager.get_plot(plot_id)
+	var plot: Plot = GardenManager.get_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.current_plant == null:
 		return
 	var template: FlowerTemplate = GardenManager.get_templates().get(plot.current_plant.flower_template_id)

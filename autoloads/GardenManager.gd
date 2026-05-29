@@ -234,7 +234,7 @@ func get_plot(plot_id: String) -> Plot:
 # TODO: sync mutation to BE — POST /api/garden/plots/{plot_id}/care { action: 0 }
 func water(plot_id: String) -> void:
 	const WATER_XP := 20
-	var plot := _find_plot(plot_id)
+	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
 		return
 	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
@@ -252,7 +252,7 @@ func water(plot_id: String) -> void:
 # TODO: sync mutation to BE — POST /api/garden/plots/{plot_id}/care { action: 1 }
 func fertilize(plot_id: String) -> void:
 	const FERTILIZE_XP := 50
-	var plot := _find_plot(plot_id)
+	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
 		return
 	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
@@ -269,7 +269,7 @@ func fertilize(plot_id: String) -> void:
 
 # TODO: sync mutation to BE — POST /api/garden/plots/{plot_id}/plant { flowerTemplateId }
 func plant(plot_id: String, flower_template_id: String) -> void:
-	var plot := _find_plot(plot_id)
+	var plot: Plot = _find_plot(plot_id)
 	if plot == null or plot.is_occupied or plot.is_pending_sync:
 		plant_failed.emit(plot_id, "not_available")
 		return
@@ -294,7 +294,7 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 	plots_updated.emit(_plots)
 
 func debug_add_xp(plot_id: String, xp_amount: int) -> void:
-	var plot := _find_plot(plot_id)
+	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
 		return
 	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
@@ -312,7 +312,7 @@ func debug_add_xp(plot_id: String, xp_amount: int) -> void:
 
 # TODO: sync mutation to BE — POST /api/garden/plots/{plot_id}/harvest
 func harvest(plot_id: String) -> void:
-	var plot := _find_plot(plot_id)
+	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
 		return
 	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
@@ -358,7 +358,7 @@ func _find_plot(plot_id: String) -> Plot:
 	return null
 
 func debug_next_stage(plot_id: String) -> void:
-	var plot := _find_plot(plot_id)
+	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
 		return
 	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
