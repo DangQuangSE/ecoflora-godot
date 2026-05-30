@@ -1,0 +1,139 @@
+[gd_scene format=3 uid="uid://loginscene001"]
+
+[ext_resource type="Script" path="res://scenes/auth/LoginScene.gd" id="1_script"]
+
+[node name="LoginScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.08, 0.16, 0.10, 1)
+mouse_filter = 2
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_right = -32.0
+offset_top = 40.0
+offset_bottom = -40.0
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="LogoSection" type="VBoxContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="LeafDecor" type="Label" parent="VBox/LogoSection"]
+layout_mode = 2
+text = "🍃 🌸 🌿"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
+
+[node name="TitleLabel" type="Label" parent="VBox/LogoSection"]
+layout_mode = 2
+text = "Flow Flora"
+horizontal_alignment = 1
+
+[node name="TaglineLabel" type="Label" parent="VBox/LogoSection"]
+layout_mode = 2
+text = "Grow. Harvest. Thrive."
+horizontal_alignment = 1
+
+[node name="Card" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="VBox/Card"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="Inner" type="VBoxContainer" parent="VBox/Card/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="WelcomeLabel" type="Label" parent="VBox/Card/Margin/Inner"]
+layout_mode = 2
+text = "Chào mừng trở lại 👋"
+horizontal_alignment = 1
+
+[node name="UsernameField" type="LineEdit" parent="VBox/Card/Margin/Inner"]
+layout_mode = 2
+placeholder_text = "Tài khoản hoặc Email"
+custom_minimum_size = Vector2(0, 52)
+
+[node name="PasswordField" type="LineEdit" parent="VBox/Card/Margin/Inner"]
+layout_mode = 2
+placeholder_text = "Mật khẩu"
+secret = true
+custom_minimum_size = Vector2(0, 52)
+
+[node name="ErrorLabel" type="Label" parent="VBox/Card/Margin/Inner"]
+layout_mode = 2
+text = ""
+autowrap_mode = 3
+horizontal_alignment = 1
+visible = false
+
+[node name="LoginBtn" type="Button" parent="VBox/Card/Margin/Inner"]
+layout_mode = 2
+text = "Đăng nhập"
+custom_minimum_size = Vector2(0, 52)
+
+[node name="DividerRow" type="HBoxContainer" parent="VBox/Card/Margin/Inner"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Line1" type="HSeparator" parent="VBox/Card/Margin/Inner/DividerRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OrLabel" type="Label" parent="VBox/Card/Margin/Inner/DividerRow"]
+layout_mode = 2
+text = "hoặc"
+theme_override_font_sizes/font_size = 13
+theme_override_colors/font_color = Color(0.5, 0.5, 0.5, 1)
+
+[node name="Line2" type="HSeparator" parent="VBox/Card/Margin/Inner/DividerRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="OfflineBtn" type="Button" parent="VBox/Card/Margin/Inner"]
+layout_mode = 2
+text = "Chơi offline (Mock)"
+custom_minimum_size = Vector2(0, 46)
+flat = false
+
+[node name="LoadingOverlay" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.6)
+visible = false
+mouse_filter = 0
+
+[node name="LoadingLabel" type="Label" parent="LoadingOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -120.0
+offset_top = -16.0
+offset_right = 120.0
+offset_bottom = 16.0
+text = "Đang đăng nhập..."
+horizontal_alignment = 1

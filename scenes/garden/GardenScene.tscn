@@ -1,12 +1,12 @@
 [gd_scene format=4 uid="uid://bgardensc001"]
 
-[ext_resource type="Script" uid="uid://31kpmq44x0ct" path="res://scenes/garden/GardenScene.gd" id="1_garden"]
 [ext_resource type="Texture2D" uid="uid://dhdwevuqi1tfj" path="res://assets/tilesets/Tilemap/Grass.png" id="2_kohg7"]
 [ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/shared/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
 [ext_resource type="Texture2D" uid="uid://c3s6ucwf2ygl4" path="res://assets/tilesets/Tilemap/Water.png" id="3_xftxm"]
 [ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
 [ext_resource type="Texture2D" uid="uid://bluyro1idv352" path="res://assets/background/demo_bg.PNG" id="5_dembg"]
+[ext_resource type="Script" uid="uid://31kpmq44x0ct" path="res://scenes/garden/GardenScene.gd" id="6_gdscript"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5isyb"]
 texture = ExtResource("3_xftxm")
@@ -142,7 +142,7 @@ terrain_set_0/terrain_0/color = Color(0.5, 0.34375, 0.25, 1)
 sources/1 = SubResource("TileSetAtlasSource_xftxm")
 
 [node name="GardenScene" type="Node2D" unique_id=927803031]
-script = ExtResource("1_garden")
+script = ExtResource("6_gdscript")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=382669791]
 z_index = -2
@@ -159,8 +159,8 @@ scale = Vector2(3, 3)
 [node name="HUD" parent="." unique_id=1409293532 instance=ExtResource("3_hud")]
 
 [node name="Portal" parent="." unique_id=279835275 instance=ExtResource("4_portal")]
-visible = false
-position = Vector2(160, 80)
+z_index = 2
+position = Vector2(52, 825)
 target_scene = "res://scenes/school/SchoolScene.tscn"
 
 [node name="GameTileMap" type="TileMapLayer" parent="." unique_id=384456007]

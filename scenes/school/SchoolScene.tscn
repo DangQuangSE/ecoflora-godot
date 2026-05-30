@@ -1,24 +1,28 @@
 [gd_scene format=3 uid="uid://bschoolsc001"]
 
-[ext_resource type="Script" path="res://scenes/school/SchoolScene.gd" id="1_school"]
+[ext_resource type="Script" uid="uid://cdv6juhsorkhx" path="res://scenes/school/SchoolScene.gd" id="1_school"]
 [ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/shared/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
+[ext_resource type="Texture2D" uid="uid://bt38vxpt0jddn" path="res://assets/background/demo_school.png" id="5_8u6ur"]
 
-[node name="SchoolScene" type="Node2D"]
+[node name="SchoolScene" type="Node2D" unique_id=7696549]
 script = ExtResource("1_school")
 
-[node name="TileMapLayer" type="TileMapLayer" parent="."]
-
-[node name="Player" parent="." instance=ExtResource("2_player")]
+[node name="Player" parent="." unique_id=1058296739 instance=ExtResource("2_player")]
 position = Vector2(160, 280)
 
-[node name="HUD" parent="." instance=ExtResource("3_hud")]
+[node name="HUD" parent="." unique_id=629154414 instance=ExtResource("3_hud")]
 
-[node name="PortalToGarden" parent="." instance=ExtResource("4_portal")]
+[node name="PortalToGarden" parent="." unique_id=688076017 instance=ExtResource("4_portal")]
 position = Vector2(160, 80)
 target_scene = "res://scenes/garden/GardenScene.tscn"
 
-[node name="PortalToClassroom" parent="." instance=ExtResource("4_portal")]
+[node name="PortalToClassroom" parent="." unique_id=2130229250 instance=ExtResource("4_portal")]
 position = Vector2(360, 300)
 target_scene = "res://scenes/school/ClassroomScene.tscn"
+
+[node name="DemoSchool" type="Sprite2D" parent="." unique_id=25017280]
+position = Vector2(707, 561)
+scale = Vector2(0.90743667, 1.3552318)
+texture = ExtResource("5_8u6ur")

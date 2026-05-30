@@ -28,5 +28,5 @@ func _on_global_selection_changed(_item: InventoryItem) -> void:
 	_refresh_highlight()
 
 func _refresh_highlight() -> void:
-	var sel := InventoryManager.get_selected_item()
+	var sel: InventoryItem = InventoryManager.get_selected_item()
 	_highlight.visible = sel != null and sel.id == _item_id

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="flow-flora-godot"
-run/main_scene="res://scenes/garden/GardenScene.tscn"
+run/main_scene="res://scenes/auth/LoginScene.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
@@ -25,6 +25,7 @@ UserManager="*res://autoloads/UserManager.gd"
 ZoneManager="*res://autoloads/ZoneManager.gd"
 FocusManager="*res://autoloads/FocusManager.gd"
 ItemIconRegistry="*res://autoloads/ItemIconRegistry.gd"
+WeatherManager="*res://autoloads/WeatherManager.gd"
 
 [display]
 

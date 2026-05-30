@@ -59,6 +59,7 @@
   - `GardenManager` (Singleton) — plant/care/harvest with optimistic UI
   - `InventoryManager` (Singleton) — manage inventory + item catalog
   - `InteractionManager` (Singleton) — track mode (Planting/UsingConsumable/Harvesting)
+  - `WeatherManager` (Singleton) — poll weather state, manage overlay UI
   - `GetGardenStateUseCase` — load plots from service
   - `SyncBatchActionsUseCase` — send care actions to server
   - `UseItemUseCase` — consume an item from inventory
@@ -68,6 +69,8 @@
 - **Components**:
   - `MockGardenService` — simulates server with 50ms delay
   - `MockInventoryService` — simulates inventory server
+  - `MockWeatherService` — simulates weather API, returns state based on local time
+  - `WeatherService` — real HTTP weather parser (from external API)
   - `ItemCatalogSO` — ScriptableObject holding all `ItemDataSO` entries
   - `ItemDataSO` — ScriptableObject per item (icon, prefab, xp, …)
 
@@ -81,6 +84,7 @@
   - `InventoryView` — bag UI, displays items
   - `HarvestToolButton` — button to activate Harvest mode
   - `SwipeInteractionHandler` — receives swipe input, forwards to managers
+  - `WeatherOverlay` — CanvasLayer displaying day/night and rain/wind particles
 
 ---
 

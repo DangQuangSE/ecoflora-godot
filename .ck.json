@@ -1,0 +1,12 @@
+{
+  "privacyBlock": {
+    "allowList": ["password", ".env"]
+  },
+  "simplify": {
+    "threshold": {
+      "totalLoc": 400,
+      "fileCount": 8,
+      "singleFileLoc": 200
+    }
+  }
+}

@@ -1,28 +1,9 @@
 [gd_scene format=3 uid="uid://bhudscene001"]
 
-[ext_resource type="Script" path="res://scenes/hud/HUD.gd" id="1_hud"]
+[ext_resource type="Script" uid="uid://c20fqhu6g4b1b" path="res://scenes/hud/HUD.gd" id="1_hud"]
 [ext_resource type="PackedScene" uid="uid://bjoysticksc01" path="res://scenes/hud/DynamicJoystick.tscn" id="2_joystick"]
 [ext_resource type="PackedScene" uid="uid://binvpanel01" path="res://scenes/inventory/InventoryPanel.tscn" id="3_invpanel"]
 [ext_resource type="PackedScene" uid="uid://buserhud001" path="res://scenes/hud/UserHUD.tscn" id="4_userhud"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selected"]
-bg_color = Color(0.1, 0.14, 0.08, 0.92)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.7, 0.9, 0.4, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_deselect"]
-bg_color = Color(0.6, 0.15, 0.15, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_invbtn"]
 bg_color = Color(0.1, 0.14, 0.08, 0.88)
@@ -48,14 +29,33 @@ corner_radius_top_right = 14
 corner_radius_bottom_right = 14
 corner_radius_bottom_left = 14
 
-[node name="HUD" type="CanvasLayer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selected"]
+bg_color = Color(0.1, 0.14, 0.08, 0.92)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7, 0.9, 0.4, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_deselect"]
+bg_color = Color(0.6, 0.15, 0.15, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="HUD" type="CanvasLayer" unique_id=1601504416]
 layer = 10
 script = ExtResource("1_hud")
 
-[node name="DynamicJoystick" parent="." instance=ExtResource("2_joystick")]
+[node name="DynamicJoystick" parent="." unique_id=1996316913 instance=ExtResource("2_joystick")]
 
-[node name="InventoryButton" type="Button" parent="."]
-layout_mode = 1
+[node name="InventoryButton" type="Button" parent="." unique_id=581721140]
+anchors_preset = -1
 anchor_left = 1.0
 anchor_top = 0.4
 anchor_right = 1.0
@@ -64,26 +64,29 @@ offset_left = -100.0
 offset_top = -42.0
 offset_right = -16.0
 offset_bottom = 42.0
-flat = true
 theme_override_styles/normal = SubResource("StyleBoxFlat_invbtn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_invbtn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_invbtn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_invbtn_hover")
+flat = true
 
-[node name="Icon" type="TextureRect" parent="InventoryButton"]
+[node name="Icon" type="TextureRect" parent="InventoryButton" unique_id=2086235613]
 layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
+offset_left = 12.0
+offset_top = 9.0
+offset_right = -8.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
-[node name="SelectedItemSlot" type="Panel" parent="."]
+[node name="SelectedItemSlot" type="Panel" parent="." unique_id=1657277381]
 visible = false
-layout_mode = 1
+anchors_preset = -1
 anchor_left = 1.0
 anchor_top = 0.4
 anchor_right = 1.0
@@ -94,35 +97,54 @@ offset_right = -28.0
 offset_bottom = -58.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_selected")
 
-[node name="SelectedIcon" type="TextureRect" parent="SelectedItemSlot"]
+[node name="SelectedIcon" type="TextureRect" parent="SelectedItemSlot" unique_id=298424826]
 layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 6.0
 offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
+mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
-mouse_filter = 2
 
-[node name="DeselectBtn" type="Button" parent="SelectedItemSlot"]
+[node name="DeselectBtn" type="Button" parent="SelectedItemSlot" unique_id=127586626]
 layout_mode = 1
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 0.0
 anchor_right = 1.0
-anchor_bottom = 0.0
 offset_left = -14.0
 offset_top = -8.0
 offset_right = 8.0
 offset_bottom = 14.0
-text = "✕"
-flat = false
 theme_override_font_sizes/font_size = 9
 theme_override_styles/normal = SubResource("StyleBoxFlat_deselect")
-theme_override_styles/hover = SubResource("StyleBoxFlat_deselect")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_deselect")
+theme_override_styles/hover = SubResource("StyleBoxFlat_deselect")
+text = "✕"
 
-[node name="InventoryPanel" parent="." instance=ExtResource("3_invpanel")]
+[node name="InventoryPanel" parent="." unique_id=1692340523 instance=ExtResource("3_invpanel")]
+layout_mode = 3
+anchors_preset = 15
 
-[node name="UserHUD" parent="." instance=ExtResource("4_userhud")]
+[node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]
+layout_mode = 3
+
+[node name="HarvestButton" type="Button" parent="." unique_id=407304471]
+offset_left = 620.0
+offset_top = 136.0
+offset_right = 704.0
+offset_bottom = 220.0
+flat = true
+
+[node name="Icon" type="TextureRect" parent="HarvestButton" unique_id=2020280548]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 74.0
+offset_bottom = 74.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
