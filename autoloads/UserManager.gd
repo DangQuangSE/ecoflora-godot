@@ -187,16 +187,25 @@ func logout() -> void:
 func get_profile() -> UserProfile:
 	return _profile
 
-func _on_harvest_completed(_plot_id: String, product_id: String) -> void:
-	if not _XP_TABLE.has(product_id):
-		push_warning("UserManager: unknown product_id '%s'" % product_id)
-		return
-	var xp: int = _XP_TABLE[product_id]
+func update_currency(new_total: int) -> void:
+	_profile.currency = new_total
+	xp_gained.emit(0)
+
+func add_harvest_xp(xp: int) -> void:
 	_profile.harvest_count += 1
 	var crossed := _profile.add_xp(xp)
 	xp_gained.emit(xp)
 	for new_level: int in crossed:
 		level_up.emit(new_level)
+
+func _on_harvest_completed(_plot_id: String, product_id: String) -> void:
+	# Mock mode: use local XP table. BE mode: XP already applied via add_harvest_xp() from response.
+	if not use_mock:
+		return
+	if not _XP_TABLE.has(product_id):
+		push_warning("UserManager: unknown product_id '%s'" % product_id)
+		return
+	add_harvest_xp(_XP_TABLE[product_id])
 
 func _parse_error_message(body: PackedByteArray) -> String:
 	var json := JSON.new()

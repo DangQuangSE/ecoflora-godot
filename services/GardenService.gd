@@ -41,6 +41,19 @@ func parse_planted_flower(json: Dictionary, templates: Dictionary) -> PlantedFlo
 	flower.planted_at         = _parse_iso_to_unix(str(json.get("plantedAt", "")))
 	return flower
 
+func parse_plot(d: Dictionary, templates: Dictionary) -> Plot:
+	var plot := Plot.new(
+		str(d.get("plotId", "")),
+		"",
+		int(d.get("plotIndex", 0))
+	)
+	var pf_json: Variant = d.get("plantedFlower", null)
+	if pf_json is Dictionary:
+		var flower: PlantedFlower = parse_planted_flower(pf_json, templates)
+		if flower != null:
+			plot.plant(flower)
+	return plot
+
 func _parse_iso_to_unix(s: String) -> int:
 	if s.is_empty() or s == "null":
 		return 0

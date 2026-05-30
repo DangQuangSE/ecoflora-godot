@@ -95,14 +95,14 @@ func _apply_item(ref_id: String, category: InventoryItem.Category) -> void:
 		var item_data: Dictionary = GardenManager.get_item_cache().get(ref_id, {})
 		if not item_data.is_empty():
 			match int(item_data.get("type", -1)):
-				0: InteractionManager.request_plot_action(plot_id, "water")
-				1: InteractionManager.request_plot_action(plot_id, "fertilize")
-				2: InteractionManager.request_plot_action(plot_id, "fertilize")  # pesticide → fertilize XP for now
+				0: InteractionManager.request_plot_action(plot_id, "water",      {"ref_id": ref_id})
+				1: InteractionManager.request_plot_action(plot_id, "fertilize",  {"ref_id": ref_id})
+				2: InteractionManager.request_plot_action(plot_id, "pesticide",  {"ref_id": ref_id})
 			return
 		# Mock mode fallback: string-based matching
 		match ref_id:
-			"watering_can": InteractionManager.request_plot_action(plot_id, "water")
-			"fertilizer":   InteractionManager.request_plot_action(plot_id, "fertilize")
+			"watering_can": InteractionManager.request_plot_action(plot_id, "water",     {"ref_id": ref_id})
+			"fertilizer":   InteractionManager.request_plot_action(plot_id, "fertilize", {"ref_id": ref_id})
 			"sickle":
 				var stage: int = _current_plot.current_plant.current_stage if _current_plot.current_plant else 0
 				var max_stage: FlowerTemplate = GardenManager.get_templates() \
