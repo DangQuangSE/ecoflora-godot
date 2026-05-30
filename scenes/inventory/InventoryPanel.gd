@@ -22,6 +22,9 @@ func _ready() -> void:
 	_btn_item.pressed.connect(func(): _set_filter(InventoryItem.Category.CONSUMABLE))
 	_btn_harvest.pressed.connect(func(): _set_filter(InventoryItem.Category.HARVEST_PRODUCT))
 	InventoryManager.inventory_updated.connect(_on_inventory_updated)
+	GardenManager.icons_registered.connect(func():
+		if visible:
+			_refresh(InventoryManager.get_inventory()))
 	visible = false
 
 func show_panel() -> void:

@@ -76,7 +76,10 @@ func _on_plot_gui_input(event: InputEvent) -> void:
 		_applied_this_gesture = false
 		if selected == null:
 			if _current_plot.is_occupied:
-				InteractionManager.request_show_flower_info(plot_id)
+				if InteractionManager.is_harvest_mode():
+					_try_harvest()
+				else:
+					InteractionManager.request_show_flower_info(plot_id)
 		else:
 			_apply_item(selected.get_reference_id(), selected.category)
 	elif is_drag and not _applied_this_gesture:
@@ -110,6 +113,17 @@ func _apply_item(ref_id: String, category: InventoryItem.Category) -> void:
 				var threshold: int = max_stage.get_max_stage_level() if max_stage else 7
 				if stage >= threshold:
 					InteractionManager.request_plot_action(plot_id, "harvest")
+
+func _try_harvest() -> void:
+	if _current_plot == null or not _current_plot.is_occupied or _current_plot.current_plant == null:
+		return
+	var template: FlowerTemplate = GardenManager.get_templates().get(
+		_current_plot.current_plant.flower_template_id, null) as FlowerTemplate
+	if template == null:
+		return
+	if _current_plot.current_plant.current_stage >= template.get_max_stage_level():
+		InteractionManager.request_plot_action(plot_id, "harvest")
+		InteractionManager.toggle_harvest_mode()
 
 func _on_plant_xp_gained(gained_plot_id: String, xp_amount: int) -> void:
 	if gained_plot_id == plot_id:

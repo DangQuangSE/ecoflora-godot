@@ -4,6 +4,7 @@ signal plots_updated(plots: Array[Plot])
 signal plant_failed(plot_id: String, reason: String)
 signal harvest_completed(plot_id: String, product_id: String)
 signal plant_xp_gained(plot_id: String, xp_amount: int)
+signal icons_registered
 
 @export var use_mock: bool = false
 
@@ -92,6 +93,7 @@ func _fetch_catalogs() -> void:
 		_synergy_cache = _ref_svc.parse_synergies(synergies_ok)
 
 	_register_be_icons()
+	icons_registered.emit()
 
 # Returns the parsed data Array on success, empty Array on failure (never throws).
 func _fetch_one(url: String, auth_header: String) -> Array:
