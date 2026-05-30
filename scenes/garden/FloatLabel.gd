@@ -1,10 +1,10 @@
 class_name FloatLabel
 extends Node2D
 
-func play(text_val: String) -> void:
+func play(text_val: String, color: Color = Color(1, 0.88, 0.1, 1)) -> void:
 	var lbl := Label.new()
 	lbl.text = text_val
-	lbl.add_theme_color_override("font_color", Color(1, 0.88, 0.1, 1))
+	lbl.add_theme_color_override("font_color", color)
 	lbl.add_theme_color_override("font_shadow_color", Color(0.05, 0.05, 0.05, 0.9))
 	lbl.add_theme_constant_override("shadow_offset_x", 1)
 	lbl.add_theme_constant_override("shadow_offset_y", 1)
