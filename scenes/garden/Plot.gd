@@ -5,6 +5,8 @@ const FloatLabelScene := preload("res://scenes/garden/FloatLabel.gd")
 const TEXTURE_NORMAL  := preload("res://assets/plot/plot.png")
 const TEXTURE_WATERED := preload("res://assets/plot/sweet_plot.png")
 const WATER_COOLDOWN  := 60
+# Y offset (px, negative = up) per stage index [0, 1, 2, 3+]
+const _PLANT_Y_OFFSET: Array[float] = [0.0, 0.0, -28.0, -40.0]
 
 @export var plot_id: String = ""
 
@@ -59,6 +61,7 @@ func _refresh_visual() -> void:
 	var tex := ItemIconRegistry.get_plant_texture(plant.flower_template_id, stage)
 	if tex != null:
 		plant_sprite.texture = tex
+		plant_sprite.position = Vector2(0.0, _PLANT_Y_OFFSET[clampi(stage, 0, _PLANT_Y_OFFSET.size() - 1)])
 		plant_sprite.visible = true
 	else:
 		plant_sprite.visible = false
