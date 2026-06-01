@@ -49,6 +49,10 @@ func _exit_tree() -> void:
 		_http.cancel_request()
 		_request_in_flight = false
 
+func set_overlay_visible(visible: bool) -> void:
+	if _overlay != null:
+		_overlay.visible = visible
+
 func get_current_state() -> WeatherState:
 	if _current_state == null:
 		return WeatherState.make_default()

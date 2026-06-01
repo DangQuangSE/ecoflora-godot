@@ -15,6 +15,7 @@ var _active_banner_zone_id: String = ""
 var _pending_notifications: Array[String] = []
 
 func _ready() -> void:
+	WeatherManager.set_overlay_visible(true)
 	_hud.joystick_direction_changed.connect(_player.set_move_direction)
 	_setup_camera()
 	_spawn_plots()
