@@ -94,6 +94,12 @@ func _apply_item(ref_id: String, category: InventoryItem.Category) -> void:
 		return
 
 	if category == InventoryItem.Category.CONSUMABLE:
+		var template: FlowerTemplate = GardenManager.get_templates().get(
+			_current_plot.current_plant.flower_template_id if _current_plot.current_plant else "", null) as FlowerTemplate
+		if template != null and _current_plot.current_plant != null \
+				and _current_plot.current_plant.current_stage >= template.get_max_stage_level():
+			_spawn_float_label("ĐÃ ĐẠT LEVEL TỐI ĐA", Color(1.0, 0.4, 0.1, 1.0))
+			return
 		# BE mode: look up item type (0=water, 1=fertilize, 2=pesticide) from cache
 		var item_data: Dictionary = GardenManager.get_item_cache().get(ref_id, {})
 		if not item_data.is_empty():
@@ -129,8 +135,8 @@ func _on_plant_xp_gained(gained_plot_id: String, xp_amount: int) -> void:
 	if gained_plot_id == plot_id:
 		_spawn_float_label("+%d XP" % xp_amount)
 
-func _spawn_float_label(text_val: String) -> void:
+func _spawn_float_label(text_val: String, color: Color = Color(1, 0.88, 0.1, 1)) -> void:
 	var fl := FloatLabelScene.new()
 	fl.position = Vector2(0, -60)
 	add_child(fl)
-	fl.play(text_val)
+	fl.play(text_val, color)

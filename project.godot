@@ -19,11 +19,11 @@ config/icon="res://icon.svg"
 
 SceneTransition="*res://autoloads/SceneTransition.gd"
 InteractionManager="*res://autoloads/InteractionManager.gd"
-InventoryManager="*res://autoloads/InventoryManager.gd"
 GardenManager="*res://autoloads/GardenManager.gd"
 UserManager="*res://autoloads/UserManager.gd"
 ZoneManager="*res://autoloads/ZoneManager.gd"
 FocusManager="*res://autoloads/FocusManager.gd"
+InventoryManager="*res://autoloads/InventoryManager.gd"
 ItemIconRegistry="*res://autoloads/ItemIconRegistry.gd"
 WeatherManager="*res://autoloads/WeatherManager.gd"
 
@@ -41,6 +41,6 @@ window/handheld/orientation=1
 
 [rendering]
 
-rendering_device/driver.windows="d3d12"
+rendering_device/driver.windows="vulkan"
 renderer/rendering_method="mobile"
 textures/decals/filter=0

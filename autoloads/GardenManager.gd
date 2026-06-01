@@ -46,6 +46,7 @@ func _ready() -> void:
 		_templates[t.id] = t
 
 	InteractionManager.plot_action_requested.connect(_on_plot_action)
+	FocusManager.session_reward_received.connect(_on_focus_reward_received)
 
 	if not use_mock:
 		_http_catalog = HTTPRequest.new()
@@ -544,8 +545,11 @@ func apply_focus_xp_bulk(xp_delta: int) -> void:
 		plant_xp_gained.emit(plot.id, xp_delta)
 	plots_updated.emit(_plots)
 
-func _on_focus_session_completed(minutes: int) -> void:
-	apply_focus_xp_bulk(minutes)
+func _on_focus_session_completed(_minutes: int) -> void:
+	pass  # XP reward replaced by item reward — handled via session_reward_received
+
+func _on_focus_reward_received(_items: Array) -> void:
+	pass  # Items granted on BE; InventoryManager handles local state
 
 func _on_focus_session_failed() -> void:
 	apply_focus_xp_bulk(-20)

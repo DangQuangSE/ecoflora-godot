@@ -41,6 +41,10 @@ func _fade_in() -> void:
 	tween.tween_property(_overlay, "color:a", 1.0, 0.3)
 	await tween.finished
 
+func force_clear() -> void:
+	_overlay.color.a = 0.0
+	_is_transitioning = false
+
 func _fade_out() -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(_overlay, "color:a", 0.0, 0.3)

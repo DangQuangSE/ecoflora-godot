@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://bjoysticksc01" path="res://scenes/hud/DynamicJoystick.tscn" id="2_joystick"]
 [ext_resource type="PackedScene" uid="uid://binvpanel01" path="res://scenes/inventory/InventoryPanel.tscn" id="3_invpanel"]
 [ext_resource type="PackedScene" uid="uid://buserhud001" path="res://scenes/hud/UserHUD.tscn" id="4_userhud"]
+[ext_resource type="Texture2D" uid="uid://i77c84g73osi" path="res://assets/background/login/login_bg.png" id="5_6lywo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_invbtn"]
 bg_color = Color(0.1, 0.14, 0.08, 0.88)
@@ -106,6 +107,8 @@ offset_left = 6.0
 offset_top = 6.0
 offset_right = -6.0
 offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
@@ -119,6 +122,7 @@ offset_left = -14.0
 offset_top = -8.0
 offset_right = 8.0
 offset_bottom = 14.0
+grow_horizontal = 0
 theme_override_font_sizes/font_size = 9
 theme_override_styles/normal = SubResource("StyleBoxFlat_deselect")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_deselect")
@@ -128,6 +132,8 @@ text = "✕"
 [node name="InventoryPanel" parent="." unique_id=1692340523 instance=ExtResource("3_invpanel")]
 layout_mode = 3
 anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]
 layout_mode = 3
@@ -148,3 +154,8 @@ offset_bottom = 74.0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
+
+[node name="LoginBg" type="Sprite2D" parent="." unique_id=441397407]
+position = Vector2(365.50003, 459.5)
+scale = Vector2(0.71874994, 0.5807062)
+texture = ExtResource("5_6lywo")

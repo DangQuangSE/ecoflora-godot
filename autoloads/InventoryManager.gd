@@ -19,6 +19,8 @@ func _ready() -> void:
 		_http.timeout = 10.0
 		add_child(_http)
 		UserManager.login_succeeded.connect(_on_login_succeeded)
+		var err := FocusManager.session_reward_received.connect(_on_focus_reward_items)
+		assert(err == OK, "InventoryManager: failed to connect session_reward_received")
 
 func _on_login_succeeded() -> void:
 	await _fetch_inventory()
@@ -142,6 +144,30 @@ func remove_harvest_product(product_id: String) -> void:
 	else:
 		existing.quantity -= 1
 	inventory_updated.emit(_inventory)
+
+func add_reward_item(item_id: String, _item_name: String, quantity: int) -> void:
+	var existing: InventoryItem = _inventory.find_by_reference_id(item_id)
+	if existing != null:
+		existing.quantity += quantity
+	else:
+		var new_item := InventoryItem.new()
+		new_item.id = "reward_%s" % item_id
+		new_item.item_id = item_id
+		new_item.category = InventoryItem.Category.CONSUMABLE
+		new_item.quantity = quantity
+		_inventory.items.append(new_item)
+	inventory_updated.emit(_inventory)
+
+func _on_focus_reward_items(items: Array) -> void:
+	for entry: Variant in items:
+		if not entry is Dictionary:
+			continue
+		var item_id: String = str(entry.get("itemId", ""))
+		var item_name: String = str(entry.get("itemName", ""))
+		var qty: int = int(entry.get("quantity", 0))
+		if item_id.is_empty() or qty <= 0:
+			continue
+		add_reward_item(item_id, item_name, qty)
 
 # BE-local only — harvest products are appended in-memory and never synced to BE
 func add_harvest_product(product_id: String) -> void:

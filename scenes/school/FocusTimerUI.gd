@@ -26,6 +26,8 @@ func _ready() -> void:
 	FocusManager.session_completed.connect(_on_session_completed, CONNECT_ONE_SHOT)
 	FocusManager.session_failed.connect(_on_session_failed, CONNECT_ONE_SHOT)
 	FocusManager.session_cancelled.connect(queue_free, CONNECT_ONE_SHOT)
+	if not FocusManager.session_reward_received.is_connected(_on_reward_received):
+		FocusManager.session_reward_received.connect(_on_reward_received)
 
 	if FocusManager.get_state() == FocusManager.State.ACTIVE:
 		_setup_panel.visible = false
@@ -47,6 +49,8 @@ func _exit_tree() -> void:
 		FocusManager.tick.disconnect(_on_tick)
 	if FocusManager.violation_updated.is_connected(_on_violation_updated):
 		FocusManager.violation_updated.disconnect(_on_violation_updated)
+	if FocusManager.session_reward_received.is_connected(_on_reward_received):
+		FocusManager.session_reward_received.disconnect(_on_reward_received)
 
 func _on_slider_changed(value: float) -> void:
 	_duration_label.text = "%d phút" % int(value)
@@ -71,10 +75,21 @@ func _on_tick(remaining_seconds: int) -> void:
 func _on_violation_updated(count: int) -> void:
 	_violation_label.text = "Vi phạm: %d / %d" % [count, FocusManager.MAX_VIOLATIONS]
 
-func _on_session_completed(minutes: int) -> void:
+func _on_session_completed(_minutes: int) -> void:
 	_running_panel.visible = false
 	_result_panel.visible = true
-	_result_label.text = "+%d XP cho tất cả cây" % minutes
+	_result_label.text = "Đang nhận phần thưởng..."
+
+func _on_reward_received(items: Array) -> void:
+	if items.is_empty():
+		_result_label.text = "Không có phần thưởng\n(cần ít nhất 25 phút)"
+		return
+	var lines: PackedStringArray = []
+	for entry: Variant in items:
+		if not entry is Dictionary:
+			continue
+		lines.append("%s x%d" % [str(entry.get("itemName", "?")), int(entry.get("quantity", 0))])
+	_result_label.text = "Phần thưởng:\n" + "\n".join(lines)
 
 func _on_session_failed() -> void:
 	_running_panel.visible = false
