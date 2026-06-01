@@ -2,18 +2,19 @@ class_name PlotNode
 extends Node2D
 
 const FloatLabelScene := preload("res://scenes/garden/FloatLabel.gd")
+const TEXTURE_NORMAL  := preload("res://assets/plot/plot.png")
+const TEXTURE_WATERED := preload("res://assets/plot/sweet_plot.png")
+const WATER_COOLDOWN  := 3600
 
 @export var plot_id: String = ""
 
-@onready var plot_sprite: ColorRect = $PlotSprite
-@onready var plant_sprite: Sprite2D = $PlantSprite
-@onready var stage_label: Label     = $StageLabel
+@onready var plot_texture: Sprite2D = $PlotTexture
+@onready var plot_sprite: ColorRect  = $PlotSprite
+@onready var plant_sprite: Sprite2D  = $PlantSprite
+@onready var stage_label: Label      = $StageLabel
 
 var _current_plot: Plot = null
 var _applied_this_gesture: bool = false
-
-const SOIL_COLOR_EMPTY    := Color(0.6, 0.4, 0.2, 1)
-const SOIL_COLOR_OCCUPIED := Color(0.45, 0.32, 0.18, 1)
 
 func _ready() -> void:
 	plot_sprite.gui_input.connect(_on_plot_gui_input)
@@ -29,21 +30,18 @@ func update_plot(plot: Plot) -> void:
 	_current_plot = plot
 	_refresh_visual()
 
-func _process(_delta: float) -> void:
-	pass
-
 func _refresh_visual() -> void:
 	if _current_plot == null:
 		return
 	if not _current_plot.is_occupied or _current_plot.current_plant == null:
-		plot_sprite.color = SOIL_COLOR_EMPTY
+		plot_texture.texture = TEXTURE_NORMAL
 		plant_sprite.visible = false
 		stage_label.visible = false
 		return
 
 	var plant := _current_plot.current_plant
 	var stage := plant.current_stage
-	plot_sprite.color = SOIL_COLOR_OCCUPIED
+	plot_texture.texture = TEXTURE_WATERED if (int(Time.get_unix_time_from_system()) - plant.last_watered_at) < WATER_COOLDOWN else TEXTURE_NORMAL
 	stage_label.text = "Lv.%d" % stage
 	stage_label.visible = true
 

@@ -5,8 +5,9 @@ const FlowerInfoCardScene := preload("res://scenes/garden/FlowerInfoCard.tscn")
 const CloudOverlayScene   := preload("res://scenes/garden/CloudOverlay.tscn")
 const UnlockBannerScene   := preload("res://scenes/garden/UnlockBanner.tscn")
 
-@onready var _player: Player = $Player
-@onready var _hud: HUD       = $HUD
+@onready var _player: Player           = $Player
+@onready var _hud: HUD                 = $HUD
+@onready var _plot_anchors: Node2D     = $PlotAnchors
 
 var _plot_nodes: Array[PlotNode] = []
 var _flower_info_card: CanvasLayer = null
@@ -30,10 +31,13 @@ func _setup_camera() -> void:
 
 func _spawn_plots() -> void:
 	var plots := GardenManager.get_plots()
+	var anchors: Array[Node] = []
+	for zone in _plot_anchors.get_children():
+		anchors.append_array(zone.get_children())
 	for i in range(plots.size()):
 		var node: PlotNode = PlotScene.instantiate()
 		add_child(node)
-		node.global_position = GardenManager.get_plot_position(i)
+		node.global_position = anchors[i].global_position if i < anchors.size() else GardenManager.get_plot_position(i)
 		node.setup(plots[i], _player)
 		_plot_nodes.append(node)
 
