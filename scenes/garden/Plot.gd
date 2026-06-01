@@ -4,7 +4,7 @@ extends Node2D
 const FloatLabelScene := preload("res://scenes/garden/FloatLabel.gd")
 const TEXTURE_NORMAL  := preload("res://assets/plot/plot.png")
 const TEXTURE_WATERED := preload("res://assets/plot/sweet_plot.png")
-const WATER_COOLDOWN  := 3600
+const WATER_COOLDOWN  := 60
 
 @export var plot_id: String = ""
 
@@ -15,6 +15,7 @@ const WATER_COOLDOWN  := 3600
 
 var _current_plot: Plot = null
 var _applied_this_gesture: bool = false
+var _dry_timer_active: bool = false
 
 func _ready() -> void:
 	plot_sprite.gui_input.connect(_on_plot_gui_input)
@@ -27,6 +28,7 @@ func setup(plot: Plot, _player: Node2D) -> void:
 	_refresh_visual()
 
 func update_plot(plot: Plot) -> void:
+	plot_id = plot.id
 	_current_plot = plot
 	_refresh_visual()
 
@@ -41,7 +43,16 @@ func _refresh_visual() -> void:
 
 	var plant := _current_plot.current_plant
 	var stage := plant.current_stage
-	plot_texture.texture = TEXTURE_WATERED if (int(Time.get_unix_time_from_system()) - plant.last_watered_at) < WATER_COOLDOWN else TEXTURE_NORMAL
+	var now := int(Time.get_unix_time_from_system())
+	var is_watered := (now - plant.last_watered_at) < WATER_COOLDOWN
+	plot_texture.texture = TEXTURE_WATERED if is_watered else TEXTURE_NORMAL
+	if is_watered and not _dry_timer_active:
+		_dry_timer_active = true
+		var remaining := WATER_COOLDOWN - (now - plant.last_watered_at)
+		get_tree().create_timer(maxf(remaining, 0.1)).timeout.connect(func():
+			_dry_timer_active = false
+			_refresh_visual()
+		, CONNECT_ONE_SHOT)
 	stage_label.text = "Lv.%d" % stage
 	stage_label.visible = true
 
@@ -127,7 +138,6 @@ func _try_harvest() -> void:
 		return
 	if _current_plot.current_plant.current_stage >= template.get_max_stage_level():
 		InteractionManager.request_plot_action(plot_id, "harvest")
-		InteractionManager.toggle_harvest_mode()
 
 func _on_plant_xp_gained(gained_plot_id: String, xp_amount: int) -> void:
 	if gained_plot_id == plot_id:

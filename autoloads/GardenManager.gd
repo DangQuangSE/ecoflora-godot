@@ -336,6 +336,8 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	InventoryManager.consume_item(ref_id)
 	plot.current_plant.current_xp += xp_delta
 	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
+	if action_value == 0:
+		plot.current_plant.last_watered_at = int(Time.get_unix_time_from_system())
 	plant_xp_gained.emit(plot_id, xp_delta)
 	plots_updated.emit(_plots)
 
@@ -369,6 +371,8 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 					if auth_flower != null:
 						plot.current_plant.current_xp    = auth_flower.current_xp
 						plot.current_plant.current_stage = auth_flower.current_stage
+						if action_value == 0 and auth_flower.last_watered_at > 0:
+							plot.current_plant.last_watered_at = auth_flower.last_watered_at
 			var remaining: Variant = data.get("remainingQuantity", null)
 			if remaining != null:
 				InventoryManager.restore_item(snapshot_item_id, int(remaining))
