@@ -36,7 +36,7 @@ texture = ExtResource("2_loginbg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="Logo" type="Sprite2D" parent="Background" unique_id=1382780961]
+[node name="Logo" type="Sprite2D" parent="." unique_id=1382780961]
 position = Vector2(361, 188)
 scale = Vector2(0.12056992, 0.15493287)
 texture = ExtResource("3_hgf62")
