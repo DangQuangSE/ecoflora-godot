@@ -5,6 +5,7 @@ signal session_failed()
 signal session_cancelled()
 signal tick(remaining_seconds: int)
 signal violation_updated(count: int)
+signal session_reward_received(items: Array)
 
 enum State { IDLE, ACTIVE, COMPLETED, FAILED }
 
@@ -140,13 +141,16 @@ func _fire_terminal_async(state: String, strikes: int) -> void:
 		_terminal_in_flight = false
 		return
 	var token: String = UserManager.get_access_token()
-	var ok: bool
 	if state == "complete":
-		ok = await _focus_service.complete_async(UserManager.base_url, token, id, strikes)
+		var result: Dictionary = await _focus_service.complete_async(UserManager.base_url, token, id, strikes)
+		if result.is_empty():
+			push_warning("FocusManager: BE complete sync failed for session %s" % id)
+		else:
+			session_reward_received.emit(result.get("rewardItems", []))
 	else:
-		ok = await _focus_service.fail_async(UserManager.base_url, token, id, strikes)
-	if not ok:
-		push_warning("FocusManager: BE terminal sync failed for session %s (state=%s)" % [id, state])
+		var ok: bool = await _focus_service.fail_async(UserManager.base_url, token, id, strikes)
+		if not ok:
+			push_warning("FocusManager: BE fail sync failed for session %s" % id)
 	_terminal_in_flight = false
 
 func _exit_tree() -> void:
