@@ -1,16 +1,23 @@
 [gd_scene format=3 uid="uid://bplotnode001"]
 
 [ext_resource type="Script" uid="uid://ch2hw4n2glfkb" path="res://scenes/garden/Plot.gd" id="1_plot"]
+[ext_resource type="Texture2D" uid="uid://bsrj0lt6q51cg" path="res://assets/plot/plot.png" id="2_plottex"]
 
 [node name="Plot" type="Node2D" unique_id=1748088972]
 script = ExtResource("1_plot")
+
+[node name="PlotTexture" type="Sprite2D" parent="." unique_id=512884201]
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("2_plottex")
+region_enabled = true
+region_rect = Rect2(273.71118, 337.92865, 403.65015, 256.8683)
 
 [node name="PlotSprite" type="ColorRect" parent="." unique_id=479556954]
 offset_left = -32.0
 offset_top = -32.0
 offset_right = 32.0
 offset_bottom = 32.0
-color = Color(0.6, 0.4, 0.2, 1)
+color = Color(0, 0, 0, 0)
 
 [node name="PlantSprite" type="Sprite2D" parent="." unique_id=792210679]
 visible = false

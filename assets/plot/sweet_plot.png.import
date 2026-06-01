@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bluyro1idv352"
-path="res://.godot/imported/demo_bg.png-06ab293e145c56463a169d5464222865.ctex"
+uid="uid://dbcgh7j36nke5"
+path="res://.godot/imported/sweet_plot.png-86c94ee967e676b557be592b40fd9b90.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/background/demo_bg.png"
-dest_files=["res://.godot/imported/demo_bg.png-06ab293e145c56463a169d5464222865.ctex"]
+source_file="res://assets/plot/sweet_plot.png"
+dest_files=["res://.godot/imported/sweet_plot.png-86c94ee967e676b557be592b40fd9b90.ctex"]
 
 [params]
 
