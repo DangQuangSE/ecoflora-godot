@@ -1,4 +1,4 @@
-extends Node
+﻿extends Node
 
 signal zone_notification(zone_id: String)
 signal zone_unlocked(zone_id: String)
@@ -44,3 +44,21 @@ func get_zone_state(zone_id: String) -> ZoneState:
 
 func get_all_zones() -> Array[ZoneDefinition]:
 	return _zones
+
+func init_from_server(zones_arr: Array) -> void:
+	_zones.clear()
+	_states.clear()
+	for z in zones_arr:
+		if not z is Dictionary:
+			continue
+		var zone_id: String = z.get("zoneId", "")
+		var is_unlocked: bool = z.get("isUnlocked", false)
+		var required_level: int = z.get("requiredLevel", 1)
+		var raw_ids: Array = z.get("plotIds", [])
+		if zone_id.is_empty() or raw_ids.is_empty():
+			continue
+		var plot_ids: Array[String] = []
+		for pid in raw_ids:
+			plot_ids.append(str(pid))
+		_zones.append(ZoneDefinition.create(zone_id, required_level, plot_ids, Vector2.ZERO))
+		_states[zone_id] = ZoneState.UNLOCKED if is_unlocked else ZoneState.LOCKED

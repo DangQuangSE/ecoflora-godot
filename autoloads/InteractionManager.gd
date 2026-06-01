@@ -19,6 +19,8 @@ func _set_harvest_mode(active: bool) -> void:
 	if _harvest_mode == active:
 		return
 	_harvest_mode = active
+	if active:
+		InventoryManager.deselect()
 	harvest_mode_changed.emit(_harvest_mode)
 
 func request_plot_action(plot_id: String, action: String, data: Dictionary = {}) -> void:

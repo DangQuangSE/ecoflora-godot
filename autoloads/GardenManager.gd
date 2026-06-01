@@ -24,7 +24,7 @@ var _ref_svc  # ReferenceDataService instance (preloaded to avoid autoload parse
 
 const _RefDataScript = preload("res://services/ReferenceDataService.gd")
 
-# World positions for 16 plots — initial 8 (2×4 grid) + zone_1 (plots 8–11) + zone_2 (plots 12–15)
+# World positions for 16 plots â€” initial 8 (2Ã—4 grid) + zone_1 (plots 8â€“11) + zone_2 (plots 12â€“15)
 const PLOT_POSITIONS: Array[Vector2] = [
 	Vector2(80, 80),   Vector2(200, 80),
 	Vector2(80, 200),  Vector2(200, 200),
@@ -61,7 +61,7 @@ func _ready() -> void:
 		_http_harvest = HTTPRequest.new()
 		_http_harvest.timeout = 15.0
 		add_child(_http_harvest)
-		# Fetch catalogs + garden after login — never before
+		# Fetch catalogs + garden after login â€” never before
 		UserManager.login_succeeded.connect(_on_login_succeeded)
 
 func _on_login_succeeded() -> void:
@@ -79,9 +79,8 @@ func _fetch_catalogs() -> void:
 		var parsed: Dictionary = _ref_svc.parse_flower_templates(templates_ok)
 		if not parsed.is_empty():
 			_templates = parsed
-			plots_updated.emit(_plots)
-
 	# Items catalog
+
 	var items_ok := await _fetch_one(
 		base + "/api/items?isDeleted=false&pageSize=1000", auth)
 	if items_ok.size() > 0:
@@ -139,7 +138,7 @@ const _FLOWER_NAME_TO_ASSET: Dictionary = {
 	"rose":                "rose",
 	"sun_flower":          "sun_flower",
 	"tulip":               "tulip",
-	# Variant flowers — reuse base asset folder
+	# Variant flowers â€” reuse base asset folder
 	"golden_rose":         "rose",
 	"blue_lotus":          "lotus",
 	"rainbow_tulip":       "tulip",
@@ -169,7 +168,7 @@ func _register_be_icons() -> void:
 			ItemIconRegistry.register(tid, load(icon_path))
 
 	# Register item icons by UUID using keyword-contains matching.
-	# sickle.png is the harvest UI button — NOT an item icon.
+	# sickle.png is the harvest UI button â€” NOT an item icon.
 	for iid: String in _item_cache:
 		var item: Dictionary = _item_cache[iid]
 		var raw_name: String = str(item.get("name", "")).to_lower()
@@ -226,11 +225,16 @@ func _fetch_garden() -> void:
 		return
 	var garden_svc := GardenService.new()
 	var parsed_plots: Array[Plot] = garden_svc.parse_plots(plots_arr, _templates)
+	parsed_plots.sort_custom(func(a: Plot, b: Plot) -> bool: return a.plot_index < b.plot_index)
 	if parsed_plots.is_empty():
-		push_warning("GardenManager._fetch_garden: BE returned 0 plots — keeping mock plots")
+		push_warning("GardenManager._fetch_garden: BE returned 0 plots â€” keeping mock plots")
 		return
 	_plots = parsed_plots
 	plots_updated.emit(_plots)
+
+	var zones_arr: Variant = data.get("zones", null)
+	if zones_arr is Array:
+		ZoneManager.init_from_server(zones_arr)
 
 func _exit_tree() -> void:
 	if _garden_in_flight and _http_garden != null:
@@ -332,6 +336,8 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	InventoryManager.consume_item(ref_id)
 	plot.current_plant.current_xp += xp_delta
 	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
+	if action_value == 0:
+		plot.current_plant.last_watered_at = int(Time.get_unix_time_from_system())
 	plant_xp_gained.emit(plot_id, xp_delta)
 	plots_updated.emit(_plots)
 
@@ -365,11 +371,13 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 					if auth_flower != null:
 						plot.current_plant.current_xp    = auth_flower.current_xp
 						plot.current_plant.current_stage = auth_flower.current_stage
+						if action_value == 0 and auth_flower.last_watered_at > 0:
+							plot.current_plant.last_watered_at = auth_flower.last_watered_at
 			var remaining: Variant = data.get("remainingQuantity", null)
 			if remaining != null:
 				InventoryManager.restore_item(snapshot_item_id, int(remaining))
 		else:
-			push_warning("GardenManager._care_action: 200 but envelope malformed — rolling back")
+			push_warning("GardenManager._care_action: 200 but envelope malformed â€” rolling back")
 			_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
 	else:
 		if status == 401:
@@ -546,7 +554,7 @@ func apply_focus_xp_bulk(xp_delta: int) -> void:
 	plots_updated.emit(_plots)
 
 func _on_focus_session_completed(_minutes: int) -> void:
-	pass  # XP reward replaced by item reward — handled via session_reward_received
+	pass  # XP reward replaced by item reward â€” handled via session_reward_received
 
 func _on_focus_reward_received(_items: Array) -> void:
 	pass  # Items granted on BE; InventoryManager handles local state

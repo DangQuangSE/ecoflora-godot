@@ -90,6 +90,8 @@ func select_item(item_id: String) -> void:
 		_selected_item = null
 	else:
 		_selected_item = item
+		if _selected_item != null and InteractionManager.is_harvest_mode():
+			InteractionManager.toggle_harvest_mode()
 	item_selected.emit(_selected_item)
 
 func deselect() -> void:

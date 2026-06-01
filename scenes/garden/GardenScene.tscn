@@ -74,7 +74,7 @@ position = Vector2(180, 194)
 position = Vector2(240, 232)
 
 [node name="Zone2" type="Node2D" parent="PlotAnchors" unique_id=2000000018]
-position = Vector2(-578, -92)
+position = Vector2(-444, -11)
 
 [node name="PlotAnchor_8" type="Marker2D" parent="PlotAnchors/Zone2" unique_id=2000000009]
 position = Vector2(360, 450)
