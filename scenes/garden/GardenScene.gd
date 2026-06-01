@@ -14,6 +14,7 @@ var _flower_info_card: CanvasLayer = null
 var _active_banner: CanvasLayer = null
 var _active_banner_zone_id: String = ""
 var _pending_notifications: Array[String] = []
+var _drag_applied: Dictionary = {}
 
 func _ready() -> void:
 	WeatherManager.set_overlay_visible(true)
@@ -98,6 +99,44 @@ func _exit_tree() -> void:
 	if _active_banner != null and is_instance_valid(_active_banner):
 		_active_banner.queue_free()
 		_active_banner = null
+
+func _process(_delta: float) -> void:
+	# Mouse drag — polled every frame, immune to Control input-capture
+	if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_drag_applied.clear()
+		return
+	var selected := InventoryManager.get_selected_item()
+	if selected == null and not InteractionManager.is_harvest_mode():
+		return
+	if selected != null and selected.category == InventoryItem.Category.SEED:
+		return
+	var world_pos := get_global_mouse_position()
+	for pn: PlotNode in _plot_nodes:
+		if pn.plot_id in _drag_applied:
+			continue
+		if pn.is_point_inside(world_pos):
+			_drag_applied[pn.plot_id] = true
+			pn.apply_drag_action()
+
+func _input(event: InputEvent) -> void:
+	# Touch drag (mobile) — separate from mouse, _process doesn't cover touch
+	if event is InputEventScreenTouch and not event.pressed:
+		_drag_applied.clear()
+		return
+	if not (event is InputEventScreenDrag):
+		return
+	var selected := InventoryManager.get_selected_item()
+	if selected == null and not InteractionManager.is_harvest_mode():
+		return
+	if selected != null and selected.category == InventoryItem.Category.SEED:
+		return
+	var world_pos := get_viewport().get_canvas_transform().affine_inverse() * (event as InputEventScreenDrag).position
+	for pn: PlotNode in _plot_nodes:
+		if pn.plot_id in _drag_applied:
+			continue
+		if pn.is_point_inside(world_pos):
+			_drag_applied[pn.plot_id] = true
+			pn.apply_drag_action()
 
 func _on_plots_updated(plots: Array[Plot]) -> void:
 	for i in range(mini(plots.size(), _plot_nodes.size())):

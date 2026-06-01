@@ -16,12 +16,10 @@ const _PLANT_Y_OFFSET: Array[float] = [0.0, 0.0, -28.0, -40.0]
 @onready var stage_label: Label      = $StageLabel
 
 var _current_plot: Plot = null
-var _applied_this_gesture: bool = false
 var _dry_timer_active: bool = false
 
 func _ready() -> void:
 	plot_sprite.gui_input.connect(_on_plot_gui_input)
-	plot_sprite.mouse_exited.connect(func(): _applied_this_gesture = false)
 	GardenManager.plant_xp_gained.connect(_on_plant_xp_gained)
 
 func setup(plot: Plot, _player: Node2D) -> void:
@@ -69,35 +67,22 @@ func _refresh_visual() -> void:
 func _on_plot_gui_input(event: InputEvent) -> void:
 	var is_tap: bool = (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed) \
 				   or (event is InputEventScreenTouch and event.pressed)
-	var is_drag: bool = (event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)) \
-				   or (event is InputEventScreenDrag)
-
-	if not is_tap and not is_drag:
+	if not is_tap:
 		return
 	if _current_plot == null:
 		return
-
 	if ZoneManager.is_plot_locked(plot_id):
 		return
-
 	get_viewport().set_input_as_handled()
-
 	var selected: InventoryItem = InventoryManager.get_selected_item()
-
-	if is_tap:
-		_applied_this_gesture = false
-		if selected == null:
-			if _current_plot.is_occupied:
-				if InteractionManager.is_harvest_mode():
-					_try_harvest()
-				else:
-					InteractionManager.request_show_flower_info(plot_id)
-		else:
-			_apply_item(selected.get_reference_id(), selected.category)
-	elif is_drag and not _applied_this_gesture:
-		_applied_this_gesture = true
-		if selected != null:
-			_apply_item(selected.get_reference_id(), selected.category)
+	if selected == null:
+		if _current_plot.is_occupied:
+			if InteractionManager.is_harvest_mode():
+				_try_harvest()
+			else:
+				InteractionManager.request_show_flower_info(plot_id)
+	else:
+		_apply_item(selected.get_reference_id(), selected.category)
 
 func _apply_item(ref_id: String, category: InventoryItem.Category) -> void:
 	if not _current_plot.is_occupied:
@@ -151,3 +136,16 @@ func _spawn_float_label(text_val: String, color: Color = Color(1, 0.88, 0.1, 1))
 	fl.position = Vector2(0, -60)
 	add_child(fl)
 	fl.play(text_val, color)
+
+func is_point_inside(world_pos: Vector2) -> bool:
+	var local := to_local(world_pos)
+	return abs(local.x) <= 32.0 and abs(local.y) <= 32.0
+
+func apply_drag_action() -> void:
+	if _current_plot == null or ZoneManager.is_plot_locked(plot_id):
+		return
+	var selected: InventoryItem = InventoryManager.get_selected_item()
+	if selected != null and selected.category != InventoryItem.Category.SEED:
+		_apply_item(selected.get_reference_id(), selected.category)
+	elif selected == null and InteractionManager.is_harvest_mode() and _current_plot.is_occupied:
+		_try_harvest()
