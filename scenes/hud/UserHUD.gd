@@ -6,6 +6,8 @@ const UserProfileCardScene := preload("res://scenes/hud/UserProfileCard.tscn")
 @onready var _avatar: ColorRect    = $AvatarRect
 @onready var _level_label: Label   = $LevelLabel
 @onready var _xp_bar: ProgressBar  = $XPBar
+# Add CoinLabel (Label) as a child of UserHUD.tscn in the Godot editor
+@onready var _coin_label: Label    = $CoinLabel
 
 var _is_animating_level_up: bool = false
 var _pending_levelup_max: int = 0
@@ -14,20 +16,28 @@ var _profile_card: CanvasLayer = null
 func _ready() -> void:
 	UserManager.xp_gained.connect(_on_xp_gained)
 	UserManager.level_up.connect(_on_level_up)
+	UserManager.currency_changed.connect(_on_currency_changed)
 	_refresh()
 
 func _exit_tree() -> void:
 	UserManager.xp_gained.disconnect(_on_xp_gained)
 	UserManager.level_up.disconnect(_on_level_up)
+	UserManager.currency_changed.disconnect(_on_currency_changed)
 
 func _refresh() -> void:
 	var p := UserManager.get_profile()
 	_level_label.text = "Lv.%d" % p.level
 	_xp_bar.max_value = p.xp_to_next_level()
 	_xp_bar.value     = p.current_xp
+	if is_instance_valid(_coin_label):
+		_coin_label.text = str(p.currency)
 
 func _on_xp_gained(_amount: int) -> void:
 	_refresh()
+
+func _on_currency_changed(new_amount: int) -> void:
+	if is_instance_valid(_coin_label):
+		_coin_label.text = str(new_amount)
 
 func _on_level_up(new_level: int) -> void:
 	_refresh()

@@ -376,6 +376,10 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 			var remaining: Variant = data.get("remainingQuantity", null)
 			if remaining != null:
 				InventoryManager.restore_item(snapshot_item_id, int(remaining))
+			var care_user_xp: Variant = data.get("newUserXP", null)
+			var care_user_level: Variant = data.get("newUserLevel", null)
+			if care_user_xp != null and care_user_level != null:
+				UserManager.apply_server_xp(int(care_user_xp), int(care_user_level))
 		else:
 			push_warning("GardenManager._care_action: 200 but envelope malformed â€” rolling back")
 			_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
@@ -525,9 +529,10 @@ func harvest(plot_id: String) -> void:
 				var new_currency: Variant = data.get("newCurrencyTotal", null)
 				if new_currency != null:
 					UserManager.update_currency(int(new_currency))
-				var xp_earned: Variant = data.get("xpEarned", null)
-				if xp_earned != null:
-					UserManager.add_harvest_xp(int(xp_earned))
+				var new_user_xp: Variant = data.get("newUserXP", null)
+				var new_user_level: Variant = data.get("newUserLevel", null)
+				if new_user_xp != null and new_user_level != null:
+					UserManager.apply_server_xp(int(new_user_xp), int(new_user_level))
 		InventoryManager.add_harvest_product(product_id)
 		harvest_completed.emit(plot_id, product_id)
 	else:

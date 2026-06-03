@@ -11,6 +11,8 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
 @onready var _harvest_btn: Button       = $HarvestButton
+# Add ShopButton (Button) to HUD.tscn in the Godot editor
+@onready var _shop_btn: Button          = $ShopButton
 
 func _ready() -> void:
 	_joystick.direction_changed.connect(_on_joystick_direction)
@@ -24,6 +26,8 @@ func _ready() -> void:
 		harvest_icon.texture = preload("res://assets/icon/sickle.png")
 	_harvest_btn.pressed.connect(InteractionManager.toggle_harvest_mode)
 	InteractionManager.harvest_mode_changed.connect(_on_harvest_mode_changed)
+	if _shop_btn:
+		_shop_btn.pressed.connect(_open_shop)
 
 func _on_joystick_direction(dir: Vector2) -> void:
 	joystick_direction_changed.emit(dir)
@@ -47,3 +51,6 @@ func _on_item_selected(item: InventoryItem) -> void:
 
 func _on_harvest_mode_changed(active: bool) -> void:
 	_harvest_btn.modulate = Color(1.0, 0.75, 0.2, 1.0) if active else Color.WHITE
+
+func _open_shop() -> void:
+	get_tree().change_scene_to_file("res://scenes/shop/ShopScene.tscn")
