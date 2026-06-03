@@ -13,6 +13,7 @@ extends Control
 #   - ConfirmDialog/CancelButton (Button)
 
 const ShopItemCardScene := preload("res://scenes/shop/ShopItemCard.tscn")
+const DEFAULT_PURCHASE_QTY: int = 1
 
 @onready var _back_btn: Button         = $BackButton
 @onready var _tab_container: TabContainer = $TabContainer
@@ -47,9 +48,10 @@ func _cache_grids() -> void:
 
 func _load_catalog() -> void:
 	_spinner.show()
-	_catalog = await UserManager._shop_service.get_catalog_async(
-		UserManager.base_url, UserManager.get_access_token())
+	_catalog = await UserManager.get_shop_catalog_async()
 	_spinner.hide()
+	if _catalog.is_empty():
+		push_warning("ShopScene: catalog returned empty — check server or network")
 	_populate_tab(_tab_container.current_tab)
 
 func _populate_tab(tab_idx: int) -> void:
@@ -91,7 +93,7 @@ func _on_confirm_purchase() -> void:
 		return
 	_confirm_dialog.hide()
 	_confirm_btn.disabled = true
-	var result: Dictionary = await UserManager.purchase_async(_pending_item.id, 1)
+	var result: Dictionary = await UserManager.purchase_async(_pending_item.id, DEFAULT_PURCHASE_QTY)
 	_confirm_btn.disabled = false
 	_pending_item = null
 	if result.is_empty():

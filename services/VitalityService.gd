@@ -39,6 +39,9 @@ func claim_async(base_url: String, token: String) -> Dictionary:
 	var raw: Variant = await _http_claim.request_completed
 	var status_code: int = raw[1]
 	var body: PackedByteArray = raw[3]
+	if status_code == 409:
+		# Concurrent claim from another device — caller should re-fetch status
+		return {"concurrencyError": true}
 	if status_code not in [200, 201]:
 		push_warning("VitalityService.claim_async: HTTP %d" % status_code)
 		return {}

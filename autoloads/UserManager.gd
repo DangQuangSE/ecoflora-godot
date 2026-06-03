@@ -234,10 +234,11 @@ func update_currency(new_total: int) -> void:
 
 func apply_server_xp(new_total_xp: int, new_level: int) -> void:
 	if use_mock:
+		push_warning("UserManager.apply_server_xp: ignored in mock mode — call add_harvest_xp instead")
 		return
 	var old_level: int = _profile.level
 	var lvl := clampi(new_level, 1, UserProfile.MAX_LEVEL)
-	_profile.current_xp = new_total_xp - UserProfile.get_level_start_xp(lvl)
+	_profile.current_xp = maxi(0, new_total_xp - UserProfile.get_level_start_xp(lvl))
 	_profile.level = lvl
 	xp_gained.emit(new_total_xp)
 	if lvl != old_level:
@@ -273,10 +274,19 @@ func _poll_vitality_status() -> void:
 	if _profile.is_vitality_ready():
 		vitality_ready.emit()
 
+func get_shop_catalog_async(category: String = "") -> Array[ShopItem]:
+	if use_mock:
+		return []
+	return await _shop_service.get_catalog_async(base_url, _token_store.access_token, category)
+
 func claim_vitality_async() -> void:
-	if use_mock or _claim_in_flight:
-		if _claim_in_flight:
-			push_warning("UserManager.claim_vitality_async: claim already in flight")
+	if use_mock:
+		if _profile.is_vitality_ready():
+			_profile.vitality_ready_at = int(Time.get_unix_time_from_system()) + 6 * 3600
+			vitality_claimed.emit("xp", 200)
+		return
+	if _claim_in_flight:
+		push_warning("UserManager.claim_vitality_async: claim already in flight")
 		return
 	if not _profile.is_vitality_ready():
 		push_warning("UserManager.claim_vitality_async: vitality not ready")
@@ -284,13 +294,16 @@ func claim_vitality_async() -> void:
 	_claim_in_flight = true
 	var data: Dictionary = await _vitality_service.claim_async(base_url, _token_store.access_token)
 	_claim_in_flight = false
+	if data.get("concurrencyError", false):
+		# Another device claimed first — refresh server state to sync UI
+		await _poll_vitality_status()
+		return
 	if data.is_empty():
 		return
 	var reward_type: String = str(data.get("rewardType", ""))
 	var reward_amount: int = int(data.get("rewardAmount", 0))
 	apply_server_xp(int(data.get("newUserXP", _profile.current_xp)), int(data.get("newUserLevel", _profile.level)))
 	update_currency(int(data.get("newCurrencyTotal", _profile.currency)))
-	# Mark vitality as used — next poll will refresh
 	_profile.vitality_ready_at = int(Time.get_unix_time_from_system()) + 6 * 3600
 	vitality_claimed.emit(reward_type, reward_amount)
 
@@ -331,3 +344,10 @@ func _exit_tree() -> void:
 	if _profile_in_flight:
 		_http_profile.cancel_request()
 		_profile_in_flight = false
+	if _claim_in_flight:
+		_vitality_claim_http.cancel_request()
+		_claim_in_flight = false
+	if _purchase_in_flight:
+		_shop_purchase_http.cancel_request()
+		_purchase_in_flight = false
+	_vitality_poll_timer.stop()
