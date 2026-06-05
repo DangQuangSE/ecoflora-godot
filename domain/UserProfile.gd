@@ -6,6 +6,7 @@ extends RefCounted
 const LEVEL_THRESHOLDS: Array[int] = [0, 0, 500, 1500, 3000, 5000, 8000, 12000]
 const MAX_LEVEL: int = 7
 
+var username: String = ""
 var level: int = 1
 var currency: int = 0
 var current_xp: int = 0     # within-level XP for HUD bar display

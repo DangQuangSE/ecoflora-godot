@@ -31,18 +31,19 @@ func _exit_tree() -> void:
 
 func _refresh() -> void:
 	var p := UserManager.get_profile()
+	if p.username == "":
+		return
+	_name_label.text  = p.username
 	_level_label.text = "%d" % p.level
 	_xp_bar.max_value = p.xp_to_next_level()
 	_xp_bar.value     = p.current_xp
-	if is_instance_valid(_coin_label):
-		_coin_label.text = str(p.currency)
+	_coin_label.text  = str(p.currency)
 
 func _on_xp_gained(_amount: int) -> void:
 	_refresh()
 
 func _on_currency_changed(new_amount: int) -> void:
-	if is_instance_valid(_coin_label):
-		_coin_label.text = str(new_amount)
+	_coin_label.text = str(new_amount)
 
 func _on_level_up(new_level: int) -> void:
 	_refresh()
