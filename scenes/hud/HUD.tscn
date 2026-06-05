@@ -175,7 +175,7 @@ stretch_mode = 5
 [node name="VitalityBar" parent="." instance=ExtResource("5_vbar")]
 layout_mode = 0
 offset_left = 8.0
-offset_top = 192.0
-offset_right = 288.0
-offset_bottom = 236.0
+offset_top = 158.0
+offset_right = 64.0
+offset_bottom = 226.0
 

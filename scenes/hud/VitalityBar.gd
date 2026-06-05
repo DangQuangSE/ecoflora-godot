@@ -1,28 +1,22 @@
 class_name VitalityBar
 extends Control
 
-# Required nodes in VitalityBar.tscn:
-# - HeartIcon (TextureRect)
-# - FillBar (ProgressBar)  min=0, max=21600 (6h in seconds)
-# - CountdownLabel (Label)
-# - ClaimButton (Button)
-
 const COOLDOWN_SECONDS: int = 6 * 3600
 
-@onready var _heart_icon: TextureRect = $HBoxContainer/HeartIcon
-@onready var _fill_bar: ProgressBar   = $HBoxContainer/FillBar
-@onready var _countdown: Label        = $HBoxContainer/CountdownLabel
-@onready var _claim_btn: Button       = $HBoxContainer/ClaimButton
+@onready var _heart_icon: TextureRect = $VBoxContainer/HeartIcon
+@onready var _countdown: Label        = $VBoxContainer/CountdownLabel
 
 var _tick_timer: Timer
+var _pulse_tween: Tween
 
 func _ready() -> void:
 	var heart_path := "res://assets/icon/heart.png"
 	if ResourceLoader.exists(heart_path):
 		_heart_icon.texture = load(heart_path)
+	_heart_icon.pivot_offset = Vector2(16.0, 16.0)
+
 	UserManager.vitality_ready.connect(_on_vitality_ready)
 	UserManager.vitality_claimed.connect(_on_vitality_claimed)
-	_claim_btn.pressed.connect(_on_claim_pressed)
 
 	_tick_timer = Timer.new()
 	_tick_timer.wait_time = 1.0
@@ -32,8 +26,6 @@ func _ready() -> void:
 	add_child(_tick_timer)
 
 	visibility_changed.connect(_on_visibility_changed)
-
-	# Hydrate immediately rather than waiting 60s for the poll
 	UserManager.request_vitality_status_async()
 	_refresh_display()
 
@@ -46,29 +38,95 @@ func _exit_tree() -> void:
 func _refresh_display() -> void:
 	var p := UserManager.get_profile()
 	if p.is_vitality_ready():
-		_fill_bar.value = COOLDOWN_SECONDS
 		_countdown.text = "Sẵn sàng!"
-		_claim_btn.disabled = false
+		mouse_filter = MOUSE_FILTER_STOP
+		_start_pulse()
 	else:
 		var now := int(Time.get_unix_time_from_system())
 		var remaining := maxi(p.vitality_ready_at - now, 0)
-		_fill_bar.value = COOLDOWN_SECONDS - remaining
 		_countdown.text = _format_time(remaining)
-		_claim_btn.disabled = true
+		mouse_filter = MOUSE_FILTER_IGNORE
+		_stop_pulse()
 
-func _tick() -> void:
-	_refresh_display()
+func _start_pulse() -> void:
+	if _pulse_tween and _pulse_tween.is_valid():
+		return
+	_pulse_tween = create_tween().set_loops()
+	_pulse_tween.tween_property(_heart_icon, "scale", Vector2(1.28, 1.28), 0.45) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_pulse_tween.tween_property(_heart_icon, "scale", Vector2(1.0, 1.0), 0.45) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+func _stop_pulse() -> void:
+	if _pulse_tween and _pulse_tween.is_valid():
+		_pulse_tween.kill()
+	_heart_icon.scale = Vector2.ONE
+
+func _gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if not (event as InputEventMouseButton).pressed or (event as InputEventMouseButton).button_index != MOUSE_BUTTON_LEFT:
+			return
+	elif event is InputEventScreenTouch:
+		if not (event as InputEventScreenTouch).pressed:
+			return
+	else:
+		return
+	get_viewport().set_input_as_handled()
+	mouse_filter = MOUSE_FILTER_IGNORE
+	_stop_pulse()
+	UserManager.claim_vitality_async()
 
 func _on_vitality_ready() -> void:
 	_refresh_display()
 
-func _on_vitality_claimed(_reward_type: String, _reward_amount: int) -> void:
+func _on_vitality_claimed(reward_type: String, reward_amount: int) -> void:
 	_refresh_display()
-	_claim_btn.disabled = true
+	_show_reward_popup(reward_type, reward_amount)
 
-func _on_claim_pressed() -> void:
-	_claim_btn.disabled = true
-	UserManager.claim_vitality_async()
+func _show_reward_popup(reward_type: String, reward_amount: int) -> void:
+	var popup := CanvasLayer.new()
+	popup.layer = 100
+	get_tree().root.add_child(popup)
+
+	var dimmer := ColorRect.new()
+	dimmer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dimmer.color = Color(0.0, 0.0, 0.0, 0.5)
+	dimmer.mouse_filter = Control.MOUSE_FILTER_STOP
+	popup.add_child(dimmer)
+
+	var panel := Panel.new()
+	panel.custom_minimum_size = Vector2(280.0, 140.0)
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.offset_left  = -140.0
+	panel.offset_top   = -70.0
+	panel.offset_right =  140.0
+	panel.offset_bottom = 70.0
+	popup.add_child(panel)
+
+	var lbl := Label.new()
+	lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
+	lbl.offset_left   = 16.0
+	lbl.offset_top    = 16.0
+	lbl.offset_right  = -16.0
+	lbl.offset_bottom = -16.0
+	lbl.text = "🎉 Chúc mừng!\nBạn nhận được: %s x%d" % [reward_type, reward_amount]
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
+	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
+	lbl.add_theme_font_size_override("font_size", 17)
+	panel.add_child(lbl)
+
+	dimmer.gui_input.connect(func(e: InputEvent) -> void:
+		if (e is InputEventMouseButton or e is InputEventScreenTouch) and e.is_pressed():
+			popup.queue_free()
+	)
+	get_tree().create_timer(4.0).timeout.connect(func() -> void:
+		if is_instance_valid(popup):
+			popup.queue_free()
+	)
+
+func _tick() -> void:
+	_refresh_display()
 
 func _on_visibility_changed() -> void:
 	if _tick_timer == null:
