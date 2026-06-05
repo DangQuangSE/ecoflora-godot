@@ -8,6 +8,7 @@ const UserProfileCardScene := preload("res://scenes/hud/UserProfileCard.tscn")
 @onready var _level_label: Label   = $LevelLabel
 @onready var _xp_bar: ProgressBar  = $XPBar
 @onready var _coin_label: Label    = $CoinLabel
+@onready var _coin_btn: Button     = $CoinButton
 
 var _is_animating_level_up: bool = false
 var _pending_levelup_max: int = 0
@@ -17,6 +18,7 @@ func _ready() -> void:
 	UserManager.xp_gained.connect(_on_xp_gained)
 	UserManager.level_up.connect(_on_level_up)
 	UserManager.currency_changed.connect(_on_currency_changed)
+	_coin_btn.pressed.connect(_on_coin_tapped)
 	var coin_path := "res://assets/icon/coin.png"
 	if ResourceLoader.exists(coin_path):
 		var coin_icon := get_node_or_null("CoinIcon") as TextureRect
@@ -92,6 +94,10 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	get_viewport().set_input_as_handled()
 	_open_profile_card()
+
+func _on_coin_tapped() -> void:
+	UserManager.shop_open_tab = 3
+	get_tree().change_scene_to_file("res://scenes/shop/ShopScene.tscn")
 
 func _open_profile_card() -> void:
 	if _profile_card != null and is_instance_valid(_profile_card):

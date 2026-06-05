@@ -1,21 +1,36 @@
 [gd_scene format=3 uid="uid://shopitemcard001"]
 
 [ext_resource type="Script" path="res://scenes/shop/ShopItemCard.gd" id="1_card"]
+[ext_resource type="Texture2D" path="res://assets/icon/coin.png" id="2_coin"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
-bg_color = Color(0.1, 0.13, 0.07, 0.92)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+bg_color = Color(0.1, 0.14, 0.08, 0.95)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.4, 0.6, 0.25, 0.7)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_buy"]
+bg_color = Color(0.18, 0.50, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_buy_disabled"]
+bg_color = Color(0.2, 0.2, 0.18, 0.65)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [node name="ShopItemCard" type="PanelContainer"]
-custom_minimum_size = Vector2(110, 130)
+custom_minimum_size = Vector2(140, 195)
 layout_mode = 0
 script = ExtResource("1_card")
 theme_override_styles/panel = SubResource("StyleBoxFlat_card")
@@ -25,14 +40,14 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = -6.0
-offset_bottom = -6.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
 theme_override_constants/separation = 4
 
 [node name="ItemIcon" type="TextureRect" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 96)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
@@ -43,22 +58,39 @@ stretch_mode = 5
 layout_mode = 2
 mouse_filter = 2
 text = "Item"
-theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.9, 0.9, 0.8, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.92, 0.92, 0.82, 1)
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="PriceLabel" type="Label" parent="VBoxContainer"]
+[node name="PriceRow" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="CoinIcon" type="TextureRect" parent="VBoxContainer/PriceRow"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("2_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="VBoxContainer/PriceRow"]
 layout_mode = 2
 mouse_filter = 2
-text = "0 🪙"
-theme_override_font_sizes/font_size = 11
+text = "0"
+theme_override_font_sizes/font_size = 12
 theme_override_colors/font_color = Color(1.0, 0.88, 0.3, 1)
-horizontal_alignment = 1
 
-[node name="TapArea" type="Button" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-flat = true
+[node name="BuyButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 38)
+text = "Mua"
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_buy")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_buy")
+theme_override_styles/hover = SubResource("StyleBoxFlat_buy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_buy_disabled")

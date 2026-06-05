@@ -46,6 +46,8 @@ var _profile_in_flight: bool = false
 var _claim_in_flight: bool = false
 var _purchase_in_flight: bool = false
 
+var shop_open_tab: int = 0
+
 func _ready() -> void:
 	_token_store  = _TokenStoreScript.new()
 	_auth_service = _AuthServiceScript.new()

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bportalsc001"]
 
 [ext_resource type="Script" uid="uid://u7eb0kn5hdk0" path="res://scenes/shared/Portal.gd" id="1_portal"]
-[ext_resource type="Texture2D" uid="uid://b6iyvp5pqapb0" path="res://assets/portal/demo_portal.png" id="2_portal"]
+[ext_resource type="Texture2D" uid="uid://b1kyli1wplrbs" path="res://assets/portal/portal.png" id="2_portal"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(87, 95)
