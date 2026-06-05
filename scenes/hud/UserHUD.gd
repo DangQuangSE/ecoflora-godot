@@ -3,10 +3,10 @@ extends Control
 
 const UserProfileCardScene := preload("res://scenes/hud/UserProfileCard.tscn")
 
-@onready var _avatar: ColorRect    = $AvatarRect
+@onready var _avatar: Control      = $AvatarRect
+@onready var _name_label: Label    = $NameLabel
 @onready var _level_label: Label   = $LevelLabel
 @onready var _xp_bar: ProgressBar  = $XPBar
-# Add CoinLabel (Label) as a child of UserHUD.tscn in the Godot editor
 @onready var _coin_label: Label    = $CoinLabel
 
 var _is_animating_level_up: bool = false
@@ -17,6 +17,11 @@ func _ready() -> void:
 	UserManager.xp_gained.connect(_on_xp_gained)
 	UserManager.level_up.connect(_on_level_up)
 	UserManager.currency_changed.connect(_on_currency_changed)
+	var coin_path := "res://assets/icon/coin.png"
+	if ResourceLoader.exists(coin_path):
+		var coin_icon := get_node_or_null("CoinIcon") as TextureRect
+		if coin_icon:
+			coin_icon.texture = load(coin_path)
 	_refresh()
 
 func _exit_tree() -> void:
@@ -26,7 +31,7 @@ func _exit_tree() -> void:
 
 func _refresh() -> void:
 	var p := UserManager.get_profile()
-	_level_label.text = "Lv.%d" % p.level
+	_level_label.text = "%d" % p.level
 	_xp_bar.max_value = p.xp_to_next_level()
 	_xp_bar.value     = p.current_xp
 	if is_instance_valid(_coin_label):

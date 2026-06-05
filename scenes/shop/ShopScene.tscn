@@ -1,0 +1,194 @@
+[gd_scene format=3 uid="uid://shopscene001"]
+
+[ext_resource type="Script" path="res://scenes/shop/ShopScene.gd" id="1_shop"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.06, 0.09, 0.04, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_backbtn"]
+bg_color = Color(0.1, 0.14, 0.08, 0.88)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.45, 0.62, 0.3, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
+bg_color = Color(0.08, 0.11, 0.06, 0.97)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.7, 0.3, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm"]
+bg_color = Color(0.2, 0.55, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cancel"]
+bg_color = Color(0.5, 0.15, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="ShopScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_shop")
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="BackButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 100.0
+offset_bottom = 44.0
+text = "← Quay lại"
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_backbtn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_backbtn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_backbtn")
+
+[node name="TabContainer" type="TabContainer" parent="."]
+layout_mode = 0
+offset_left = 0.0
+offset_top = 52.0
+offset_right = 720.0
+offset_bottom = 1280.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 13
+
+[node name="Tiêu hao" type="ScrollContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Tiêu hao"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="Hạt giống" type="ScrollContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Hạt giống"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="Trang trí" type="ScrollContainer" parent="TabContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Trang trí"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="LoadingSpinner" type="Label" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -20.0
+offset_right = 80.0
+offset_bottom = 20.0
+mouse_filter = 2
+text = "Đang tải..."
+theme_override_font_sizes/font_size = 16
+theme_override_colors/font_color = Color(0.7, 0.9, 0.5, 1)
+horizontal_alignment = 1
+
+[node name="ConfirmDialog" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -120.0
+offset_right = 160.0
+offset_bottom = 120.0
+mouse_filter = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dialog")
+
+[node name="ItemNameLabel" type="Label" parent="ConfirmDialog"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 16.0
+offset_right = 308.0
+offset_bottom = 48.0
+mouse_filter = 2
+text = "Tên sản phẩm"
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.95, 0.92, 0.75, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="PriceLabel" type="Label" parent="ConfirmDialog"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 56.0
+offset_right = 308.0
+offset_bottom = 84.0
+mouse_filter = 2
+text = "0 🪙"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(1.0, 0.88, 0.3, 1)
+horizontal_alignment = 1
+
+[node name="ConfirmButton" type="Button" parent="ConfirmDialog"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 148.0
+offset_right = 148.0
+offset_bottom = 184.0
+text = "Mua"
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_confirm")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_confirm")
+theme_override_styles/hover = SubResource("StyleBoxFlat_confirm")
+
+[node name="CancelButton" type="Button" parent="ConfirmDialog"]
+layout_mode = 0
+offset_left = 172.0
+offset_top = 148.0
+offset_right = 304.0
+offset_bottom = 184.0
+text = "Hủy"
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_cancel")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cancel")
+theme_override_styles/hover = SubResource("StyleBoxFlat_cancel")

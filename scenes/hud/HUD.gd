@@ -28,6 +28,11 @@ func _ready() -> void:
 	InteractionManager.harvest_mode_changed.connect(_on_harvest_mode_changed)
 	if _shop_btn:
 		_shop_btn.pressed.connect(_open_shop)
+		var shop_icon_path := "res://assets/icon/shop.png"
+		if ResourceLoader.exists(shop_icon_path):
+			var shop_node := _shop_btn.get_node_or_null("ShopIcon") as TextureRect
+			if shop_node:
+				shop_node.texture = load(shop_icon_path)
 
 func _on_joystick_direction(dir: Vector2) -> void:
 	joystick_direction_changed.emit(dir)

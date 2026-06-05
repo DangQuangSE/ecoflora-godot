@@ -9,13 +9,17 @@ extends Control
 
 const COOLDOWN_SECONDS: int = 6 * 3600
 
-@onready var _fill_bar: ProgressBar   = $FillBar
-@onready var _countdown: Label        = $CountdownLabel
-@onready var _claim_btn: Button       = $ClaimButton
+@onready var _heart_icon: TextureRect = $HBoxContainer/HeartIcon
+@onready var _fill_bar: ProgressBar   = $HBoxContainer/FillBar
+@onready var _countdown: Label        = $HBoxContainer/CountdownLabel
+@onready var _claim_btn: Button       = $HBoxContainer/ClaimButton
 
 var _tick_timer: Timer
 
 func _ready() -> void:
+	var heart_path := "res://assets/icon/heart.png"
+	if ResourceLoader.exists(heart_path):
+		_heart_icon.texture = load(heart_path)
 	UserManager.vitality_ready.connect(_on_vitality_ready)
 	UserManager.vitality_claimed.connect(_on_vitality_claimed)
 	_claim_btn.pressed.connect(_on_claim_pressed)

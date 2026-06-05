@@ -1,85 +1,119 @@
 [gd_scene format=3 uid="uid://buserhud001"]
 
-[ext_resource type="Script" path="res://scenes/hud/UserHUD.gd" id="1_uhud"]
+[ext_resource type="Script" uid="uid://bas2np5p8yddr" path="res://scenes/hud/UserHUD.gd" id="1_uhud"]
+[ext_resource type="Texture2D" uid="uid://cjiadsir2go0m" path="res://assets/profile/pf_frame.png" id="2_frame"]
+[ext_resource type="Texture2D" uid="uid://d0xn0ytcbacug" path="res://assets/profile/pf_name.png" id="3_name"]
+[ext_resource type="Texture2D" uid="uid://blh2pvsod2r2a" path="res://assets/profile/pf_exp.png" id="4_exp"]
+[ext_resource type="Texture2D" uid="uid://uqaica7lniud" path="res://assets/profile/pf_level.png" id="5_ee3cy"]
+[ext_resource type="Texture2D" uid="uid://cfeh3mg5fb0xm" path="res://assets/icon/coin.png" id="6_6utp2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatar"]
-bg_color = Color(0.55, 0.38, 0.18, 1)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.75, 0.55, 0.3, 1)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xpbg"]
-bg_color = Color(0.12, 0.15, 0.08, 0.9)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xpfill"]
-bg_color = Color(0.35, 0.78, 0.22, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
-bg_color = Color(0.06, 0.09, 0.04, 0.82)
+bg_color = Color(0.35, 0.55, 0.88, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.4, 0.6, 0.25, 0.7)
 
-[node name="UserHUD" type="Panel"]
-layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 168.0
-offset_bottom = 72.0
-mouse_filter = 0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xpbg"]
+texture = ExtResource("4_exp")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xpfill"]
+bg_color = Color(0.2, 0.65, 0.95, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="UserHUD" type="Panel" unique_id=1211827647]
 script = ExtResource("1_uhud")
-theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
 
-[node name="AvatarRect" type="ColorRect" parent="."]
+[node name="PfFrame" type="Sprite2D" parent="." unique_id=507628589]
+position = Vector2(168.75, 63.249992)
+scale = Vector2(0.5869565, 0.41967872)
+texture = ExtResource("2_frame")
+region_enabled = true
+region_rect = Rect2(230.71088, 130.83215, 575.7575, 249.79022)
+
+[node name="PfName" type="Sprite2D" parent="." unique_id=1361343393]
+position = Vector2(207.43752, 63.75)
+scale = Vector2(0.6055475, 0.4793103)
+texture = ExtResource("3_name")
+region_enabled = true
+region_rect = Rect2(416.73663, 171.37546, 347.226, 145.26804)
+
+[node name="PfExp" type="Sprite2D" parent="." unique_id=261620841]
+position = Vector2(203.75002, 73.25001)
+scale = Vector2(0.6111111, 0.622449)
+texture = ExtResource("4_exp")
+region_enabled = true
+region_rect = Rect2(494.68536, 235.15167, 207.27264, 49.6037)
+
+[node name="PfLevel" type="Sprite2D" parent="." unique_id=1165439699]
+position = Vector2(133.75003, 74.25)
+scale = Vector2(0.511628, 0.51851857)
+texture = ExtResource("5_ee3cy")
+region_enabled = true
+region_rect = Rect2(430.90912, 238.6948, 86.80652, 54.918427)
+
+[node name="AvatarRect" type="Panel" parent="." unique_id=1619229203]
 layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 56.0
-offset_bottom = 56.0
-color = Color(0.55, 0.38, 0.18, 1)
+offset_left = 32.5
+offset_top = 30.5
+offset_right = 98.5
+offset_bottom = 96.5
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_avatar")
 
-[node name="LevelLabel" type="Label" parent="."]
+[node name="LevelLabel" type="Label" parent="." unique_id=1506605877]
 layout_mode = 0
-offset_left = 64.0
-offset_top = 8.0
-offset_right = 160.0
-offset_bottom = 32.0
-mouse_filter = 2
-text = "Lv.1"
+offset_left = 124.750015
+offset_top = 63.25
+offset_right = 144.75002
+offset_bottom = 83.25
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.95, 0.88, 0.55, 1)
+text = "1"
+horizontal_alignment = 1
 
-[node name="XPBar" type="ProgressBar" parent="."]
+[node name="XPBar" type="ProgressBar" parent="." unique_id=2027928100]
 layout_mode = 0
-offset_left = 64.0
-offset_top = 36.0
-offset_right = 160.0
-offset_bottom = 56.0
+offset_left = 149.75002
+offset_top = 65.25
+offset_right = 263.75
+offset_bottom = 81.25
 mouse_filter = 2
-max_value = 200.0
-value = 0.0
-show_percentage = false
-theme_override_styles/background = SubResource("StyleBoxFlat_xpbg")
+theme_override_styles/background = SubResource("StyleBoxTexture_xpbg")
 theme_override_styles/fill = SubResource("StyleBoxFlat_xpfill")
+max_value = 200.0
+show_percentage = false
+
+[node name="NameLabel" type="Label" parent="." unique_id=611196329]
+layout_mode = 0
+offset_left = 124.750015
+offset_top = 39.25
+offset_right = 284.75
+offset_bottom = 59.25
+theme_override_colors/font_color = Color(0.28, 0.14, 0.04, 1)
+theme_override_font_sizes/font_size = 14
+text = "Name"
+
+[node name="CoinIcon" type="TextureRect" parent="." unique_id=1939262458]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 123.0
+offset_right = 53.0
+offset_bottom = 152.0
+mouse_filter = 2
+texture = ExtResource("6_6utp2")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CoinLabel" type="Label" parent="." unique_id=1491386771]
+layout_mode = 0
+offset_left = 57.0
+offset_top = 125.0
+offset_right = 207.0
+offset_bottom = 149.0
+theme_override_colors/font_color = Color(1, 0.88, 0.3, 1)
+theme_override_font_sizes/font_size = 17
+text = "0"
