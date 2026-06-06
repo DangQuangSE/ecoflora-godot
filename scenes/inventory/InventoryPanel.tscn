@@ -1,18 +1,14 @@
 [gd_scene format=3 uid="uid://binvpanel01"]
 
 [ext_resource type="Script" path="res://scenes/inventory/InventoryPanel.gd" id="1_panel"]
+[ext_resource type="Texture2D" uid="uid://dotxp8r8cl8h0" path="res://assets/inventory/invenotry_bg.png" id="2_invbg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_invbg"]
+atlas = ExtResource("2_invbg")
+region = Rect2(252, 55, 526, 774)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.08, 0.1, 0.08, 0.97)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.38, 0.52, 0.28, 1)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
+bg_color = Color(0, 0, 0, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_title"]
 bg_color = Color(0.14, 0.18, 0.1, 1)
@@ -58,16 +54,30 @@ anchor_bottom = 1.0
 color = Color(0, 0, 0, 0.55)
 mouse_filter = 0
 
+[node name="InvBg" type="TextureRect" parent="."]
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -263.0
+offset_top = -258.0
+offset_right = 263.0
+offset_bottom = 258.0
+mouse_filter = 2
+texture = SubResource("AtlasTexture_invbg")
+expand_mode = 1
+
 [node name="PanelRoot" type="Panel" parent="."]
 layout_mode = 1
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -170.0
-offset_top = -280.0
-offset_right = 170.0
-offset_bottom = 280.0
+offset_left = -263.0
+offset_top = -258.0
+offset_right = 263.0
+offset_bottom = 258.0
 mouse_filter = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
