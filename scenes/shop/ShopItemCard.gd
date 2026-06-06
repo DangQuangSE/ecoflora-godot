@@ -1,5 +1,5 @@
 class_name ShopItemCard
-extends PanelContainer
+extends Control
 
 signal tapped(item: ShopItem)
 

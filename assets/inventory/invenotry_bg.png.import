@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://62cdaxong5wc"
-path="res://.godot/imported/shop_tab.png-45cd5e6ce48bb3b627cd376a707bb611.ctex"
+uid="uid://dotxp8r8cl8h0"
+path="res://.godot/imported/invenotry_bg.png-211f05701365cec16ea9825878f7f646.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/shop/shop_tab.png"
-dest_files=["res://.godot/imported/shop_tab.png-45cd5e6ce48bb3b627cd376a707bb611.ctex"]
+source_file="res://assets/inventory/invenotry_bg.png"
+dest_files=["res://.godot/imported/invenotry_bg.png-211f05701365cec16ea9825878f7f646.ctex"]
 
 [params]
 

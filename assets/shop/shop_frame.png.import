@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqlgy14yd5wqv"
-path="res://.godot/imported/shop_tab_clicked.png-8e3be3097c81d7f795cf1360fcff79ab.ctex"
+uid="uid://b7rf077bkwfcq"
+path="res://.godot/imported/shop_frame.png-0ba8552f41a6315c525d96399bfa8e27.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/shop/shop_tab_clicked.png"
-dest_files=["res://.godot/imported/shop_tab_clicked.png-8e3be3097c81d7f795cf1360fcff79ab.ctex"]
+source_file="res://assets/shop/shop_frame.png"
+dest_files=["res://.godot/imported/shop_frame.png-0ba8552f41a6315c525d96399bfa8e27.ctex"]
 
 [params]
 
