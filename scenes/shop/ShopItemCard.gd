@@ -33,9 +33,8 @@ func _load_icon(item: ShopItem) -> void:
 	if item.image_url.begins_with("res://") and ResourceLoader.exists(item.image_url):
 		_item_icon.texture = load(item.image_url)
 		return
-	var local_path := "res://assets/shop/%s.png" % item.id
-	if ResourceLoader.exists(local_path):
-		_item_icon.texture = load(local_path)
+	if not item.image_url.is_empty() and ItemIconRegistry.has_icon(item.image_url):
+		_item_icon.texture = ItemIconRegistry.get_icon(item.image_url)
 		return
 	_item_icon.texture = ItemIconRegistry.get_icon(item.id)
 

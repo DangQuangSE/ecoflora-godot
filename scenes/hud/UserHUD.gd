@@ -98,7 +98,7 @@ func _gui_input(event: InputEvent) -> void:
 func _on_coin_tapped() -> void:
 	var hud := get_parent() as HUD
 	if hud:
-		hud.open_shop(2)
+		hud.open_shop(3)
 
 func _open_profile_card() -> void:
 	if _profile_card != null and is_instance_valid(_profile_card):

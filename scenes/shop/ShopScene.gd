@@ -6,21 +6,8 @@ var _style_tab_normal  := StyleBoxFlat.new()
 var _style_tab_active  := StyleBoxFlat.new()
 var _style_tab_hover   := StyleBoxFlat.new()
 
-const _MOCK := {
-	0: [
-		{"id": "seed_rose",       "name": "Hoa hồng",       "price": 50,  "icon_path": ""},
-		{"id": "seed_sunflower",  "name": "Hoa hướng dương","price": 40,  "icon_path": ""},
-		{"id": "seed_tulip",      "name": "Hoa tulip",       "price": 45,  "icon_path": ""},
-		{"id": "seed_daisy",      "name": "Hoa cúc",         "price": 35,  "icon_path": ""},
-		{"id": "seed_lily",       "name": "Hoa lily",        "price": 55,  "icon_path": ""},
-		{"id": "seed_lavender",   "name": "Hoa oải hương",   "price": 60,  "icon_path": ""},
-		{"id": "seed_orchid",     "name": "Hoa lan",         "price": 70,  "icon_path": ""},
-		{"id": "seed_peony",      "name": "Hoa mẫu đơn",    "price": 65,  "icon_path": ""},
-		{"id": "seed_jasmine",    "name": "Hoa nhài",        "price": 30,  "icon_path": ""},
-	],
-	1: [],
-	2: [],
-}
+# Tab index → API category string ("" = no API call)
+const _TAB_CATEGORIES := ["Seed", "Consumable", "Decoration", ""]
 
 @onready var _grid: GridContainer        = $ShopPanel/ScrollContainer/GridContainer
 @onready var _bg_dimmer: ColorRect       = $BGDimmer
@@ -43,15 +30,18 @@ const _MOCK := {
 @onready var _cancel_btn: Button         = $ConfirmDialog/VBox/ButtonRow/CancelButton
 @onready var _toast: Panel               = $ToastNotification
 @onready var _toast_label: Label         = $ToastNotification/ToastLabel
+@onready var _loading: Label             = $LoadingSpinner
 
 const _ITEMS_PER_PAGE := 6
 
 var _tab_btns: Array = []
-var _current_items: Array = []
+var _current_items: Array[ShopItem] = []
 var _current_page: int = 0
+var _current_tab: int = 0
 var _pending_item: ShopItem = null
 var _pending_qty: int = 1
 var _toast_tween: Tween = null
+var _loading_tab: int = -1
 
 var _style_toast_ok  := StyleBoxFlat.new()
 var _style_toast_err := StyleBoxFlat.new()
@@ -62,6 +52,7 @@ func _ready() -> void:
 	_tab_btns = [
 		$ShopPanel/ShopBg/TabGroup/HatGiongBtn,
 		$ShopPanel/ShopBg/TabGroup/CongCuBtn,
+		$ShopPanel/ShopBg/TabGroup/TrangTriBtn,
 		$ShopPanel/ShopBg/TabGroup/CoinBtn,
 	]
 	for i in _tab_btns.size():
@@ -82,7 +73,7 @@ func _ready() -> void:
 	_confirm_dialog.hide()
 	_confirm_overlay.hide()
 	_toast.hide()
-	_on_tab_pressed(0)
+	_loading.hide()
 
 func _build_tab_styles() -> void:
 	for s in [_style_tab_normal, _style_tab_active, _style_tab_hover]:
@@ -110,9 +101,27 @@ func _build_toast_styles() -> void:
 
 func _on_tab_pressed(idx: int) -> void:
 	_set_active_tab(idx)
+	_current_tab = idx
 	_current_page = 0
-	_current_items = _MOCK.get(idx, [])
+	var category: String = _TAB_CATEGORIES[idx]
+	if category.is_empty():
+		_current_items = []
+		_render_page()
+		return
+	_set_loading(true)
+	var items: Array[ShopItem] = await UserManager.get_shop_catalog_async(category)
+	_set_loading(false)
+	if _current_tab != idx:
+		return
+	_current_items = items
 	_render_page()
+
+func _set_loading(on: bool) -> void:
+	_loading.visible = on
+	if on:
+		for child in _grid.get_children():
+			child.queue_free()
+		_pagination_bar.visible = false
 
 func _render_page() -> void:
 	var total: int = _current_items.size()
@@ -145,25 +154,19 @@ func _set_active_tab(idx: int) -> void:
 		btn.add_theme_color_override("font_color",
 			Color(0.18, 0.09, 0.02, 1) if is_active else Color(1.0, 0.92, 0.72, 1))
 
-func _render_items(items: Array) -> void:
+func _render_items(items: Array[ShopItem]) -> void:
 	for child in _grid.get_children():
 		child.queue_free()
 	if items.is_empty():
 		var lbl := Label.new()
-		lbl.text = "Sắp ra mắt..."
+		lbl.text = "Sắp ra mắt..." if _TAB_CATEGORIES[_current_tab].is_empty() else "Trống"
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lbl.add_theme_font_size_override("font_size", 14)
 		lbl.add_theme_color_override("font_color", Color(0.65, 0.75, 0.55, 1))
 		_grid.call_deferred("add_child", lbl)
 		return
 	var balance: int = UserManager.get_profile().currency
-	for d in items:
-		var item := ShopItem.new()
-		item.id        = str(d.get("id", ""))
-		item.name      = str(d.get("name", ""))
-		item.price     = int(d.get("price", 0))
-		item.image_url = str(d.get("icon_path", ""))
-		item.is_active = true
+	for item: ShopItem in items:
 		var card: ShopItemCard = ShopItemCardScene.instantiate()
 		_grid.add_child(card)
 		card.setup(item, balance)
@@ -243,8 +246,8 @@ func _show_toast(message: String, success: bool) -> void:
 	_toast_tween.tween_callback(_toast.hide)
 
 func show_panel(tab_idx: int = 0) -> void:
-	_on_tab_pressed(tab_idx)
 	show()
+	_on_tab_pressed(tab_idx)
 
 func _on_bg_dimmer_input(event: InputEvent) -> void:
 	var is_tap: bool = (event is InputEventMouseButton and (event as InputEventMouseButton).pressed) \
