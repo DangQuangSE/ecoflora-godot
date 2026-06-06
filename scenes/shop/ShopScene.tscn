@@ -47,6 +47,27 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pagination_bg"]
+bg_color = Color(0.97, 0.92, 0.82, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arrow_btn"]
+bg_color = Color(0.88, 0.64, 0.30, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arrow_disabled"]
+bg_color = Color(0.62, 0.56, 0.47, 0.5)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
 [node name="ShopScene" type="Control" unique_id=1454812432]
 layout_mode = 3
 anchors_preset = 15
@@ -109,23 +130,60 @@ theme_override_font_sizes/font_size = 13
 text = "Coin"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="ShopPanel" unique_id=222153017]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 90.0
-offset_right = 708.0
-offset_bottom = 710.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 0
+offset_left = 60.0
+offset_top = 94.0
+offset_right = 661.0
+offset_bottom = 558.0
 
 [node name="GridContainer" type="GridContainer" parent="ShopPanel/ScrollContainer" unique_id=137028145]
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 8
 columns = 3
+
+[node name="PaginationBar" type="PanelContainer" parent="ShopPanel" unique_id=500000001]
+visible = false
+layout_mode = 0
+offset_left = 175.0
+offset_top = 565.0
+offset_right = 545.0
+offset_bottom = 601.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pagination_bg")
+
+[node name="HBox" type="HBoxContainer" parent="ShopPanel/PaginationBar" unique_id=500000002]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="PrevBtn" type="Button" parent="ShopPanel/PaginationBar/HBox" unique_id=500000003]
+custom_minimum_size = Vector2(36, 28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_arrow_disabled")
+text = "◁"
+
+[node name="PageLabel" type="Label" parent="ShopPanel/PaginationBar/HBox" unique_id=500000004]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22, 0.12, 0.04, 1)
+theme_override_font_sizes/font_size = 14
+text = "1/1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NextBtn" type="Button" parent="ShopPanel/PaginationBar/HBox" unique_id=500000005]
+custom_minimum_size = Vector2(36, 28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_arrow_disabled")
+text = "▷"
 
 [node name="LoadingSpinner" type="Label" parent="." unique_id=405700583]
 visible = false

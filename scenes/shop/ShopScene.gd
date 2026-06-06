@@ -7,13 +7,26 @@ var _style_tab_active  := StyleBoxFlat.new()
 var _style_tab_hover   := StyleBoxFlat.new()
 
 const _MOCK := {
-	0: [],
+	0: [
+		{"id": "seed_rose",       "name": "Hoa hồng",       "price": 50,  "icon_path": ""},
+		{"id": "seed_sunflower",  "name": "Hoa hướng dương","price": 40,  "icon_path": ""},
+		{"id": "seed_tulip",      "name": "Hoa tulip",       "price": 45,  "icon_path": ""},
+		{"id": "seed_daisy",      "name": "Hoa cúc",         "price": 35,  "icon_path": ""},
+		{"id": "seed_lily",       "name": "Hoa lily",        "price": 55,  "icon_path": ""},
+		{"id": "seed_lavender",   "name": "Hoa oải hương",   "price": 60,  "icon_path": ""},
+		{"id": "seed_orchid",     "name": "Hoa lan",         "price": 70,  "icon_path": ""},
+		{"id": "seed_peony",      "name": "Hoa mẫu đơn",    "price": 65,  "icon_path": ""},
+		{"id": "seed_jasmine",    "name": "Hoa nhài",        "price": 30,  "icon_path": ""},
+	],
 	1: [],
 	2: [],
 }
 
 @onready var _grid: GridContainer        = $ShopPanel/ScrollContainer/GridContainer
-@onready var _spinner: Control           = $LoadingSpinner
+@onready var _pagination_bar: Control    = $ShopPanel/PaginationBar
+@onready var _prev_btn: Button           = $ShopPanel/PaginationBar/HBox/PrevBtn
+@onready var _page_label: Label          = $ShopPanel/PaginationBar/HBox/PageLabel
+@onready var _next_btn: Button           = $ShopPanel/PaginationBar/HBox/NextBtn
 @onready var _confirm_overlay: ColorRect = $ConfirmOverlay
 @onready var _confirm_dialog: Control    = $ConfirmDialog
 @onready var _confirm_name: Label        = $ConfirmDialog/VBox/ItemNameLabel
@@ -29,7 +42,11 @@ const _MOCK := {
 @onready var _toast: Panel               = $ToastNotification
 @onready var _toast_label: Label         = $ToastNotification/ToastLabel
 
+const _ITEMS_PER_PAGE := 6
+
 var _tab_btns: Array = []
+var _current_items: Array = []
+var _current_page: int = 0
 var _pending_item: ShopItem = null
 var _pending_qty: int = 1
 var _toast_tween: Tween = null
@@ -51,6 +68,8 @@ func _ready() -> void:
 		btn.pressed.connect(func() -> void: _on_tab_pressed(idx))
 		btn.add_theme_constant_override("outline_size", 2)
 		btn.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.01, 0.95))
+	_prev_btn.pressed.connect(_on_prev_page)
+	_next_btn.pressed.connect(_on_next_page)
 	_confirm_btn.pressed.connect(_on_confirm_purchase)
 	_cancel_btn.pressed.connect(_hide_dialog)
 	_confirm_overlay.gui_input.connect(_on_overlay_input)
@@ -89,7 +108,30 @@ func _build_toast_styles() -> void:
 
 func _on_tab_pressed(idx: int) -> void:
 	_set_active_tab(idx)
-	_render_items(_MOCK.get(idx, []))
+	_current_page = 0
+	_current_items = _MOCK.get(idx, [])
+	_render_page()
+
+func _render_page() -> void:
+	var total: int = _current_items.size()
+	var total_pages: int = maxi(1, int(ceil(float(total) / _ITEMS_PER_PAGE)))
+	var start: int = _current_page * _ITEMS_PER_PAGE
+	_render_items(_current_items.slice(start, start + _ITEMS_PER_PAGE))
+	_page_label.text = "%d/%d" % [_current_page + 1, total_pages]
+	_prev_btn.disabled = _current_page <= 0
+	_next_btn.disabled = _current_page >= total_pages - 1
+	_pagination_bar.visible = total_pages > 1
+
+func _on_prev_page() -> void:
+	if _current_page > 0:
+		_current_page -= 1
+		_render_page()
+
+func _on_next_page() -> void:
+	var total_pages: int = maxi(1, int(ceil(float(_current_items.size()) / _ITEMS_PER_PAGE)))
+	if _current_page < total_pages - 1:
+		_current_page += 1
+		_render_page()
 
 func _set_active_tab(idx: int) -> void:
 	for i in _tab_btns.size():
