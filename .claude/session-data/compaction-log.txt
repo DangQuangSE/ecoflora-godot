@@ -15,3 +15,5 @@
 [2026-06-06 00:36:03] Context compaction triggered
 [2026-06-06 20:10:13] Context compaction triggered
 [2026-06-06 21:27:44] Context compaction triggered
+[2026-06-07 00:49:00] Context compaction triggered
+[2026-06-07 00:51:19] Context compaction triggered

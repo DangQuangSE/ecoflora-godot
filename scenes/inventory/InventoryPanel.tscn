@@ -19,11 +19,7 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scroll"]
-bg_color = Color(0.06, 0.08, 0.06, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+bg_color = Color(0, 0, 0, 0)
 
 [node name="InventoryPanel" type="Control" unique_id=742011547]
 layout_mode = 3
@@ -141,7 +137,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/h_separation = 6
 theme_override_constants/v_separation = 6
-columns = 3
+columns = 4
 
 [node name="EmptyLabel" type="Label" parent="PanelRoot/VBox/Scroll" unique_id=1727356047]
 visible = false
@@ -152,7 +148,7 @@ theme_override_font_sizes/font_size = 14
 text = "Trống"
 horizontal_alignment = 1
 
-[node name="InventoryFrame" type="Sprite2D" parent="PanelRoot" unique_id=263159353]
+[node name="InventoryFrame" type="Sprite2D" parent="InvBg" unique_id=263159353]
 position = Vector2(263, 308)
 scale = Vector2(1, 0.7609398)
 texture = ExtResource("3_b3pjt")
