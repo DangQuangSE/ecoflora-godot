@@ -1,0 +1,103 @@
+[gd_scene format=3 uid="uid://shopitemcard001"]
+
+[ext_resource type="Script" path="res://scenes/shop/ShopItemCard.gd" id="1_card"]
+[ext_resource type="Texture2D" path="res://assets/icon/coin.png" id="2_coin"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.86, 0.93, 0.72, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.44, 0.62, 0.28, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_buy"]
+bg_color = Color(0.18, 0.50, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_buy_disabled"]
+bg_color = Color(0.2, 0.2, 0.18, 0.65)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="ShopItemCard" type="Control"]
+custom_minimum_size = Vector2(195, 220)
+layout_mode = 0
+script = ExtResource("1_card")
+
+[node name="CardBg" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+theme_override_constants/separation = 4
+
+[node name="ItemIcon" type="TextureRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 96)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+text = "Item"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(0.25, 0.15, 0.05, 1)
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="PriceRow" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 3
+
+[node name="CoinIcon" type="TextureRect" parent="VBoxContainer/PriceRow"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("2_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="VBoxContainer/PriceRow"]
+layout_mode = 2
+mouse_filter = 2
+text = "0"
+theme_override_font_sizes/font_size = 12
+theme_override_colors/font_color = Color(1.0, 0.88, 0.3, 1)
+
+[node name="BuyButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 38)
+text = "Mua"
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_buy")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_buy")
+theme_override_styles/hover = SubResource("StyleBoxFlat_buy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_buy_disabled")

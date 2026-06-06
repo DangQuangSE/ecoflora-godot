@@ -3,9 +3,12 @@ extends Control
 
 const UserProfileCardScene := preload("res://scenes/hud/UserProfileCard.tscn")
 
-@onready var _avatar: ColorRect    = $AvatarRect
+@onready var _avatar: Control      = $AvatarRect
+@onready var _name_label: Label    = $NameLabel
 @onready var _level_label: Label   = $LevelLabel
 @onready var _xp_bar: ProgressBar  = $XPBar
+@onready var _coin_label: Label    = $CoinLabel
+@onready var _coin_btn: Button     = $CoinButton
 
 var _is_animating_level_up: bool = false
 var _pending_levelup_max: int = 0
@@ -14,20 +17,35 @@ var _profile_card: CanvasLayer = null
 func _ready() -> void:
 	UserManager.xp_gained.connect(_on_xp_gained)
 	UserManager.level_up.connect(_on_level_up)
+	UserManager.currency_changed.connect(_on_currency_changed)
+	_coin_btn.pressed.connect(_on_coin_tapped)
+	var coin_path := "res://assets/icon/coin.png"
+	if ResourceLoader.exists(coin_path):
+		var coin_icon := get_node_or_null("CoinIcon") as TextureRect
+		if coin_icon:
+			coin_icon.texture = load(coin_path)
 	_refresh()
 
 func _exit_tree() -> void:
 	UserManager.xp_gained.disconnect(_on_xp_gained)
 	UserManager.level_up.disconnect(_on_level_up)
+	UserManager.currency_changed.disconnect(_on_currency_changed)
 
 func _refresh() -> void:
 	var p := UserManager.get_profile()
-	_level_label.text = "Lv.%d" % p.level
+	if p.username == "":
+		return
+	_name_label.text  = p.username
+	_level_label.text = "%d" % p.level
 	_xp_bar.max_value = p.xp_to_next_level()
 	_xp_bar.value     = p.current_xp
+	_coin_label.text  = str(p.currency)
 
 func _on_xp_gained(_amount: int) -> void:
 	_refresh()
+
+func _on_currency_changed(new_amount: int) -> void:
+	_coin_label.text = str(new_amount)
 
 func _on_level_up(new_level: int) -> void:
 	_refresh()
@@ -76,6 +94,11 @@ func _gui_input(event: InputEvent) -> void:
 		return
 	get_viewport().set_input_as_handled()
 	_open_profile_card()
+
+func _on_coin_tapped() -> void:
+	var hud := get_parent() as HUD
+	if hud:
+		hud.open_shop(3)
 
 func _open_profile_card() -> void:
 	if _profile_card != null and is_instance_valid(_profile_card):

@@ -7,10 +7,13 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _inv_btn: Button           = $InventoryButton
 @onready var _inv_icon: TextureRect     = $InventoryButton/Icon
 @onready var _inv_panel: Node           = $InventoryPanel
+@onready var _shop_panel: Node          = $ShopScene
 @onready var _selected_slot: Panel      = $SelectedItemSlot
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
 @onready var _harvest_btn: Button       = $HarvestButton
+# Add ShopButton (Button) to HUD.tscn in the Godot editor
+@onready var _shop_btn: Button          = $ShopButton
 
 func _ready() -> void:
 	_joystick.direction_changed.connect(_on_joystick_direction)
@@ -24,6 +27,13 @@ func _ready() -> void:
 		harvest_icon.texture = preload("res://assets/icon/sickle.png")
 	_harvest_btn.pressed.connect(InteractionManager.toggle_harvest_mode)
 	InteractionManager.harvest_mode_changed.connect(_on_harvest_mode_changed)
+	if _shop_btn:
+		_shop_btn.pressed.connect(_open_shop)
+		var shop_icon_path := "res://assets/icon/shop.png"
+		if ResourceLoader.exists(shop_icon_path):
+			var shop_node := _shop_btn.get_node_or_null("ShopIcon") as TextureRect
+			if shop_node:
+				shop_node.texture = load(shop_icon_path)
 
 func _on_joystick_direction(dir: Vector2) -> void:
 	joystick_direction_changed.emit(dir)
@@ -47,3 +57,11 @@ func _on_item_selected(item: InventoryItem) -> void:
 
 func _on_harvest_mode_changed(active: bool) -> void:
 	_harvest_btn.modulate = Color(1.0, 0.75, 0.2, 1.0) if active else Color.WHITE
+
+func open_shop(tab_idx: int = 0) -> void:
+	if _shop_panel == null:
+		return
+	_shop_panel.call("show_panel", tab_idx)
+
+func _open_shop() -> void:
+	open_shop(0)

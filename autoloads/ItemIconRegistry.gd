@@ -12,9 +12,18 @@ func _ready() -> void:
 	_try_register("watering_can", "res://assets/icon/watering_can.PNG")
 	_try_register("fertilizer",   "res://assets/icon/fertilizer.png")
 	_try_register("sickle",       "res://assets/icon/sickle.png")
+	_try_register("grass_fence",  "res://assets/shop/deco/grass_fence.png")
+	_try_register("rock",         "res://assets/shop/deco/rock.png")
+	_try_register("stone_fence",  "res://assets/shop/deco/stone_fence.png")
+	_try_register("supper_fence", "res://assets/shop/deco/supper_fence.png")
+	_try_register("warterfall",   "res://assets/shop/deco/warterfall.png")
+	_try_register("warter_tower", "res://assets/shop/deco/warter_tower.png")
 
 func register(ref_id: String, texture: Texture2D) -> void:
 	_icons[ref_id] = texture
+
+func has_icon(ref_id: String) -> bool:
+	return _icons.has(ref_id)
 
 func get_icon(ref_id: String) -> Texture2D:
 	if _icons.has(ref_id):

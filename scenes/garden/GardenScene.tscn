@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://bgardensc001"]
 
+[ext_resource type="Texture2D" uid="uid://7ojlh817nhrb" path="res://assets/background/garden_bg.png" id="2_34pd8"]
 [ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/shared/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
-[ext_resource type="Texture2D" uid="uid://bluyro1idv352" path="res://assets/background/demo_bg.png" id="5_dembg"]
 [ext_resource type="Script" uid="uid://31kpmq44x0ct" path="res://scenes/garden/GardenScene.gd" id="6_gdscript"]
 [ext_resource type="Texture2D" uid="uid://hhj3cw43jw3r" path="res://assets/deco/warter_tower.png" id="6_xftxm"]
 [ext_resource type="Texture2D" uid="uid://c5ckvjrnvc6bb" path="res://assets/deco/rock.png" id="7_34pd8"]
@@ -15,7 +15,7 @@ script = ExtResource("6_gdscript")
 z_index = -2
 position = Vector2(-579.00006, -709)
 scale = Vector2(0.8847656, 0.8886718)
-texture = ExtResource("5_dembg")
+texture = ExtResource("2_34pd8")
 centered = false
 
 [node name="Player" parent="." unique_id=1544198641 instance=ExtResource("2_player")]

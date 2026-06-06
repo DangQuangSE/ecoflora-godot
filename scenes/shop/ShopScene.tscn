@@ -1,0 +1,444 @@
+[gd_scene format=3 uid="uid://shopscene001"]
+
+[ext_resource type="Script" uid="uid://dd8rmj3r1nq1d" path="res://scenes/shop/ShopScene.gd" id="1_shop"]
+[ext_resource type="Texture2D" uid="uid://cfeh3mg5fb0xm" path="res://assets/icon/coin.png" id="2_coin"]
+[ext_resource type="Texture2D" uid="uid://dhugu051tjq67" path="res://assets/shop/shop_bg.png" id="4_shopbg"]
+[ext_resource type="Texture2D" uid="uid://b7rf077bkwfcq" path="res://assets/shop/shop_frame.png" id="4_xu4g4"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_shopbg"]
+atlas = ExtResource("4_shopbg")
+region = Rect2(214, 188, 530, 599)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pagination_bg"]
+bg_color = Color(0.97, 0.92, 0.82, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arrow_btn"]
+bg_color = Color(0.88, 0.64, 0.3, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arrow_disabled"]
+bg_color = Color(0.62, 0.56, 0.47, 0.5)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
+bg_color = Color(0.07, 0.1, 0.05, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.7, 0.3, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qty_btn"]
+bg_color = Color(0.14, 0.2, 0.09, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.6, 0.25, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm"]
+bg_color = Color(0.18, 0.52, 0.1, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cancel"]
+bg_color = Color(0.45, 0.12, 0.08, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_btn"]
+bg_color = Color(0.55, 0.12, 0.08, 0.92)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_hover"]
+bg_color = Color(0.78, 0.18, 0.1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="ShopScene" type="Control" unique_id=1454812432]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_shop")
+
+[node name="BGDimmer" type="ColorRect" parent="." unique_id=500000050]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
+
+[node name="ShopPanel" type="Control" parent="." unique_id=303886638]
+anchors_preset = 0
+offset_top = 280.0
+offset_right = 720.0
+offset_bottom = 1000.0
+
+[node name="ShopBg" type="TextureRect" parent="ShopPanel" unique_id=1846608832]
+layout_mode = 0
+offset_top = -141.0
+offset_right = 720.0
+offset_bottom = 579.0
+mouse_filter = 2
+texture = SubResource("AtlasTexture_shopbg")
+expand_mode = 1
+
+[node name="ShopFrame" type="Sprite2D" parent="ShopPanel/ShopBg" unique_id=2026351872]
+position = Vector2(356, 467)
+scale = Vector2(1.206745, 0.88)
+texture = ExtResource("4_xu4g4")
+region_enabled = true
+region_rect = Rect2(250.06805, 265.02325, 527.7334, 538.9112)
+
+[node name="TabGroup" type="HBoxContainer" parent="ShopPanel/ShopBg" unique_id=1082778704]
+layout_mode = 0
+offset_left = 45.999996
+offset_top = 153.0
+offset_right = 766.0
+offset_bottom = 222.0
+scale = Vector2(0.86358744, 1.1512206)
+theme_override_constants/separation = 0
+
+[node name="HatGiongBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=1886989850]
+custom_minimum_size = Vector2(0, 69)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "Hạt giống"
+
+[node name="CongCuBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=1352065426]
+custom_minimum_size = Vector2(0, 69)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "Công cụ"
+
+[node name="TrangTriBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=600000010]
+custom_minimum_size = Vector2(0, 69)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 12
+text = "Trang Trí"
+
+[node name="CoinBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=1760526262]
+custom_minimum_size = Vector2(0, 69)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "Coin"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ShopPanel" unique_id=222153017]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 94.0
+offset_right = 661.0
+offset_bottom = 558.0
+
+[node name="GridContainer" type="GridContainer" parent="ShopPanel/ScrollContainer" unique_id=137028145]
+layout_mode = 2
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="PaginationBar" type="PanelContainer" parent="ShopPanel" unique_id=500000001]
+visible = false
+layout_mode = 0
+offset_left = 175.0
+offset_top = 565.0
+offset_right = 545.0
+offset_bottom = 601.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_pagination_bg")
+
+[node name="HBox" type="HBoxContainer" parent="ShopPanel/PaginationBar" unique_id=500000002]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="PrevBtn" type="Button" parent="ShopPanel/PaginationBar/HBox" unique_id=500000003]
+custom_minimum_size = Vector2(36, 28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_arrow_disabled")
+text = "◁"
+
+[node name="PageLabel" type="Label" parent="ShopPanel/PaginationBar/HBox" unique_id=500000004]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22, 0.12, 0.04, 1)
+theme_override_font_sizes/font_size = 14
+text = "1/1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="NextBtn" type="Button" parent="ShopPanel/PaginationBar/HBox" unique_id=500000005]
+custom_minimum_size = Vector2(36, 28)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_arrow_btn")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_arrow_disabled")
+text = "▷"
+
+[node name="LoadingSpinner" type="Label" parent="." unique_id=405700583]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -80.0
+offset_top = -20.0
+offset_right = 80.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.7, 0.9, 0.5, 1)
+theme_override_font_sizes/font_size = 16
+text = "Đang tải..."
+horizontal_alignment = 1
+
+[node name="ConfirmOverlay" type="ColorRect" parent="." unique_id=273627330]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="ConfirmDialog" type="Panel" parent="." unique_id=219568629]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -155.0
+offset_right = 170.0
+offset_bottom = 155.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_dialog")
+
+[node name="VBox" type="VBoxContainer" parent="ConfirmDialog" unique_id=173292691]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 14.0
+offset_right = -16.0
+offset_bottom = -14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="ItemNameLabel" type="Label" parent="ConfirmDialog/VBox" unique_id=275522737]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.92, 0.75, 1)
+theme_override_font_sizes/font_size = 16
+text = "Tên sản phẩm"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ItemDescLabel" type="Label" parent="ConfirmDialog/VBox" unique_id=1682594468]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.78, 0.55, 1)
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+autowrap_mode = 3
+max_lines_visible = 2
+
+[node name="PriceRow" type="HBoxContainer" parent="ConfirmDialog/VBox" unique_id=1927850613]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="PriceIcon" type="TextureRect" parent="ConfirmDialog/VBox/PriceRow" unique_id=151821867]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("2_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PriceLabel" type="Label" parent="ConfirmDialog/VBox/PriceRow" unique_id=1578511764]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.3, 1)
+theme_override_font_sizes/font_size = 15
+text = "0"
+
+[node name="BalanceHint" type="Label" parent="ConfirmDialog/VBox/PriceRow" unique_id=1462513168]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.72, 0.5, 1)
+theme_override_font_sizes/font_size = 13
+text = " (số dư: 0)"
+
+[node name="QuantityRow" type="HBoxContainer" parent="ConfirmDialog/VBox" unique_id=842922223]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="MinusButton" type="Button" parent="ConfirmDialog/VBox/QuantityRow" unique_id=1145555984]
+custom_minimum_size = Vector2(44, 38)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_qty_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_qty_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_qty_btn")
+text = "−"
+
+[node name="QuantityLabel" type="Label" parent="ConfirmDialog/VBox/QuantityRow" unique_id=525353655]
+custom_minimum_size = Vector2(52, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "1"
+horizontal_alignment = 1
+
+[node name="PlusButton" type="Button" parent="ConfirmDialog/VBox/QuantityRow" unique_id=1793482987]
+custom_minimum_size = Vector2(44, 38)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_qty_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_qty_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_qty_btn")
+text = "+"
+
+[node name="TotalRow" type="HBoxContainer" parent="ConfirmDialog/VBox" unique_id=611586756]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="TotalIcon" type="TextureRect" parent="ConfirmDialog/VBox/TotalRow" unique_id=1670266736]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+texture = ExtResource("2_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TotalLabel" type="Label" parent="ConfirmDialog/VBox/TotalRow" unique_id=1353415082]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.74, 0.22, 1)
+theme_override_font_sizes/font_size = 13
+text = "Tổng: 0"
+
+[node name="ButtonRow" type="HBoxContainer" parent="ConfirmDialog/VBox" unique_id=2126814058]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ConfirmButton" type="Button" parent="ConfirmDialog/VBox/ButtonRow" unique_id=1213796677]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_confirm")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_confirm")
+theme_override_styles/hover = SubResource("StyleBoxFlat_confirm")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cancel")
+text = "Mua ngay"
+
+[node name="CancelButton" type="Button" parent="ConfirmDialog/VBox/ButtonRow" unique_id=1220137245]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_cancel")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cancel")
+theme_override_styles/hover = SubResource("StyleBoxFlat_cancel")
+text = "Hủy"
+
+[node name="ShopTitleLabel" type="Label" parent="." unique_id=500000030]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 163.0
+offset_right = 474.0
+offset_bottom = 205.0
+theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0.18, 0.08, 0.02, 0.7)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "Cửa hàng"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="." unique_id=500000020]
+layout_mode = 0
+offset_left = 670.0
+offset_top = 148.0
+offset_right = 710.0
+offset_bottom = 188.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_close_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_close_hover")
+text = "✕"
+
+[node name="ToastNotification" type="Panel" parent="." unique_id=1792018615]
+visible = false
+layout_mode = 0
+offset_left = 160.0
+offset_top = 80.0
+offset_right = 560.0
+offset_bottom = 124.0
+mouse_filter = 2
+
+[node name="ToastLabel" type="Label" parent="ToastNotification" unique_id=1540625065]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_right = -12.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+vertical_alignment = 1
