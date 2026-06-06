@@ -9,6 +9,27 @@
 atlas = ExtResource("4_shopbg")
 region = Rect2(214, 188, 530, 599)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pagination_bg"]
+bg_color = Color(0.97, 0.92, 0.82, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arrow_btn"]
+bg_color = Color(0.88, 0.64, 0.3, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arrow_disabled"]
+bg_color = Color(0.62, 0.56, 0.47, 0.5)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
 bg_color = Color(0.07, 0.1, 0.05, 0.98)
 border_width_left = 2
@@ -47,28 +68,22 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pagination_bg"]
-bg_color = Color(0.97, 0.92, 0.82, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_btn"]
+bg_color = Color(0.55, 0.12, 0.08, 0.92)
 corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arrow_btn"]
-bg_color = Color(0.88, 0.64, 0.30, 1)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_arrow_disabled"]
-bg_color = Color(0.62, 0.56, 0.47, 0.5)
-corner_radius_top_left = 18
-corner_radius_top_right = 18
-corner_radius_bottom_right = 18
-corner_radius_bottom_left = 18
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_hover"]
+bg_color = Color(0.78, 0.18, 0.1, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
 
 [node name="ShopScene" type="Control" unique_id=1454812432]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -76,6 +91,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_shop")
+
+[node name="BGDimmer" type="ColorRect" parent="." unique_id=500000050]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.5)
 
 [node name="ShopPanel" type="Control" parent="." unique_id=303886638]
 anchors_preset = 0
@@ -360,6 +384,34 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_cancel")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_cancel")
 theme_override_styles/hover = SubResource("StyleBoxFlat_cancel")
 text = "Hủy"
+
+[node name="ShopTitleLabel" type="Label" parent="." unique_id=500000030]
+layout_mode = 0
+offset_left = 254.0
+offset_top = 163.0
+offset_right = 474.0
+offset_bottom = 205.0
+theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
+theme_override_colors/font_shadow_color = Color(0.18, 0.08, 0.02, 0.7)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 24
+text = "Cửa hàng"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="." unique_id=500000020]
+layout_mode = 0
+offset_left = 670.0
+offset_top = 148.0
+offset_right = 710.0
+offset_bottom = 188.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_close_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_close_hover")
+text = "✕"
 
 [node name="ToastNotification" type="Panel" parent="." unique_id=1792018615]
 visible = false

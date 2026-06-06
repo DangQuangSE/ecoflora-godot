@@ -23,6 +23,8 @@ const _MOCK := {
 }
 
 @onready var _grid: GridContainer        = $ShopPanel/ScrollContainer/GridContainer
+@onready var _bg_dimmer: ColorRect       = $BGDimmer
+@onready var _close_btn: Button          = $CloseButton
 @onready var _pagination_bar: Control    = $ShopPanel/PaginationBar
 @onready var _prev_btn: Button           = $ShopPanel/PaginationBar/HBox/PrevBtn
 @onready var _page_label: Label          = $ShopPanel/PaginationBar/HBox/PageLabel
@@ -68,6 +70,8 @@ func _ready() -> void:
 		btn.pressed.connect(func() -> void: _on_tab_pressed(idx))
 		btn.add_theme_constant_override("outline_size", 2)
 		btn.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.01, 0.95))
+	_close_btn.pressed.connect(_on_back)
+	_bg_dimmer.gui_input.connect(_on_bg_dimmer_input)
 	_prev_btn.pressed.connect(_on_prev_page)
 	_next_btn.pressed.connect(_on_next_page)
 	_confirm_btn.pressed.connect(_on_confirm_purchase)
@@ -78,9 +82,7 @@ func _ready() -> void:
 	_confirm_dialog.hide()
 	_confirm_overlay.hide()
 	_toast.hide()
-	var open_tab: int = UserManager.shop_open_tab
-	UserManager.shop_open_tab = 0
-	_on_tab_pressed(open_tab)
+	_on_tab_pressed(0)
 
 func _build_tab_styles() -> void:
 	for s in [_style_tab_normal, _style_tab_active, _style_tab_hover]:
@@ -240,5 +242,15 @@ func _show_toast(message: String, success: bool) -> void:
 	_toast_tween.tween_property(_toast, "modulate:a", 0.0, 0.4)
 	_toast_tween.tween_callback(_toast.hide)
 
+func show_panel(tab_idx: int = 0) -> void:
+	_on_tab_pressed(tab_idx)
+	show()
+
+func _on_bg_dimmer_input(event: InputEvent) -> void:
+	var is_tap: bool = (event is InputEventMouseButton and (event as InputEventMouseButton).pressed) \
+					or (event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed)
+	if is_tap:
+		_on_back()
+
 func _on_back() -> void:
-	get_tree().change_scene_to_file("res://scenes/garden/GardenScene.tscn")
+	hide()

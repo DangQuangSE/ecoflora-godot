@@ -7,6 +7,7 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _inv_btn: Button           = $InventoryButton
 @onready var _inv_icon: TextureRect     = $InventoryButton/Icon
 @onready var _inv_panel: Node           = $InventoryPanel
+@onready var _shop_panel: Node          = $ShopScene
 @onready var _selected_slot: Panel      = $SelectedItemSlot
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
@@ -57,5 +58,10 @@ func _on_item_selected(item: InventoryItem) -> void:
 func _on_harvest_mode_changed(active: bool) -> void:
 	_harvest_btn.modulate = Color(1.0, 0.75, 0.2, 1.0) if active else Color.WHITE
 
+func open_shop(tab_idx: int = 0) -> void:
+	if _shop_panel == null:
+		return
+	_shop_panel.call("show_panel", tab_idx)
+
 func _open_shop() -> void:
-	get_tree().change_scene_to_file("res://scenes/shop/ShopScene.tscn")
+	open_shop(0)

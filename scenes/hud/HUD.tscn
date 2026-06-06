@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://den0btskh8bn3" path="res://assets/icon/shop.png" id="5_dui1j"]
 [ext_resource type="PackedScene" uid="uid://dxepsc0f7572s" path="res://scenes/hud/VitalityBar.tscn" id="5_vbar"]
 [ext_resource type="Texture2D" uid="uid://db55ccf5x01by" path="res://assets/icon/sickle.png" id="6_yixhj"]
+[ext_resource type="PackedScene" uid="uid://shopscene001" path="res://scenes/shop/ShopScene.tscn" id="7_shopscene"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_invbtn"]
 bg_color = Color(0.1, 0.14, 0.08, 0.88)
@@ -138,8 +139,6 @@ anchors_preset = 15
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]
-
 [node name="HarvestButton" type="Button" parent="." unique_id=407304471]
 offset_left = 620.0
 offset_top = 290.0
@@ -181,3 +180,13 @@ offset_left = 8.0
 offset_top = 158.0
 offset_right = 64.0
 offset_bottom = 226.0
+
+[node name="ShopScene" parent="." unique_id=500000100 instance=ExtResource("7_shopscene")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]

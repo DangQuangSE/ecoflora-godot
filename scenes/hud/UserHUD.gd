@@ -96,8 +96,9 @@ func _gui_input(event: InputEvent) -> void:
 	_open_profile_card()
 
 func _on_coin_tapped() -> void:
-	UserManager.shop_open_tab = 2
-	get_tree().change_scene_to_file("res://scenes/shop/ShopScene.tscn")
+	var hud := get_parent() as HUD
+	if hud:
+		hud.open_shop(2)
 
 func _open_profile_card() -> void:
 	if _profile_card != null and is_instance_valid(_profile_card):
