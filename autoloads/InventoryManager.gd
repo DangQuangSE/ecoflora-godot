@@ -136,6 +136,14 @@ func restore_item(item_id: String, qty: int) -> void:
 			return
 	push_warning("InventoryManager.restore_item: item_id '%s' not found" % item_id)
 
+func increment_item(item_id: String) -> void:
+	for item: InventoryItem in _inventory.items:
+		if item.id == item_id:
+			item.quantity += 1
+			inventory_updated.emit(_inventory)
+			return
+	push_warning("InventoryManager.increment_item: item_id '%s' not found" % item_id)
+
 func remove_harvest_product(product_id: String) -> void:
 	var existing: InventoryItem = _inventory.find_harvest_product(product_id)
 	if existing == null:

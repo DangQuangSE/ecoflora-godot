@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://bdeconde0001"]
+
+[ext_resource type="Script" uid="uid://cdeconodegdsc" path="res://scenes/shared/DecoNode.gd" id="1_deconode"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(64, 64)
+
+[node name="DecoNode" type="Sprite2D"]
+script = ExtResource("1_deconode")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_1")

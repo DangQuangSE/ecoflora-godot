@@ -53,6 +53,42 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_editbtn"]
+bg_color = Color(0.1, 0.35, 0.15, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.85, 0.4, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_editbtn_on"]
+bg_color = Color(0.2, 0.55, 0.25, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 1.0, 0.55, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_savebtn"]
+bg_color = Color(0.1, 0.2, 0.5, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.3, 0.6, 1.0, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
 [node name="HUD" type="CanvasLayer" unique_id=1601504416]
 layer = 10
 script = ExtResource("1_hud")
@@ -188,5 +224,28 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="EditModeButton" type="Button" parent="." unique_id=600000001]
+visible = false
+offset_left = 10.0
+offset_top = 220.0
+offset_right = 94.0
+offset_bottom = 292.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_editbtn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_editbtn_on")
+theme_override_styles/hover = SubResource("StyleBoxFlat_editbtn")
+toggle_mode = true
+text = "Edit"
+
+[node name="SaveButton" type="Button" parent="." unique_id=600000002]
+visible = false
+offset_left = 10.0
+offset_top = 300.0
+offset_right = 94.0
+offset_bottom = 362.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_savebtn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_savebtn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_savebtn")
+text = "Save"
 
 [node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]

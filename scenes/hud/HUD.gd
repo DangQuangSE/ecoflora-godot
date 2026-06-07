@@ -12,8 +12,9 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
 @onready var _harvest_btn: Button       = $HarvestButton
-# Add ShopButton (Button) to HUD.tscn in the Godot editor
 @onready var _shop_btn: Button          = $ShopButton
+@onready var _edit_btn: Button          = $EditModeButton
+@onready var _save_btn: Button          = $SaveButton
 
 func _ready() -> void:
 	_joystick.direction_changed.connect(_on_joystick_direction)
@@ -34,6 +35,12 @@ func _ready() -> void:
 			var shop_node := _shop_btn.get_node_or_null("ShopIcon") as TextureRect
 			if shop_node:
 				shop_node.texture = load(shop_icon_path)
+	_edit_btn.toggled.connect(_on_edit_mode_toggled)
+	_save_btn.pressed.connect(_on_save_pressed)
+	DecoManager.scene_deco_ready.connect(_on_scene_deco_ready)
+	DecoManager.edit_mode_changed.connect(_on_edit_mode_changed)
+	DecoManager.sync_state_changed.connect(_on_sync_state_changed)
+	DecoManager.batch_saved.connect(_on_batch_saved)
 
 func _on_joystick_direction(dir: Vector2) -> void:
 	joystick_direction_changed.emit(dir)
@@ -65,3 +72,31 @@ func open_shop(tab_idx: int = 0) -> void:
 
 func _open_shop() -> void:
 	open_shop(0)
+
+func _on_scene_deco_ready(enabled: bool) -> void:
+	_edit_btn.visible = enabled
+	if not enabled:
+		_save_btn.visible = false
+
+func _on_edit_mode_toggled(pressed: bool) -> void:
+	DecoManager.set_edit_mode(pressed)
+
+func _on_edit_mode_changed(is_edit: bool) -> void:
+	_edit_btn.button_pressed = is_edit
+	_save_btn.visible = is_edit
+	if is_edit:
+		if _inv_panel != null:
+			_inv_panel.hide()
+	else:
+		_save_btn.disabled = false
+
+func _on_save_pressed() -> void:
+	_save_btn.disabled = true
+	DecoManager.batch_move_current_async()
+
+func _on_batch_saved() -> void:
+	_save_btn.disabled = false
+
+func _on_sync_state_changed(is_busy: bool) -> void:
+	_save_btn.disabled = is_busy
+	_edit_btn.disabled = is_busy

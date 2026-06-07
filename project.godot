@@ -26,6 +26,7 @@ FocusManager="*res://autoloads/FocusManager.gd"
 InventoryManager="*res://autoloads/InventoryManager.gd"
 ItemIconRegistry="*res://autoloads/ItemIconRegistry.gd"
 WeatherManager="*res://autoloads/WeatherManager.gd"
+DecoManager="*res://autoloads/DecoManager.gd"
 
 [display]
 
