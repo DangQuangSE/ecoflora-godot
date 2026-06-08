@@ -20,6 +20,8 @@ var _http_garden: HTTPRequest
 var _http_plant: HTTPRequest
 var _http_harvest: HTTPRequest
 var _garden_in_flight: bool = false
+var _plant_in_flight: bool = false
+var _harvest_in_flight: bool = false
 var _ref_svc  # ReferenceDataService instance (preloaded to avoid autoload parse-order issue)
 
 const _RefDataScript = preload("res://services/ReferenceDataService.gd")
@@ -398,6 +400,9 @@ func _care_rollback(plot: Plot, snapshot: Plot, item_id: String, item_qty: int) 
 	InventoryManager.restore_item(item_id, item_qty)
 
 func plant(plot_id: String, flower_template_id: String) -> void:
+	if _plant_in_flight:
+		push_warning("GardenManager.plant: request already in flight, ignoring")
+		return
 	var plot: Plot = _find_plot(plot_id)
 	if plot == null or plot.is_occupied or plot.is_pending_sync:
 		plant_failed.emit(plot_id, "not_available")
@@ -434,8 +439,10 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 	var url := UserManager.base_url + "/api/garden/plots/%s/plant" % plot_id
 	var headers := PackedStringArray(["Content-Type: application/json", UserManager.get_auth_header()])
 	var body := JSON.stringify({ "flowerTemplateId": flower_template_id })
+	_plant_in_flight = true
 	var err := _http_plant.request(url, headers, HTTPClient.METHOD_POST, body)
 	if err != OK:
+		_plant_in_flight = false
 		InventoryManager.restore_item(snapshot_seed_id, snapshot_seed_qty)
 		plot.clear()
 		plot.is_pending_sync = false
@@ -444,6 +451,7 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 		return
 
 	var raw: Variant = await _http_plant.request_completed
+	_plant_in_flight = false
 	var status: int        = raw[1]
 	var bytes: PackedByteArray = raw[3]
 
@@ -484,6 +492,9 @@ func debug_add_xp(plot_id: String, xp_amount: int) -> void:
 	plots_updated.emit(_plots)
 
 func harvest(plot_id: String) -> void:
+	if _harvest_in_flight:
+		push_warning("GardenManager.harvest: request already in flight, ignoring")
+		return
 	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
 		return
@@ -510,14 +521,17 @@ func harvest(plot_id: String) -> void:
 
 	var url := UserManager.base_url + "/api/garden/plots/%s/harvest" % plot_id
 	var headers := PackedStringArray(["Content-Type: application/json", UserManager.get_auth_header()])
+	_harvest_in_flight = true
 	var err := _http_harvest.request(url, headers, HTTPClient.METHOD_POST, "")
 	if err != OK:
+		_harvest_in_flight = false
 		plot.plant(snapshot_flower)
 		plot.is_pending_sync = false
 		plots_updated.emit(_plots)
 		return
 
 	var raw: Variant = await _http_harvest.request_completed
+	_harvest_in_flight = false
 	var status: int        = raw[1]
 	var bytes: PackedByteArray = raw[3]
 
