@@ -4,15 +4,16 @@ extends CanvasLayer
 @onready var _dimmer: ColorRect          = $Dimmer
 @onready var _card: Panel                = $Card
 @onready var _close_btn: Button          = $Card/CloseBtn
-@onready var _avatar_circle: Panel       = $Card/Content/HeaderCenter/AvatarCircle
-@onready var _avatar_image: TextureRect  = $Card/Content/HeaderCenter/AvatarCircle/AvatarImage
-@onready var _username_label: Label      = $Card/Content/UsernameLabel
-@onready var _join_date_label: Label     = $Card/Content/JoinDateLabel
+@onready var _avatar_image: TextureRect  = $Card/Content/AvatarRow/AvatarFrame/AvatarImage
+@onready var _username_label: Label      = $Card/Content/AvatarRow/InfoCol/UsernameLabel
+@onready var _level_badge: Label         = $Card/Content/AvatarRow/InfoCol/LevelBadge
+@onready var _join_date_label: Label     = $Card/Content/AvatarRow/InfoCol/JoinDateLabel
 @onready var _level_value: Label         = $Card/Content/RowLevel/LevelValue
 @onready var _xp_value: Label            = $Card/Content/RowXP/XPValue
 @onready var _harvest_value: Label       = $Card/Content/RowHarvest/HarvestValue
 @onready var _streak_value: Label        = $Card/Content/RowStreak/StreakValue
 @onready var _flowers_value: Label       = $Card/Content/RowFlowers/FlowersValue
+@onready var _toggle_picker_btn: Button  = $Card/Content/TogglePickerBtn
 @onready var _avatar_picker: PanelContainer = $Card/AvatarPicker
 @onready var _picker_row: HBoxContainer  = $Card/AvatarPicker/PickerRow
 
@@ -22,9 +23,9 @@ func _ready() -> void:
 	visible = false
 	_close_btn.pressed.connect(close)
 	_dimmer.gui_input.connect(_on_dimmer_input)
-	_avatar_circle.gui_input.connect(_on_avatar_circle_input)
+	_toggle_picker_btn.pressed.connect(_on_toggle_picker_pressed)
 	_load_picker_icons()
-	for i in 6:
+	for i in 7:
 		var btn := _picker_row.get_child(i) as Button
 		if btn:
 			btn.pressed.connect(_on_avatar_selected.bind(i))
@@ -38,16 +39,19 @@ func open() -> void:
 	_is_closing = false
 	_refresh_data()
 	visible = true
-	_card.position.y = 320.0
-	var tween := create_tween()
-	tween.tween_property(_card, "position:y", 0.0, 0.22).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_card.modulate.a = 0.0
+	_card.position.y = 24.0
+	var tween := create_tween().set_parallel(true)
+	tween.tween_property(_card, "modulate:a", 1.0, 0.16)
+	tween.tween_property(_card, "position:y", 0.0, 0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 func close() -> void:
 	if _is_closing:
 		return
 	_is_closing = true
-	var tween := create_tween()
-	tween.tween_property(_card, "position:y", 320.0, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	var tween := create_tween().set_parallel(true)
+	tween.tween_property(_card, "modulate:a", 0.0, 0.14)
+	tween.tween_property(_card, "position:y", 24.0, 0.14).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	await tween.finished
 	if not is_instance_valid(self):
 		return
@@ -57,17 +61,18 @@ func _refresh_data() -> void:
 	var p := UserManager.get_profile()
 	if p.username.is_empty():
 		return
-	_username_label.text    = p.username
-	_join_date_label.text   = _format_join_date(p.join_date)
-	_level_value.text       = str(p.level)
-	_xp_value.text          = str(p.total_xp_earned)
-	_harvest_value.text     = str(p.harvest_count)
-	_streak_value.text      = "%d ngay" % p.login_streak
-	_flowers_value.text     = str(_count_flowers())
+	_username_label.text  = p.username
+	_level_badge.text     = "Lv. " + str(p.level)
+	_join_date_label.text = _format_join_date(p.join_date)
+	_level_value.text     = str(p.level)
+	_xp_value.text        = str(p.total_xp_earned)
+	_harvest_value.text   = str(p.harvest_count)
+	_streak_value.text    = str(p.login_streak) + " ngay"
+	_flowers_value.text   = str(_count_flowers())
 	_refresh_avatar(p.avatar_index)
 
 func _refresh_avatar(idx: int) -> void:
-	var path := "res://assets/profile/avatars/avatar_%d.png" % idx
+	var path := _avatar_path(idx)
 	if ResourceLoader.exists(path):
 		_avatar_image.texture = load(path)
 	else:
@@ -82,14 +87,14 @@ func _count_flowers() -> int:
 	return count
 
 func _load_picker_icons() -> void:
-	for i in 6:
+	for i in 7:
 		var btn := _picker_row.get_child(i) as Button
 		if not btn:
 			continue
 		var tex := btn.get_child(0) as TextureRect
 		if not tex:
 			continue
-		var path := "res://assets/profile/avatars/avatar_%d.png" % i
+		var path := _avatar_path(i)
 		if ResourceLoader.exists(path):
 			tex.texture = load(path)
 
@@ -101,13 +106,16 @@ func _format_join_date(raw: String) -> String:
 		return ""
 	return "Tham gia: %02d/%02d/%04d" % [int(dt["day"]), int(dt["month"]), int(dt["year"])]
 
-func _on_avatar_circle_input(event: InputEvent) -> void:
-	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) \
-	or (event is InputEventScreenTouch and event.pressed):
-		_avatar_picker.visible = not _avatar_picker.visible
+static func _avatar_path(idx: int) -> String:
+	return "res://assets/avartar/avartar_%d.png" % (idx + 1)
+
+func _on_toggle_picker_pressed() -> void:
+	_avatar_picker.visible = not _avatar_picker.visible
+	_toggle_picker_btn.text = "Thu gon" if _avatar_picker.visible else "Doi avatar"
 
 func _on_avatar_selected(idx: int) -> void:
 	_avatar_picker.visible = false
+	_toggle_picker_btn.text = "Doi avatar"
 	UserManager.set_avatar_async(idx)  # fire-and-forget: optimistic UI, profile_updated handles refresh
 
 func _on_dimmer_input(event: InputEvent) -> void:

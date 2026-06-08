@@ -359,7 +359,7 @@ func load_avatar_index() -> int:
 func set_avatar_async(idx: int) -> void:  # intentional: callers may fire-and-forget
 	if _avatar_in_flight:
 		return
-	idx = clampi(idx, 0, 5)
+	idx = clampi(idx, 0, 6)
 	var prev_idx := _profile.avatar_index
 	_profile.avatar_index = idx
 	save_avatar_index(idx)

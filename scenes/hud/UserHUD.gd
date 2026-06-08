@@ -36,7 +36,7 @@ func _on_profile_updated() -> void:
 
 func _refresh_avatar() -> void:
 	var idx := UserManager.get_profile().avatar_index
-	var path := "res://assets/profile/avatars/avatar_%d.png" % idx
+	var path := "res://assets/avartar/avartar_%d.png" % (idx + 1)
 	if ResourceLoader.exists(path):
 		_avatar_texture.texture = load(path)
 	else:
