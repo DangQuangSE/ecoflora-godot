@@ -3,14 +3,14 @@ extends CanvasLayer
 
 @onready var _dimmer: ColorRect    = $Dimmer
 @onready var _card: Panel          = $Card
-@onready var _close_btn: Button    = $Card/CloseBtn
-@onready var _icon: TextureRect    = $Card/Content/HBox/Icon
-@onready var _name_label: Label    = $Card/Content/HBox/InfoVBox/NameLabel
-@onready var _level_label: Label   = $Card/Content/HBox/InfoVBox/LevelLabel
-@onready var _xp_bar: ProgressBar  = $Card/Content/XPBar
-@onready var _xp_label: Label      = $Card/Content/XPLabel
-@onready var _desc_label: Label    = $Card/Content/DescLabel
-@onready var _action_btn: Button   = $Card/Content/ActionBtn
+@onready var _close_btn: Button    = $Card/Content/HeaderPanel/HBox/CloseBtn
+@onready var _icon: TextureRect    = $Card/Content/HeaderPanel/HBox/Icon
+@onready var _name_label: Label    = $Card/Content/HeaderPanel/HBox/InfoVBox/NameLabel
+@onready var _level_label: Label   = $Card/Content/HeaderPanel/HBox/InfoVBox/LevelLabel
+@onready var _xp_bar: ProgressBar  = $Card/Content/BodyMargin/BodyVBox/XPBar
+@onready var _xp_label: Label      = $Card/Content/BodyMargin/BodyVBox/XPLabel
+@onready var _desc_label: Label    = $Card/Content/BodyMargin/BodyVBox/DescLabel
+@onready var _action_btn: Button   = $Card/Content/BodyMargin/BodyVBox/ActionBtn
 
 var _current_plot_id: String = ""
 
@@ -28,9 +28,9 @@ func show_flower(plot_id: String, plant: PlantedFlower, template: FlowerTemplate
 	_refresh_plant_data(plant, template)
 	_desc_label.text = _get_description(plant.flower_template_id)
 	visible = true
-	_card.position.y = 300.0
+	_card.modulate.a = 0.0
 	var tween := create_tween()
-	tween.tween_property(_card, "position:y", 0.0, 0.22).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_card, "modulate:a", 1.0, 0.20).set_ease(Tween.EASE_OUT)
 
 func close_card() -> void:
 	visible = false

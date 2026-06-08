@@ -7,15 +7,18 @@ func parse_profile(data: Dictionary) -> UserProfile:
 		push_warning("UserService.parse_profile: empty data")
 		return UserProfile.new()
 	var p := UserProfile.new()
-	p.username   = str(data.get("username", ""))
+	p.username      = str(data.get("username", ""))
 	var total_xp: int = int(data.get("currentXp", 0))
-	var lvl: int = int(data.get("level", 1))
-	p.level      = lvl
-	p.currency   = int(data.get("currency", 0))
-	# Convert cumulative total XP to within-level XP for HUD bar display
+	var lvl: int      = int(data.get("level", 1))
+	p.level           = lvl
+	p.currency        = int(data.get("currency", 0))
 	var level_start: int = UserProfile.get_level_start_xp(lvl)
-	p.current_xp = total_xp - level_start
-	# Parse vitalityReadyAt ISO string → unix timestamp
+	p.current_xp      = total_xp - level_start
+	p.total_xp_earned = total_xp
+	p.harvest_count   = int(data.get("harvestCount", 0))
+	p.login_streak    = int(data.get("loginStreak", 0))
+	p.avatar_index    = int(data.get("avatarIndex", 0))
+	p.join_date       = str(data.get("createdAt", ""))
 	var vitality_str: String = str(data.get("vitalityReadyAt", ""))
 	if vitality_str != "" and vitality_str != "null":
 		p.vitality_ready_at = _parse_iso_to_unix(vitality_str)

@@ -8,6 +8,7 @@ const InventorySlotScene := preload("res://scenes/inventory/InventorySlot.tscn")
 @onready var _btn_all: Button              = $PanelRoot/VBox/Tabs/BtnAll
 @onready var _btn_seed: Button             = $PanelRoot/VBox/Tabs/BtnSeed
 @onready var _btn_item: Button             = $PanelRoot/VBox/Tabs/BtnItem
+@onready var _btn_decor: Button            = $PanelRoot/VBox/Tabs/BtnDecor
 @onready var _slot_grid: GridContainer     = $PanelRoot/VBox/Scroll/SlotGrid
 @onready var _empty_label: Label           = $PanelRoot/VBox/Scroll/EmptyLabel
 
@@ -24,6 +25,7 @@ func _ready() -> void:
 	_btn_all.pressed.connect(func(): _set_filter(-1))
 	_btn_seed.pressed.connect(func(): _set_filter(InventoryItem.Category.SEED))
 	_btn_item.pressed.connect(func(): _set_filter(InventoryItem.Category.CONSUMABLE))
+	_btn_decor.pressed.connect(func(): _set_filter(InventoryItem.Category.DECOR))
 	InventoryManager.inventory_updated.connect(_on_inventory_updated)
 	GardenManager.icons_registered.connect(func():
 		if visible:
@@ -56,8 +58,8 @@ func _set_filter(category: int) -> void:
 	_refresh(InventoryManager.get_inventory())
 
 func _update_tab_styles() -> void:
-	var btns := [_btn_all, _btn_seed, _btn_item]
-	var cats := [-1, InventoryItem.Category.SEED, InventoryItem.Category.CONSUMABLE]
+	var btns := [_btn_all, _btn_seed, _btn_item, _btn_decor]
+	var cats := [-1, InventoryItem.Category.SEED, InventoryItem.Category.CONSUMABLE, InventoryItem.Category.DECOR]
 	for i in range(btns.size()):
 		var is_active: bool = (_current_filter == cats[i])
 		var btn := btns[i] as Button

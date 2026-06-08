@@ -3,12 +3,14 @@ extends Control
 
 const UserProfileCardScene := preload("res://scenes/hud/UserProfileCard.tscn")
 
-@onready var _avatar: Control      = $AvatarRect
-@onready var _name_label: Label    = $NameLabel
-@onready var _level_label: Label   = $LevelLabel
-@onready var _xp_bar: ProgressBar  = $XPBar
-@onready var _coin_label: Label    = $CoinLabel
-@onready var _coin_btn: Button     = $CoinButton
+@onready var _avatar: Control           = $AvatarRect
+@onready var _avatar_texture: TextureRect = $AvatarRect/AvatarTexture
+@onready var _name_label: Label         = $NameLabel
+@onready var _level_label: Label        = $LevelLabel
+@onready var _xp_bar: ProgressBar       = $XPBar
+@onready var _coin_label: Label         = $CoinLabel
+@onready var _coin_btn: Button          = $CoinButton
+@onready var _profile_btn: Button       = $ProfileButton
 
 var _is_animating_level_up: bool = false
 var _pending_levelup_max: int = 0
@@ -19,17 +21,39 @@ func _ready() -> void:
 	UserManager.level_up.connect(_on_level_up)
 	UserManager.currency_changed.connect(_on_currency_changed)
 	_coin_btn.pressed.connect(_on_coin_tapped)
+	_profile_btn.pressed.connect(_open_profile_card)
+	UserManager.profile_updated.connect(_on_profile_updated)
 	var coin_path := "res://assets/icon/coin.png"
 	if ResourceLoader.exists(coin_path):
 		var coin_icon := get_node_or_null("CoinIcon") as TextureRect
 		if coin_icon:
 			coin_icon.texture = load(coin_path)
 	_refresh()
+	_refresh_avatar()
+
+func _on_profile_updated() -> void:
+	_refresh()
+	_refresh_avatar()
+
+func _refresh_avatar() -> void:
+	var idx := UserManager.get_profile().avatar_index
+	var path := "res://assets/avartar/avartar_%d.png" % (idx + 1)
+	if ResourceLoader.exists(path):
+		_avatar_texture.texture = load(path)
+	else:
+		_avatar_texture.texture = null
 
 func _exit_tree() -> void:
-	UserManager.xp_gained.disconnect(_on_xp_gained)
-	UserManager.level_up.disconnect(_on_level_up)
-	UserManager.currency_changed.disconnect(_on_currency_changed)
+	if UserManager.xp_gained.is_connected(_on_xp_gained):
+		UserManager.xp_gained.disconnect(_on_xp_gained)
+	if UserManager.level_up.is_connected(_on_level_up):
+		UserManager.level_up.disconnect(_on_level_up)
+	if UserManager.currency_changed.is_connected(_on_currency_changed):
+		UserManager.currency_changed.disconnect(_on_currency_changed)
+	if UserManager.profile_updated.is_connected(_on_profile_updated):
+		UserManager.profile_updated.disconnect(_on_profile_updated)
+	if _profile_card != null and is_instance_valid(_profile_card):
+		_profile_card.queue_free()
 
 func _refresh() -> void:
 	var p := UserManager.get_profile()
@@ -87,14 +111,6 @@ func _spawn_levelup_label(new_level: int) -> void:
 	if is_instance_valid(lbl):
 		lbl.queue_free()
 
-func _gui_input(event: InputEvent) -> void:
-	var is_tap: bool = (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed) \
-				   or (event is InputEventScreenTouch and event.pressed)
-	if not is_tap:
-		return
-	get_viewport().set_input_as_handled()
-	_open_profile_card()
-
 func _on_coin_tapped() -> void:
 	var hud := get_parent() as HUD
 	if hud:
@@ -105,5 +121,6 @@ func _open_profile_card() -> void:
 		_profile_card.call("open")
 		return
 	_profile_card = UserProfileCardScene.instantiate()
+	_profile_card.tree_exiting.connect(func() -> void: _profile_card = null)
 	get_tree().root.add_child(_profile_card)
 	_profile_card.call("open")

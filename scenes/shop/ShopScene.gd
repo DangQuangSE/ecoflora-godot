@@ -34,6 +34,22 @@ const _TAB_CATEGORIES := ["Seed", "Consumable", "Decoration", ""]
 
 const _ITEMS_PER_PAGE := 6
 
+const _SEED_NAME_VI: Dictionary = {
+	"anthurium":         "Hạt Hồng Môn",
+	"lotus":             "Hạt Hoa Sen",
+	"periwinkle":        "Hạt Hoa Dừa Cạn",
+	"purple_bellflower": "Hạt Hoa Chuông Tím",
+	"rose":              "Hạt Hoa Hồng",
+	"sun_flower":        "Hạt Hướng Dương",
+	"tulip":             "Hạt Hoa Tulip",
+}
+
+const _TOOL_NAME_VI: Dictionary = {
+	"watering can": "Bình Tưới Nước",
+	"fertilizer":   "Phân Bón",
+	"pesticide":    "Thuốc Trừ Sâu",
+}
+
 var _tab_btns: Array = []
 var _current_items: Array[ShopItem] = []
 var _current_page: int = 0
@@ -41,7 +57,6 @@ var _current_tab: int = 0
 var _pending_item: ShopItem = null
 var _pending_qty: int = 1
 var _toast_tween: Tween = null
-var _loading_tab: int = -1
 
 var _style_toast_ok  := StyleBoxFlat.new()
 var _style_toast_err := StyleBoxFlat.new()
@@ -113,7 +128,10 @@ func _on_tab_pressed(idx: int) -> void:
 	_set_loading(false)
 	if _current_tab != idx:
 		return
-	_current_items = items
+	var filtered := _filter_known_seeds(items)
+	for item: ShopItem in filtered:
+		_localize_item(item)
+	_current_items = filtered
 	_render_page()
 
 func _set_loading(on: bool) -> void:
@@ -231,6 +249,7 @@ func _on_confirm_purchase() -> void:
 		_show_toast("Mua thất bại!", false)
 	else:
 		_show_toast("Đã mua %s ×%d!" % [item.name, qty], true)
+		await InventoryManager.refresh_async()
 		_refresh_card_affordability()
 
 func _show_toast(message: String, success: bool) -> void:
@@ -248,6 +267,42 @@ func _show_toast(message: String, success: bool) -> void:
 func show_panel(tab_idx: int = 0) -> void:
 	show()
 	_on_tab_pressed(tab_idx)
+
+func _filter_known_seeds(items: Array[ShopItem]) -> Array[ShopItem]:
+	var result: Array[ShopItem] = []
+	for item: ShopItem in items:
+		if item.category == "Seed" and not _SEED_NAME_VI.has(item.name.to_lower()):
+			continue
+		result.append(item)
+	return result
+
+func _localize_item(item: ShopItem) -> void:
+	var name_lower := item.name.to_lower()
+	match item.category:
+		"Seed":
+			item.name = _SEED_NAME_VI.get(name_lower, item.name)
+			item.description = "Hạt giống hoa, trồng vào ô đất trống"
+		"Consumable":
+			item.name = _TOOL_NAME_VI.get(name_lower, item.name)
+			var uuid := item.id.substr(len("item:"))
+			item.description = _tool_desc(uuid)
+
+func _tool_desc(uuid: String) -> String:
+	var cache: Dictionary = GardenManager.get_item_cache().get(uuid, {})
+	if cache.is_empty():
+		return ""
+	var xp: int = cache.get("received_exp", 0)
+	var cd: int = cache.get("cooldown_time", 0)
+	return "+%d XP · %s" % [xp, _fmt_cd(cd)]
+
+func _fmt_cd(seconds: int) -> String:
+	if seconds <= 0:
+		return "không hồi chiêu"
+	if seconds % 3600 == 0:
+		return "hồi chiêu %d giờ" % int(float(seconds) / 3600.0)
+	if seconds % 60 == 0:
+		return "hồi chiêu %d phút" % int(float(seconds) / 60.0)
+	return "hồi chiêu %d giây" % seconds
 
 func _on_bg_dimmer_input(event: InputEvent) -> void:
 	var is_tap: bool = (event is InputEventMouseButton and (event as InputEventMouseButton).pressed) \
