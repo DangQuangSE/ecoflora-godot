@@ -126,11 +126,45 @@ size_flags_horizontal = 3
 alignment = 1
 theme_override_constants/separation = 4
 
-[node name="UsernameLabel" type="Label" parent="Card/Content/AvatarRow/InfoCol"]
+[node name="UsernameBtn" type="Button" parent="Card/Content/AvatarRow/InfoCol"]
 layout_mode = 2
+flat = true
 theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(0.22, 0.10, 0.03, 1)
+theme_override_colors/font_hover_color = Color(0.50, 0.28, 0.06, 1)
 text = ""
+text_overrun_behavior = 3
+
+[node name="RenameEdit" type="LineEdit" parent="Card/Content/AvatarRow/InfoCol"]
+visible = false
+layout_mode = 2
+custom_minimum_size = Vector2(0, 26)
+theme_override_font_sizes/font_size = 13
+placeholder_text = "Nhập tên mới..."
+max_length = 24
+
+[node name="RenameActRow" type="HBoxContainer" parent="Card/Content/AvatarRow/InfoCol"]
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="RenameCancelBtn" type="Button" parent="Card/Content/AvatarRow/InfoCol/RenameActRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 22)
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(1, 0.9, 0.9, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_close")
+text = "Hủy"
+
+[node name="RenameSaveBtn" type="Button" parent="Card/Content/AvatarRow/InfoCol/RenameActRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+custom_minimum_size = Vector2(0, 22)
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_toggle")
+text = "Lưu"
 
 [node name="LevelBadge" type="Label" parent="Card/Content/AvatarRow/InfoCol"]
 layout_mode = 2
