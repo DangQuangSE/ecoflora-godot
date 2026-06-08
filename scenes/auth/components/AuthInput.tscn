@@ -1,0 +1,42 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8r4phuv5f66p"]
+
+[ext_resource type="Script" path="res://scenes/auth/components/AuthInput.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/icon/eye_closed.svg" id="2_eye_closed"]
+
+[node name="AuthInput" type="Control"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+script = ExtResource("1_script")
+
+[node name="Field" type="LineEdit" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="EyeButton" type="TextureButton" parent="."]
+visible = false
+custom_minimum_size = Vector2(34, 34)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -38.0
+offset_top = 2.0
+offset_right = -4.0
+offset_bottom = 36.0
+grow_horizontal = 0
+grow_vertical = 2
+focus_mode = 0
+texture_normal = ExtResource("2_eye_closed")
+texture_pressed = ExtResource("2_eye_closed")
+texture_hover = ExtResource("2_eye_closed")
+stretch_mode = 3

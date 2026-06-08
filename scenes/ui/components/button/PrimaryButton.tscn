@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="1_global_theme"]
+[ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="2_gdscript"]
+
+[node name="PrimaryButton" type="Button"]
+custom_minimum_size = Vector2(0, 48)
+size_flags_horizontal = 3
+theme = ExtResource("1_global_theme")
+text = "Button"
+script = ExtResource("2_gdscript")

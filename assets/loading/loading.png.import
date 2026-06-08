@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvtwuucb8im40"
-path="res://.godot/imported/login_button.png-15148af8db5b0cc6de06b38b3f317ebb.ctex"
+uid="uid://b7hqlg1vst7bh"
+path="res://.godot/imported/loading.png-fa235198eddd978aa87c5498416b9908.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/button/login_button.png"
-dest_files=["res://.godot/imported/login_button.png-15148af8db5b0cc6de06b38b3f317ebb.ctex"]
+source_file="res://assets/loading/loading.png"
+dest_files=["res://.godot/imported/loading.png-fa235198eddd978aa87c5498416b9908.ctex"]
 
 [params]
 

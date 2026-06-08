@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+LoadingScreen="*res://autoloads/LoadingScreen.gd"
 SceneTransition="*res://autoloads/SceneTransition.gd"
 InteractionManager="*res://autoloads/InteractionManager.gd"
 GardenManager="*res://autoloads/GardenManager.gd"
@@ -35,6 +36,10 @@ window/size/viewport_height=920
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
+
+[gui]
+
+theme/custom="res://themes/game_theme.tres"
 
 [physics]
 

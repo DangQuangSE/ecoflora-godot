@@ -19,7 +19,7 @@ signal register_failed(reason: String)
 signal profile_updated
 
 @export var use_mock: bool = false
-@export var base_url: String = "http://localhost:5000"
+@export var base_url: String = "http://20.40.58.246:500"
 
 const _XP_TABLE: Dictionary = {
 	"harvest_anthurium_bloom":         100,
@@ -145,6 +145,7 @@ func login_async(account: String, password: String) -> bool:
 	var body: String = _auth_service.build_login_body(account, password)
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
 	_request_in_flight = true
+	_show_loading()
 
 	var error: int = _http.request(
 		base_url + "/api/auth/login",
@@ -154,11 +155,13 @@ func login_async(account: String, password: String) -> bool:
 	)
 	if error != OK:
 		_request_in_flight = false
+		_hide_loading()
 		push_warning("UserManager.login_async: HTTPRequest.request() failed — %d" % error)
 		return false
 
 	var raw: Variant = await _http.request_completed
 	_request_in_flight = false
+	_hide_loading()
 
 	var http_result: int = raw[0]
 	var status_code: int = raw[1]
@@ -225,6 +228,7 @@ func register_async(first_name: String, last_name: String,
 		first_name, last_name, account, password)
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
 	_register_in_flight = true
+	_show_loading()
 
 	var error: int = _http_register.request(
 		base_url + "/api/auth/register",
@@ -234,11 +238,13 @@ func register_async(first_name: String, last_name: String,
 	)
 	if error != OK:
 		_register_in_flight = false
+		_hide_loading()
 		push_warning("UserManager.register_async: HTTPRequest.request() failed — %d" % error)
 		return false
 
 	var raw: Variant = await _http_register.request_completed
 	_register_in_flight = false
+	_hide_loading()
 
 	var http_result: int = raw[0]
 	var status_code: int = raw[1]
@@ -538,3 +544,13 @@ func _exit_tree() -> void:
 		_rename_http.cancel_request()
 		_rename_in_flight = false
 	_vitality_poll_timer.stop()
+
+func _show_loading() -> void:
+	var loading := get_node_or_null("/root/LoadingScreen")
+	if loading:
+		loading.show_loading()
+
+func _hide_loading() -> void:
+	var loading := get_node_or_null("/root/LoadingScreen")
+	if loading:
+		loading.hide_loading()
