@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dxepsc0f7572s" path="res://scenes/hud/VitalityBar.tscn" id="5_vbar"]
 [ext_resource type="Texture2D" uid="uid://db55ccf5x01by" path="res://assets/icon/sickle.png" id="6_yixhj"]
 [ext_resource type="PackedScene" uid="uid://shopscene001" path="res://scenes/shop/ShopScene.tscn" id="7_shopscene"]
+[ext_resource type="Texture2D" uid="uid://bjci1pjvrftfs" path="res://assets/icon/recall_deco.png" id="8_recall"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_invbtn"]
 bg_color = Color(0.1, 0.14, 0.08, 0.88)
@@ -247,5 +248,24 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_savebtn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_savebtn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_savebtn")
 text = "Save"
+
+[node name="RecallDecoButton" type="Button" parent="." unique_id=700000001]
+visible = false
+offset_left = 10.0
+offset_top = 220.0
+offset_right = 94.0
+offset_bottom = 304.0
+flat = true
+
+[node name="RecallIcon" type="TextureRect" parent="RecallDecoButton" unique_id=700000002]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 76.0
+offset_bottom = 76.0
+mouse_filter = 2
+texture = ExtResource("8_recall")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]

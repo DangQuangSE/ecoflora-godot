@@ -90,17 +90,7 @@ func _on_deco_recalled(placement_id: String) -> void:
 			return
 
 func _on_deco_tapped(placement_id: String) -> void:
-	if DecoManager.edit_mode:
-		return
-	var dialog := ConfirmationDialog.new()
-	dialog.dialog_text = "Recall this decoration?"
-	dialog.confirmed.connect(func() -> void:
-		DecoManager.recall_deco_async(placement_id)
-		dialog.queue_free()
-	)
-	dialog.canceled.connect(dialog.queue_free)
-	get_tree().root.add_child(dialog)
-	dialog.popup_centered()
+	_hud.show_recall_btn(placement_id)
 
 func _on_deco_drag_ended(placement_id: String, new_pos: Vector2) -> void:
 	if _deco_layer == null:

@@ -45,7 +45,7 @@ region_enabled = true
 region_rect = Rect2(71.88599, 111.63989, 928.114, 678.8663)
 
 [node name="DecoLayer" type="Node2D" parent="." unique_id=3000000001]
-z_index = 3
+y_sort_enabled = true
 
 [node name="PlotAnchors" type="Node2D" parent="." unique_id=2000000000]
 

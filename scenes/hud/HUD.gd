@@ -15,6 +15,9 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _shop_btn: Button          = $ShopButton
 @onready var _edit_btn: Button          = $EditModeButton
 @onready var _save_btn: Button          = $SaveButton
+@onready var _recall_btn: Button        = $RecallDecoButton
+
+var _recall_placement_id: String = ""
 
 func _ready() -> void:
 	_joystick.direction_changed.connect(_on_joystick_direction)
@@ -37,6 +40,9 @@ func _ready() -> void:
 				shop_node.texture = load(shop_icon_path)
 	_edit_btn.visible = false
 	_save_btn.visible = false
+	_recall_btn.visible = false
+	_recall_btn.pressed.connect(_on_recall_pressed)
+	DecoManager.deco_recalled.connect(func(_id: String) -> void: hide_recall_btn())
 
 func _on_joystick_direction(dir: Vector2) -> void:
 	joystick_direction_changed.emit(dir)
@@ -68,3 +74,18 @@ func open_shop(tab_idx: int = 0) -> void:
 
 func _open_shop() -> void:
 	open_shop(0)
+
+func show_recall_btn(placement_id: String) -> void:
+	_recall_placement_id = placement_id
+	_recall_btn.visible = true
+
+func hide_recall_btn() -> void:
+	_recall_placement_id = ""
+	_recall_btn.visible = false
+
+func _on_recall_pressed() -> void:
+	if _recall_placement_id.is_empty():
+		return
+	var pid := _recall_placement_id
+	hide_recall_btn()
+	DecoManager.recall_deco_async(pid)
