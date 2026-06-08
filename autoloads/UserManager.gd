@@ -17,7 +17,7 @@ signal login_failed(reason: String)
 signal profile_updated
 
 @export var use_mock: bool = false
-@export var base_url: String = "http://localhost:5226"
+@export var base_url: String = "http://20.40.58.246:5000"
 
 const _XP_TABLE: Dictionary = {
 	"harvest_anthurium_bloom":         100,
@@ -104,7 +104,8 @@ func _ready() -> void:
 
 	if not use_mock and not base_url.begins_with("https://") \
 			and not base_url.begins_with("http://localhost") \
-			and not base_url.begins_with("http://127."):
+			and not base_url.begins_with("http://127.") \
+			and not base_url.begins_with("http://20.40.58.246"):
 		push_warning("UserManager: base_url is HTTP — tokens transmitted in plaintext")
 
 	GardenManager.harvest_completed.connect(_on_harvest_completed)
