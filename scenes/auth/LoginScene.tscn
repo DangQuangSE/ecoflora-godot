@@ -141,12 +141,22 @@ theme_override_styles/disabled = SubResource("StyleBoxTexture_btn_normal")
 theme_override_styles/focus = SubResource("StyleBoxTexture_btn_normal")
 text = "Đăng nhập"
 
+[node name="SuccessLabel" type="Label" parent="LoginFrame/FormArea/FormContent" unique_id=1732363259]
+visible = false
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 3
+
 [node name="ErrorLabel" type="Label" parent="LoginFrame/FormArea/FormContent" unique_id=1732363260]
 visible = false
 layout_mode = 2
 horizontal_alignment = 1
 autowrap_mode = 3
 
+[node name="RegisterLink" type="Button" parent="LoginFrame/FormArea/FormContent" unique_id=1732363261]
+layout_mode = 2
+flat = true
+text = "Chưa có tài khoản? Đăng ký"
 
 [node name="LoadingOverlay" type="ColorRect" parent="." unique_id=2132860546]
 visible = false
