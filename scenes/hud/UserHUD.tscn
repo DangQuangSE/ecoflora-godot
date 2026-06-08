@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cfeh3mg5fb0xm" path="res://assets/icon/coin.png" id="6_6utp2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatar"]
-bg_color = Color(0.35, 0.55, 0.88, 1)
+bg_color = Color(0.92, 0.84, 0.64, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -64,6 +64,14 @@ offset_bottom = 96.5
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_avatar")
 
+[node name="AvatarTexture" type="TextureRect" parent="AvatarRect"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
 [node name="LevelLabel" type="Label" parent="." unique_id=1506605877]
 layout_mode = 0
 offset_left = 124.750015
@@ -117,6 +125,15 @@ offset_bottom = 149.0
 theme_override_colors/font_color = Color(1, 0.88, 0.3, 1)
 theme_override_font_sizes/font_size = 17
 text = "0"
+
+[node name="ProfileButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 30.0
+offset_right = 285.0
+offset_bottom = 97.0
+flat = true
+focus_mode = 0
 
 [node name="CoinButton" type="Button" parent="."]
 layout_mode = 0

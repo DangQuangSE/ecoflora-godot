@@ -36,7 +36,13 @@ func _load_icon(item: ShopItem) -> void:
 	if not item.image_url.is_empty() and ItemIconRegistry.has_icon(item.image_url):
 		_item_icon.texture = ItemIconRegistry.get_icon(item.image_url)
 		return
-	_item_icon.texture = ItemIconRegistry.get_icon(item.id)
+	# Icons are registered by bare UUID — strip "seed:" / "item:" / "deco:" prefix
+	var lookup := item.id
+	for pfx: String in ["seed:", "item:", "deco:"]:
+		if item.id.begins_with(pfx):
+			lookup = item.id.substr(pfx.length())
+			break
+	_item_icon.texture = ItemIconRegistry.get_icon(lookup)
 
 func _ready() -> void:
 	_buy_btn.pressed.connect(_on_tapped)
