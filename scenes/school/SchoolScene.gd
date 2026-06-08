@@ -110,6 +110,7 @@ func _on_deco_drag_ended(placement_id: String, new_pos: Vector2) -> void:
 		if dn != null and dn.placement_data != null and dn.placement_data.id == placement_id:
 			dn.placement_data.position_x = new_pos.x
 			dn.placement_data.position_y = new_pos.y
+			DecoManager.batch_move_async([{"id": placement_id, "x": new_pos.x, "y": new_pos.y}])
 			return
 
 func _on_batch_save_failed() -> void:

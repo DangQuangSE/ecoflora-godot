@@ -182,6 +182,16 @@ func batch_move_current_async() -> void:
 			moves.append({"id": dp.id, "x": dp.position_x, "y": dp.position_y})
 	await batch_move_async(moves)
 
+func has_deco_at(world_pos: Vector2) -> bool:
+	const HALF := 50.0
+	for p: Variant in _placements:
+		var dp := p as DecoPlacement
+		if dp != null:
+			var rect := Rect2(dp.position_x - HALF, dp.position_y - HALF, HALF * 2.0, HALF * 2.0)
+			if rect.has_point(world_pos):
+				return true
+	return false
+
 func _find_placement(placement_id: String) -> DecoPlacement:
 	for p: Variant in _placements:
 		var dp := p as DecoPlacement

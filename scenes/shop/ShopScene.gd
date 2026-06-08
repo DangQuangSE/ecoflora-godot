@@ -231,6 +231,7 @@ func _on_confirm_purchase() -> void:
 		_show_toast("Mua thất bại!", false)
 	else:
 		_show_toast("Đã mua %s ×%d!" % [item.name, qty], true)
+		await InventoryManager.refresh_async()
 		_refresh_card_affordability()
 
 func _show_toast(message: String, success: bool) -> void:

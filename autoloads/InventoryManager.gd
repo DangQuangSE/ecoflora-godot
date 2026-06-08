@@ -25,6 +25,9 @@ func _ready() -> void:
 func _on_login_succeeded() -> void:
 	await _fetch_inventory()
 
+func refresh_async() -> void:
+	await _fetch_inventory()
+
 func _fetch_inventory() -> void:
 	if _request_in_flight:
 		return
