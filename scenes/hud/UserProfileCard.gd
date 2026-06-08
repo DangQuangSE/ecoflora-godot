@@ -1,15 +1,21 @@
 class_name UserProfileCard
 extends CanvasLayer
 
-const _CARD_H_SMALL: float = 300.0
-const _CARD_H_LARGE: float = 420.0
+const _CARD_H_SMALL: float  = 300.0
+const _CARD_H_LARGE: float  = 420.0
 
 @onready var _dimmer: ColorRect             = $Dimmer
 @onready var _card: Panel                   = $Card
 @onready var _close_btn: Button             = $Card/CloseBtn
 @onready var _avatar_frame: Panel           = $Card/Content/AvatarRow/AvatarFrame
 @onready var _avatar_image: TextureRect     = $Card/Content/AvatarRow/AvatarFrame/AvatarImage
-@onready var _username_label: Label         = $Card/Content/AvatarRow/InfoCol/UsernameLabel
+@onready var _username_row: HBoxContainer   = $Card/Content/AvatarRow/InfoCol/UsernameRow
+@onready var _username_label: Label         = $Card/Content/AvatarRow/InfoCol/UsernameRow/UsernameLabel
+@onready var _edit_btn: Button              = $Card/Content/AvatarRow/InfoCol/UsernameRow/EditBtn
+@onready var _rename_row: HBoxContainer     = $Card/Content/AvatarRow/InfoCol/RenameRow
+@onready var _rename_edit: LineEdit         = $Card/Content/AvatarRow/InfoCol/RenameRow/RenameEdit
+@onready var _rename_save_btn: Button       = $Card/Content/AvatarRow/InfoCol/RenameRow/RenameSaveBtn
+@onready var _rename_cancel_btn: Button     = $Card/Content/AvatarRow/InfoCol/RenameRow/RenameCancelBtn
 @onready var _level_badge: Label            = $Card/Content/AvatarRow/InfoCol/LevelBadge
 @onready var _join_date_label: Label        = $Card/Content/AvatarRow/InfoCol/JoinDateLabel
 @onready var _level_value: Label            = $Card/Content/RowLevel/LevelValue
@@ -30,6 +36,10 @@ func _ready() -> void:
 	_dimmer.gui_input.connect(_on_dimmer_input)
 	_avatar_frame.gui_input.connect(_on_avatar_frame_input)
 	_confirm_btn.pressed.connect(_on_confirm_avatar)
+	_edit_btn.pressed.connect(_enter_rename_mode)
+	_rename_save_btn.pressed.connect(_on_rename_save)
+	_rename_cancel_btn.pressed.connect(_exit_rename_mode)
+	_rename_edit.text_submitted.connect(func(_t: String) -> void: _on_rename_save())
 	_load_picker_icons()
 	for i in 7:
 		var btn := _picker_row.get_child(i) as Button
@@ -117,6 +127,25 @@ func _format_join_date(raw: String) -> String:
 
 static func _avatar_path(idx: int) -> String:
 	return "res://assets/avartar/avartar_%d.png" % (idx + 1)
+
+func _enter_rename_mode() -> void:
+	if _avatar_picker.visible:
+		return
+	_username_row.visible = false
+	_rename_edit.text = UserManager.get_profile().username
+	_rename_row.visible = true
+	_rename_edit.grab_focus()
+	_rename_edit.select_all()
+
+func _exit_rename_mode() -> void:
+	_rename_row.visible = false
+	_username_row.visible = true
+
+func _on_rename_save() -> void:
+	var new_name := _rename_edit.text.strip_edges()
+	_exit_rename_mode()
+	if not new_name.is_empty() and new_name != UserManager.get_profile().username:
+		UserManager.set_username_async(new_name)
 
 func _on_avatar_frame_input(event: InputEvent) -> void:
 	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) \

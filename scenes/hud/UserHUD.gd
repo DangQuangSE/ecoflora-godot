@@ -32,6 +32,7 @@ func _ready() -> void:
 	_refresh_avatar()
 
 func _on_profile_updated() -> void:
+	_refresh()
 	_refresh_avatar()
 
 func _refresh_avatar() -> void:
