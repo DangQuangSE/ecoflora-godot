@@ -19,6 +19,7 @@ const _DRAG_THRESHOLD: float = 12.0
 const _HOLD_DURATION: float = 0.8
 const _DISPLAY_PX: float = 100.0
 const _DRAG_SCALE: float = 1.15
+const _LARGE_SLUGS: PackedStringArray = ["warterfall", "warter_tower"]
 
 func _ready() -> void:
 	_area = $Area2D
@@ -29,7 +30,8 @@ func _ready() -> void:
 	var tex := ItemIconRegistry.get_icon(placement_data.decor_slug)
 	texture = tex
 	if tex != null:
-		_base_scale = _DISPLAY_PX / maxf(tex.get_width(), tex.get_height())
+		var display_px := _DISPLAY_PX * (4.0 if placement_data.decor_slug in _LARGE_SLUGS else 1.0)
+		_base_scale = display_px / maxf(tex.get_width(), tex.get_height())
 		scale = Vector2(_base_scale, _base_scale)
 		var rect_shape := RectangleShape2D.new()
 		rect_shape.size = tex.get_size()
