@@ -54,13 +54,30 @@ Vì WeatherManager là autoload, Inspector của nó xuất hiện khi chọn no
 
 | Trường | Kiểu | Giá trị mặc định | Mô tả |
 |--------|------|-----------------|-------|
-| `Use Mock` | bool | `true` | Dùng MockWeatherService (tắt HTTP thật) |
-| `Mock Condition` | Condition | `SUNNY` | Điều kiện thời tiết giả: SUNNY / CLOUDY / RAINY / STORM |
-| `Weather Endpoint` | String | `""` | URL API thật — để trống khi dùng mock |
+| `Use Mock` | bool | `false` | `false` = gọi BE thật; `true` = dùng MockWeatherService (dev offline) |
+| `Mock Condition` | Condition | `SUNNY` | Chỉ dùng khi `Use Mock = true`: SUNNY / CLOUDY / RAINY / STORM |
+| `Weather Endpoint` | String | `""` | Override URL; để trống → tự dùng `{UserManager.base_url}/api/weather/current` |
 
-**Để test từng loại thời tiết:**
-- Giữ `Use Mock = true`
+**Để test từng loại thời tiết (mock):**
+- Bật `Use Mock = true`
 - Thay `Mock Condition` thành `RAINY` hoặc `STORM` rồi xem hiệu ứng ngay
+
+---
+
+## 3b. Kết nối API thật (BE)
+
+Mặc định game đã gọi BE (`Use Mock = false`). Làm theo các bước sau:
+
+1. Đảm bảo BE chạy và OpenWeather key hợp lệ (`OPENWEATHER_*` trong `API/.env`)
+2. Kiểm tra `UserManager.base_url` trỏ đúng server (mặc định `http://20.40.58.246:5000`)
+3. Chạy game (F5) — `WeatherManager` tự gọi `GET /api/weather/current` khi khởi động
+4. Tab **Output**: không có warning `parse_response` hay `envelope unwrap failed`
+5. Sau khi deploy BE mới mapping logic: gọi `DELETE /api/weather/cache` (Admin JWT) để xóa cache cũ
+
+| Trường Inspector | Giá trị production |
+|------------------|-------------------|
+| `Use Mock` | `false` |
+| `Weather Endpoint` | để trống (auto) |
 
 ---
 
@@ -94,7 +111,8 @@ Tính năng này không dùng TileMapLayer. Bỏ qua bước này.
 Sau khi cấu hình xong, chạy game và kiểm tra:
 
 - [ ] Game khởi động không có lỗi GDScript liên quan đến WeatherManager hay WeatherOverlay
-- [ ] Đổi `Mock Condition = RAINY` → thấy hạt mưa rơi trên màn hình
+- [ ] Với `Use Mock = false`: overlay phản ánh thời tiết thật từ BE (ví dụ `cloudy` → overlay xám)
+- [ ] Đổi `Mock Condition = RAINY` (khi `Use Mock = true`) → thấy hạt mưa rơi trên màn hình
 - [ ] Đổi `Mock Condition = STORM` → thấy mưa **và** gió (hạt nằm ngang)
 - [ ] Đổi `Mock Condition = CLOUDY` → overlay màu xám nhạt (không có hạt)
 - [ ] Đổi `Mock Condition = SUNNY` → overlay trong suốt hoàn toàn
@@ -107,7 +125,9 @@ Sau khi cấu hình xong, chạy game và kiểm tra:
 | Triệu chứng | Nguyên nhân | Cách fix |
 |-------------|-------------|----------|
 | `Invalid get index 'RainParticles' on base 'null'` khi khởi động | WeatherOverlay.tscn thiếu node `RainParticles` | Mở `WeatherOverlay.tscn`, thêm node `CPUParticles2D` đặt tên đúng `RainParticles` |
-| Không thấy mưa dù đã chọn RAINY | `Use Mock = false` nhưng endpoint trống | Đổi `Use Mock = true` trong Inspector |
+| Không thấy mưa dù trời mưa thật | `Use Mock = true` hoặc parse BE fail | Tắt mock; kiểm tra Output warnings; clear Redis cache BE |
+| `parse_response: envelope unwrap failed` | BE trả lỗi hoặc format sai | Gọi `GET /api/weather/current` trên Swagger, kiểm tra `isSuccess` và `data` |
+| Không thấy mưa dù đã chọn RAINY (mock) | `Use Mock = false` | Bật `Use Mock = true` trong Inspector |
 | `WeatherManager` không xuất hiện trong Remote tree | Chưa đăng ký autoload | Làm lại Mục 2 |
 | Lỗi `Parse Error: WeatherState` không tìm thấy | `domain/WeatherState.gd` bị xóa hoặc sai đường dẫn | Kiểm tra file tồn tại tại `res://domain/WeatherState.gd` |
 | Hiệu ứng thời tiết biến mất khi đổi scene | WeatherManager chưa được đăng ký autoload đúng cách | Kiểm tra autoload list trong Project Settings, đảm bảo `WeatherManager` có trong danh sách |

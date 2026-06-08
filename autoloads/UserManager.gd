@@ -14,6 +14,8 @@ signal vitality_claimed(reward_type: String, reward_amount: int)
 signal login_required
 signal login_succeeded
 signal login_failed(reason: String)
+signal register_succeeded
+signal register_failed(reason: String)
 signal profile_updated
 
 @export var use_mock: bool = false
@@ -36,6 +38,7 @@ var _user_service  # UserService
 var _vitality_service  # VitalityService
 var _shop_service      # ShopService
 var _http: HTTPRequest
+var _http_register: HTTPRequest
 var _http_profile: HTTPRequest
 var _vitality_http: HTTPRequest
 var _vitality_claim_http: HTTPRequest
@@ -45,6 +48,7 @@ var _vitality_poll_timer: Timer
 var _avatar_http: HTTPRequest
 var _rename_http: HTTPRequest
 var _request_in_flight: bool = false
+var _register_in_flight: bool = false
 var _profile_in_flight: bool = false
 var _claim_in_flight: bool = false
 var _purchase_in_flight: bool = false
@@ -52,6 +56,7 @@ var _avatar_in_flight: bool = false
 var _rename_in_flight: bool = false
 
 var shop_open_tab: int = 0
+var _registration_success_message: String = ""
 
 func _ready() -> void:
 	_token_store  = _TokenStoreScript.new()
@@ -61,6 +66,10 @@ func _ready() -> void:
 	_http = HTTPRequest.new()
 	_http.timeout = 10.0
 	add_child(_http)
+
+	_http_register = HTTPRequest.new()
+	_http_register.timeout = 10.0
+	add_child(_http_register)
 
 	_http_profile = HTTPRequest.new()
 	_http_profile.timeout = 10.0
@@ -195,6 +204,79 @@ func login_async(account: String, password: String) -> bool:
 	if not use_mock:
 		fetch_profile_async()
 	login_succeeded.emit()
+	return true
+
+func take_registration_success_message() -> String:
+	var msg := _registration_success_message
+	_registration_success_message = ""
+	return msg
+
+func register_async(first_name: String, last_name: String,
+		account: String, password: String) -> bool:
+	if use_mock:
+		_registration_success_message = "Đăng ký thành công."
+		register_succeeded.emit()
+		return true
+
+	if _register_in_flight:
+		push_warning("UserManager.register_async: request already in flight")
+		return false
+
+	var body: String = _auth_service.build_register_body(
+		first_name, last_name, account, password)
+	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
+	_register_in_flight = true
+
+	var error: int = _http_register.request(
+		base_url + "/api/auth/register",
+		headers,
+		HTTPClient.METHOD_POST,
+		body
+	)
+	if error != OK:
+		_register_in_flight = false
+		push_warning("UserManager.register_async: HTTPRequest.request() failed — %d" % error)
+		return false
+
+	var raw: Variant = await _http_register.request_completed
+	_register_in_flight = false
+
+	var http_result: int = raw[0]
+	var status_code: int = raw[1]
+	var body_bytes: PackedByteArray = raw[3]
+
+	if http_result != HTTPRequest.RESULT_SUCCESS:
+		push_warning("UserManager.register_async: network error %d" % http_result)
+		register_failed.emit("Lỗi kết nối. Kiểm tra mạng và thử lại.")
+		return false
+
+	if status_code == 400:
+		var msg: String = _parse_error_message(body_bytes)
+		register_failed.emit(msg if msg else "Thông tin đăng ký không hợp lệ.")
+		return false
+
+	if status_code != 200:
+		register_failed.emit("Lỗi máy chủ (%d). Vui lòng thử lại sau." % status_code)
+		return false
+
+	var json := JSON.new()
+	if json.parse(body_bytes.get_string_from_utf8()) != OK:
+		push_warning("UserManager.register_async: JSON parse error")
+		register_failed.emit("Phản hồi không hợp lệ từ máy chủ.")
+		return false
+
+	var data: Variant = json.get_data()
+	if not data is Dictionary:
+		register_failed.emit("Phản hồi không hợp lệ từ máy chủ.")
+		return false
+
+	var success_msg: String = _auth_service.parse_register_success(data)
+	if success_msg.is_empty():
+		register_failed.emit("Đăng ký thất bại.")
+		return false
+
+	_registration_success_message = success_msg
+	register_succeeded.emit()
 	return true
 
 func fetch_profile_async() -> void:
@@ -438,6 +520,9 @@ func _exit_tree() -> void:
 	if _request_in_flight:
 		_http.cancel_request()
 		_request_in_flight = false
+	if _register_in_flight:
+		_http_register.cancel_request()
+		_register_in_flight = false
 	if _profile_in_flight:
 		_http_profile.cancel_request()
 		_profile_in_flight = false

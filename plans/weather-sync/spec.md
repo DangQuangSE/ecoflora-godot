@@ -55,11 +55,11 @@ Game hiện không phản ánh thời tiết và thời gian thực, khiến tr�
 
 ## Success Criteria
 
-- [ ] GardenScene hiện rain particles khi MockWeatherService.condition = RAINY
-- [ ] STORM hiện cả rain lẫn wind particles đồng thời
-- [ ] DayNightOverlay tối lên khi is_day = false (kiểm tra bằng cách set sunset_unix = current time - 1)
-- [ ] WeatherManager không crash khi WeatherService trả về null/timeout
-- [ ] Thay 1 dòng `MockWeatherService` → `WeatherService` trong WeatherManager là đủ để dùng real API
+- [x] GardenScene hiện rain particles khi MockWeatherService.condition = RAINY
+- [x] STORM hiện cả rain lẫn wind particles đồng thời
+- [x] DayNightOverlay tối lên khi is_day = false (kiểm tra bằng cách set sunset_unix = current time - 1)
+- [x] WeatherManager không crash khi WeatherService trả về null/timeout
+- [x] `use_mock = false` + BE endpoint → game parse `ApiResponse` và hiển thị thời tiết thật
 
 ---
 
@@ -68,19 +68,18 @@ Game hiện không phản ánh thời tiết và thời gian thực, khiến tr�
 - Weather ảnh hưởng gameplay (XP, growth rate, cooldown) — P3
 - SchoolScene / ClassroomScene có WeatherOverlay — thêm sau khi GardenScene ổn
 - Smooth camera shake khi bão
-- Snow / fog condition
-- Backend implementation của weather API
+- Snow / fog condition (BE maps Snow/Fog → `cloudy`)
 
 ---
 
 ## Assumptions
 
-- BE sẽ trả JSON với ít nhất: `condition` (string), `sunrise` (Unix int UTC), `sunset` (Unix int UTC).
+- BE trả JSON envelope với `data.condition` (`sunny`|`cloudy`|`rainy`|`storm`), `data.sunrise`, `data.sunset` (Unix UTC). Contract: `plans/weather-be-integration/plan.md`.
 - Godot `Time.get_unix_time_from_system()` đủ chính xác để so sánh với sunrise/sunset UTC.
 - GPUParticles2D hoạt động tốt trên Android với mobile renderer (đã dùng trong project).
 
 ---
 
-## [NEEDS CLARIFICATION]
+## JSON Contract (resolved)
 
-- [ ] Format JSON chính xác của BE endpoint (field names, condition string values) — điền khi BE sẵn sàng.
+See `plans/weather-be-integration/plan.md` — frozen contract BE → Godot.
