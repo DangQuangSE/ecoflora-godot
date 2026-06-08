@@ -25,10 +25,15 @@ func _ready() -> void:
 	_dimmer.gui_input.connect(_on_dimmer_input)
 	_toggle_picker_btn.pressed.connect(_on_toggle_picker_pressed)
 	_load_picker_icons()
+	var connected_count := 0
 	for i in 7:
 		var btn := _picker_row.get_child(i) as Button
 		if btn:
 			btn.pressed.connect(_on_avatar_selected.bind(i))
+			connected_count += 1
+		else:
+			push_warning("UserProfileCard._ready: picker child %d is not a Button (got %s)" % [i, str(_picker_row.get_child(i))])
+	push_warning("UserProfileCard._ready: connected %d picker buttons, picker_row children=%d" % [connected_count, _picker_row.get_child_count()])
 	UserManager.profile_updated.connect(_refresh_data)
 
 func _exit_tree() -> void:
@@ -73,7 +78,9 @@ func _refresh_data() -> void:
 
 func _refresh_avatar(idx: int) -> void:
 	var path := _avatar_path(idx)
-	if ResourceLoader.exists(path):
+	var exists := ResourceLoader.exists(path)
+	push_warning("UserProfileCard._refresh_avatar: idx=%d path=%s exists=%s" % [idx, path, str(exists)])
+	if exists:
 		_avatar_image.texture = load(path)
 	else:
 		_avatar_image.texture = null
@@ -114,6 +121,7 @@ func _on_toggle_picker_pressed() -> void:
 	_toggle_picker_btn.text = "Thu gon" if _avatar_picker.visible else "Doi avatar"
 
 func _on_avatar_selected(idx: int) -> void:
+	push_warning("UserProfileCard._on_avatar_selected: idx=%d" % idx)
 	_avatar_picker.visible = false
 	_toggle_picker_btn.text = "Doi avatar"
 	UserManager.set_avatar_async(idx)  # fire-and-forget: optimistic UI, profile_updated handles refresh

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scenes/hud/UserProfileCard.gd" id="1_card"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
-bg_color = Color(0.10, 0.14, 0.08, 0.98)
+bg_color = Color(0.96, 0.88, 0.68, 0.98)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -22,7 +22,7 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatar_frame"]
-bg_color = Color(0.14, 0.20, 0.10, 1)
+bg_color = Color(0.87, 0.78, 0.58, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -34,19 +34,19 @@ corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_picker"]
-bg_color = Color(0.06, 0.08, 0.04, 0.96)
+bg_color = Color(0.80, 0.68, 0.48, 0.97)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_toggle"]
-bg_color = Color(0.22, 0.14, 0.06, 0.9)
+bg_color = Color(0.23, 0.58, 0.18, 0.95)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.52, 0.31, 0.08, 0.9)
+border_color = Color(0.14, 0.42, 0.11, 1.0)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -128,19 +128,19 @@ theme_override_constants/separation = 4
 [node name="UsernameLabel" type="Label" parent="Card/Content/AvatarRow/InfoCol"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
-theme_override_colors/font_color = Color(0.95, 0.88, 0.5, 1)
+theme_override_colors/font_color = Color(0.22, 0.10, 0.03, 1)
 text = ""
 
 [node name="LevelBadge" type="Label" parent="Card/Content/AvatarRow/InfoCol"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.6, 0.92, 0.5, 1)
+theme_override_colors/font_color = Color(0.24, 0.56, 0.16, 1)
 text = "Lv. 1"
 
 [node name="JoinDateLabel" type="Label" parent="Card/Content/AvatarRow/InfoCol"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 11
-theme_override_colors/font_color = Color(0.55, 0.72, 0.45, 0.8)
+theme_override_colors/font_color = Color(0.45, 0.28, 0.10, 0.85)
 text = ""
 
 [node name="Divider" type="HSeparator" parent="Card/Content"]
@@ -156,7 +156,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 vertical_alignment = 1
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.75, 0.78, 0.70, 1)
+theme_override_colors/font_color = Color(0.35, 0.18, 0.06, 1)
 text = "Level"
 
 [node name="LevelValue" type="Label" parent="Card/Content/RowLevel"]
@@ -165,7 +165,7 @@ size_flags_horizontal = 3
 vertical_alignment = 1
 horizontal_alignment = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.95, 0.88, 0.5, 1)
+theme_override_colors/font_color = Color(0.18, 0.44, 0.12, 1)
 text = "1"
 
 [node name="RowXP" type="HBoxContainer" parent="Card/Content"]
@@ -177,7 +177,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 vertical_alignment = 1
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.75, 0.78, 0.70, 1)
+theme_override_colors/font_color = Color(0.35, 0.18, 0.06, 1)
 text = "Tong XP"
 
 [node name="XPValue" type="Label" parent="Card/Content/RowXP"]
@@ -186,7 +186,7 @@ size_flags_horizontal = 3
 vertical_alignment = 1
 horizontal_alignment = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.95, 0.88, 0.5, 1)
+theme_override_colors/font_color = Color(0.18, 0.44, 0.12, 1)
 text = "0"
 
 [node name="RowHarvest" type="HBoxContainer" parent="Card/Content"]
@@ -198,7 +198,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 vertical_alignment = 1
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.75, 0.78, 0.70, 1)
+theme_override_colors/font_color = Color(0.35, 0.18, 0.06, 1)
 text = "Thu hoach"
 
 [node name="HarvestValue" type="Label" parent="Card/Content/RowHarvest"]
@@ -207,7 +207,7 @@ size_flags_horizontal = 3
 vertical_alignment = 1
 horizontal_alignment = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.95, 0.88, 0.5, 1)
+theme_override_colors/font_color = Color(0.18, 0.44, 0.12, 1)
 text = "0"
 
 [node name="RowStreak" type="HBoxContainer" parent="Card/Content"]
@@ -219,7 +219,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 vertical_alignment = 1
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.75, 0.78, 0.70, 1)
+theme_override_colors/font_color = Color(0.35, 0.18, 0.06, 1)
 text = "Chuoi dang nhap"
 
 [node name="StreakValue" type="Label" parent="Card/Content/RowStreak"]
@@ -228,7 +228,7 @@ size_flags_horizontal = 3
 vertical_alignment = 1
 horizontal_alignment = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.95, 0.88, 0.5, 1)
+theme_override_colors/font_color = Color(0.18, 0.44, 0.12, 1)
 text = "0"
 
 [node name="RowFlowers" type="HBoxContainer" parent="Card/Content"]
@@ -240,7 +240,7 @@ custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 vertical_alignment = 1
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(0.75, 0.78, 0.70, 1)
+theme_override_colors/font_color = Color(0.35, 0.18, 0.06, 1)
 text = "Hoa dang co"
 
 [node name="FlowersValue" type="Label" parent="Card/Content/RowFlowers"]
@@ -249,7 +249,7 @@ size_flags_horizontal = 3
 vertical_alignment = 1
 horizontal_alignment = 2
 theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.95, 0.88, 0.5, 1)
+theme_override_colors/font_color = Color(0.18, 0.44, 0.12, 1)
 text = "0"
 
 [node name="TogglePickerBtn" type="Button" parent="Card/Content"]
@@ -257,7 +257,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(0, 34)
 text = "Doi avatar"
 theme_override_font_sizes/font_size = 12
-theme_override_colors/font_color = Color(0.85, 0.78, 0.45, 1)
+theme_override_colors/font_color = Color(1.0, 1.0, 1.0, 1)
 theme_override_styles/normal = SubResource("StyleBoxFlat_toggle")
 
 [node name="AvatarPicker" type="PanelContainer" parent="Card"]

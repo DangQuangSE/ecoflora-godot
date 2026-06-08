@@ -357,6 +357,7 @@ func load_avatar_index() -> int:
 	return int(config.get_value("avatar", "index", 0))
 
 func set_avatar_async(idx: int) -> void:  # intentional: callers may fire-and-forget
+	push_warning("UserManager.set_avatar_async: called idx=%d in_flight=%s use_mock=%s" % [idx, str(_avatar_in_flight), str(use_mock)])
 	if _avatar_in_flight:
 		return
 	idx = clampi(idx, 0, 6)
