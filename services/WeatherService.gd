@@ -1,9 +1,16 @@
 class_name WeatherService
 extends RefCounted
 
-var endpoint: String = ""  # set via WeatherManager._ready(): _weather_service.endpoint = "https://..."
+var endpoint: String = ""  # set via WeatherManager._ready()
 
-func parse_response(json: Dictionary) -> WeatherState:
+func parse_response(envelope: Dictionary) -> WeatherState:
+	var data: Variant = HttpHelper.unwrap_envelope(envelope)
+	if data == null or not data is Dictionary:
+		push_warning("WeatherService.parse_response: envelope unwrap failed")
+		return null
+	return _parse_weather_data(data)
+
+func _parse_weather_data(json: Dictionary) -> WeatherState:
 	if not json.has("condition") or not json.has("sunrise") or not json.has("sunset"):
 		push_warning("WeatherService.parse_response: missing required fields in response")
 		return null

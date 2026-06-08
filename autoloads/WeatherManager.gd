@@ -5,12 +5,42 @@ signal weather_changed(state: WeatherState)
 const POLL_INTERVAL_SEC := 600.0
 const OVERLAY_SCENE := preload("res://scenes/shared/WeatherOverlay.tscn")
 
-@export var use_mock: bool = true
-@export var mock_condition: WeatherState.Condition = WeatherState.Condition.SUNNY
+var _use_mock: bool = false
+var _mock_condition: WeatherState.Condition = WeatherState.Condition.SUNNY
+var _mock_is_day: bool = true
+
+@export var use_mock: bool = true:
+	get:
+		return _use_mock
+	set(value):
+		if _use_mock == value:
+			return
+		_use_mock = value
+		_on_mock_settings_changed()
+
+@export var mock_condition: WeatherState.Condition = WeatherState.Condition.SUNNY:
+	get:
+		return _mock_condition
+	set(value):
+		if _mock_condition == value:
+			return
+		_mock_condition = value
+		_on_mock_settings_changed()
+
+@export var mock_is_day: bool = true:
+	get:
+		return _mock_is_day
+	set(value):
+		if _mock_is_day == value:
+			return
+		_mock_is_day = value
+		_on_mock_settings_changed()
+
 @export var weather_endpoint: String = ""
 
 var _current_state: WeatherState = null
 var _request_in_flight: bool = false
+var _initialized: bool = false
 var _timer: Timer
 var _http: HTTPRequest
 var _mock_service: MockWeatherService
@@ -20,7 +50,7 @@ var _overlay: Node  # WeatherOverlay instance — typed as Node to avoid upward 
 func _ready() -> void:
 	_mock_service = MockWeatherService.new()
 	_weather_service = WeatherService.new()
-	_weather_service.endpoint = weather_endpoint
+	_weather_service.endpoint = _resolve_weather_endpoint()
 
 	_timer = Timer.new()
 	_timer.wait_time = POLL_INTERVAL_SEC
@@ -40,9 +70,20 @@ func _ready() -> void:
 
 	# Default state set before first poll so get_current_state() is never null
 	_current_state = WeatherState.make_default()
+	_initialized = true
 	_on_timer_timeout()
 	_timer.start()
 	weather_changed.emit(_current_state)
+
+func _on_mock_settings_changed() -> void:
+	if not _initialized:
+		return
+	if use_mock:
+		_mock_service.mock_condition = mock_condition
+		_mock_service.mock_is_day = mock_is_day
+		_apply_new_state(_mock_service.get_state())
+	else:
+		_on_timer_timeout()
 
 func _exit_tree() -> void:
 	if _request_in_flight:
@@ -58,9 +99,15 @@ func get_current_state() -> WeatherState:
 		return WeatherState.make_default()
 	return _current_state
 
+func _resolve_weather_endpoint() -> String:
+	if not weather_endpoint.is_empty():
+		return weather_endpoint
+	return UserManager.base_url + "/api/weather/current"
+
 func _on_timer_timeout() -> void:
 	if use_mock:
 		_mock_service.mock_condition = mock_condition
+		_mock_service.mock_is_day = mock_is_day
 		_apply_new_state(_mock_service.get_state())
 	else:
 		if _request_in_flight:
