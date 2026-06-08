@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cfeh3mg5fb0xm" path="res://assets/icon/coin.png" id="6_6utp2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avatar"]
-bg_color = Color(0.35, 0.55, 0.88, 1)
+bg_color = Color(0.92, 0.84, 0.64, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
