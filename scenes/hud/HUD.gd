@@ -75,6 +75,20 @@ func open_shop(tab_idx: int = 0) -> void:
 func _open_shop() -> void:
 	open_shop(0)
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not _recall_btn.visible:
+		return
+	var is_press := (event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed) \
+		or (event is InputEventMouseButton \
+			and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT \
+			and (event as InputEventMouseButton).pressed)
+	if not is_press:
+		return
+	var screen_pos: Vector2 = event.position
+	var world_pos := get_viewport().get_canvas_transform().affine_inverse() * screen_pos
+	if not DecoManager.has_deco_at(world_pos):
+		hide_recall_btn()
+
 func show_recall_btn(placement_id: String) -> void:
 	_recall_placement_id = placement_id
 	_recall_btn.visible = true
