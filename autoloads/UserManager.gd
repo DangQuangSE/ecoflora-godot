@@ -14,6 +14,7 @@ signal vitality_claimed(reward_type: String, reward_amount: int)
 signal login_required
 signal login_succeeded
 signal login_failed(reason: String)
+signal profile_updated
 
 @export var use_mock: bool = false
 @export var base_url: String = "http://localhost:5226"
@@ -41,10 +42,12 @@ var _vitality_claim_http: HTTPRequest
 var _shop_http: HTTPRequest
 var _shop_purchase_http: HTTPRequest
 var _vitality_poll_timer: Timer
+var _avatar_http: HTTPRequest
 var _request_in_flight: bool = false
 var _profile_in_flight: bool = false
 var _claim_in_flight: bool = false
 var _purchase_in_flight: bool = false
+var _avatar_in_flight: bool = false
 
 var shop_open_tab: int = 0
 
@@ -77,8 +80,14 @@ func _ready() -> void:
 	_shop_purchase_http.timeout = 10.0
 	add_child(_shop_purchase_http)
 
+	_avatar_http = HTTPRequest.new()
+	_avatar_http.timeout = 10.0
+	add_child(_avatar_http)
+
 	_vitality_service = _VitalityServiceScript.new(_vitality_http, _vitality_claim_http)
 	_shop_service = _ShopServiceScript.new(_shop_http, _shop_purchase_http)
+
+	_profile.avatar_index = load_avatar_index()
 
 	_vitality_poll_timer = Timer.new()
 	_vitality_poll_timer.wait_time = 60.0
@@ -214,10 +223,14 @@ func fetch_profile_async() -> void:
 		return
 	var old_level: int = _profile.level
 	_profile = _user_service.parse_profile(data)
+	var local_idx := load_avatar_index()
+	if local_idx > 0:
+		_profile.avatar_index = local_idx
 	xp_gained.emit(0)
 	currency_changed.emit(_profile.currency)
 	if _profile.level != old_level:
 		level_up.emit(_profile.level)
+	profile_updated.emit()
 
 func handle_401() -> void:
 	_token_store.access_token = ""
@@ -330,6 +343,50 @@ func _notification(what: int) -> void:
 			_vitality_poll_timer.start()
 			_poll_vitality_status()
 
+func save_avatar_index(idx: int) -> void:
+	var config := ConfigFile.new()
+	config.set_value("avatar", "index", idx)
+	var err := config.save("user://avatar_prefs.cfg")
+	if err != OK:
+		push_error("UserManager.save_avatar_index: failed to save ConfigFile, err=%d" % err)
+
+func load_avatar_index() -> int:
+	var config := ConfigFile.new()
+	if config.load("user://avatar_prefs.cfg") != OK:
+		return 0
+	return int(config.get_value("avatar", "index", 0))
+
+func set_avatar_async(idx: int) -> void:  # intentional: callers may fire-and-forget
+	if _avatar_in_flight:
+		return
+	idx = clampi(idx, 0, 5)
+	var prev_idx := _profile.avatar_index
+	_profile.avatar_index = idx
+	save_avatar_index(idx)
+	profile_updated.emit()
+	if use_mock:
+		return
+	_avatar_in_flight = true
+	var body := JSON.stringify({"avatarIndex": idx})
+	var headers := HttpHelper.make_headers(_token_store.access_token if _token_store else "")
+	headers.append("Content-Type: application/json")
+	var err := _avatar_http.request(base_url + "/api/auth/avatar-index", headers, HTTPClient.METHOD_PUT, body)
+	if err != OK:
+		_profile.avatar_index = prev_idx
+		save_avatar_index(prev_idx)
+		profile_updated.emit()
+		_avatar_in_flight = false
+		push_warning("UserManager.set_avatar_async: request error %d" % err)
+		return
+	var raw: Variant = await _avatar_http.request_completed
+	_avatar_in_flight = false
+	var status_code: int = raw[1]
+	if status_code != 200:
+		_profile.avatar_index = prev_idx
+		save_avatar_index(prev_idx)
+		profile_updated.emit()
+		push_warning("UserManager.set_avatar_async: BE sync failed (HTTP %d), reverted to %d" % [status_code, prev_idx])
+
 func _parse_error_message(body: PackedByteArray) -> String:
 	var json := JSON.new()
 	if json.parse(body.get_string_from_utf8()) != OK:
@@ -352,4 +409,7 @@ func _exit_tree() -> void:
 	if _purchase_in_flight:
 		_shop_purchase_http.cancel_request()
 		_purchase_in_flight = false
+	if _avatar_in_flight:
+		_avatar_http.cancel_request()
+		_avatar_in_flight = false
 	_vitality_poll_timer.stop()
