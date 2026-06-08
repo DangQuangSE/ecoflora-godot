@@ -22,6 +22,9 @@ target_scene = "res://scenes/garden/GardenScene.tscn"
 position = Vector2(360, 300)
 target_scene = "res://scenes/school/ClassroomScene.tscn"
 
+[node name="DecoLayer" type="Node2D" parent="." unique_id=3100000001]
+y_sort_enabled = true
+
 [node name="DemoSchool" type="Sprite2D" parent="." unique_id=25017280]
 position = Vector2(707, 561)
 scale = Vector2(0.90743667, 1.3552318)

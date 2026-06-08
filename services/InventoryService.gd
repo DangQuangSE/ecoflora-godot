@@ -39,6 +39,8 @@ func parse_inventory_item(json: Dictionary) -> InventoryItem:
 	item.flower_template_id = flower_template_id
 	item.item_id            = item_id
 	item.decor_id           = decor_id
+	item.decor_slug         = _str_or_empty(json.get("decorSlug", null))
+	item.decor_name         = _str_or_empty(json.get("decorName", null))
 	return item
 
 # Converts a JSON value to a non-empty String, returning "" for null/missing/"null".

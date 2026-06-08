@@ -41,6 +41,9 @@ func _try_start(pos: Vector2, index: int) -> void:
 	var zone_y := get_viewport().get_visible_rect().size.y * ZONE_Y_RATIO
 	if pos.y < zone_y:
 		return
+	var world_pos := get_viewport().get_canvas_transform().affine_inverse() * pos
+	if DecoManager.has_deco_at(world_pos):
+		return
 	_touch_index = index
 	_origin      = pos
 	_active      = true

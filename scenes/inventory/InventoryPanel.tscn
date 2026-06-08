@@ -127,6 +127,12 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 13
 text = "Vật Phẩm"
 
+[node name="BtnDecor" type="Button" parent="PanelRoot/VBox/Tabs" unique_id=1685209968]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 13
+text = "Trang Trí"
+
 [node name="Scroll" type="ScrollContainer" parent="PanelRoot/VBox" unique_id=470132555]
 layout_mode = 2
 size_flags_vertical = 3
