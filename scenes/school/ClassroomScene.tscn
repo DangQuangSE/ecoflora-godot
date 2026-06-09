@@ -6,9 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
-size = Vector2(200, 80)
-
 [node name="ClassroomScene" type="Node2D" unique_id=1810569524]
 script = ExtResource("1_class")
 
@@ -25,11 +22,19 @@ sprite_scale = 4.0
 
 [node name="HUD" parent="." unique_id=1672678934 instance=ExtResource("3_hud")]
 
-[node name="ClassroomTrigger" type="Area2D" parent="." unique_id=483091679]
-position = Vector2(360, 400)
+[node name="FocusLayer" type="CanvasLayer" parent="." unique_id=500000001]
+layer = 5
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ClassroomTrigger" unique_id=1983200649]
-shape = SubResource("RectangleShape2D_trigger")
+[node name="FocusButton" type="Button" parent="FocusLayer" unique_id=500000002]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -100.0
+offset_right = 120.0
+offset_bottom = -40.0
+text = "Bắt đầu học"
 
 [node name="PortalToSchool" parent="." unique_id=482869196 instance=ExtResource("4_portal")]
 position = Vector2(882, 280)

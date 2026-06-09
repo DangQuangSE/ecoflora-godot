@@ -46,7 +46,7 @@ func _ready() -> void:
 		_setup_panel.visible = true
 		_running_panel.visible = false
 		_result_panel.visible = false
-		_duration_slider.min_value = 5
+		_duration_slider.min_value = 10
 		_duration_slider.max_value = 120
 		_duration_slider.step = 5
 		_duration_slider.value = 25
