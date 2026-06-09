@@ -28,6 +28,8 @@ const SIZE := Vector2(360.0, 228.0)
 		lock_center = v
 		if is_instance_valid(_lock_sprite):
 			_lock_sprite.position = v
+		if is_instance_valid(_input_ctrl):
+			_input_ctrl.position = v - lock_hit_size / 2.0
 
 ## Lock display size in world pixels.
 @export var lock_size_px: Vector2 = Vector2(80.0, 80.0):
@@ -38,13 +40,13 @@ const SIZE := Vector2(360.0, 228.0)
 			_lock_base_scale = lock_size_px / tex_sz
 			_lock_sprite.scale = _lock_base_scale
 
-## Inset the click-hit rectangle from each edge so transparent cloud corners don't receive input.
-@export var hit_inset: Vector2 = Vector2(50.0, 30.0):
+## Hit area size centered on the lock icon. Increase to make it easier to tap.
+@export var lock_hit_size: Vector2 = Vector2(160.0, 120.0):
 	set(v):
-		hit_inset = v
+		lock_hit_size = v
 		if is_instance_valid(_input_ctrl):
-			_input_ctrl.size     = SIZE - v * 2
-			_input_ctrl.position = v
+			_input_ctrl.size     = v
+			_input_ctrl.position = lock_center - v / 2.0
 
 func setup(zone_id: String) -> void:
 	_zone_id = zone_id
@@ -77,10 +79,10 @@ func _build_ui() -> void:
 	cloud.position = Vector2.ZERO
 	add_child(cloud)
 
-	# Input-only control — inset so transparent cloud edges don't capture taps
+	# Input-only control — centered on lock icon so only the lock area is tappable
 	_input_ctrl = Control.new()
-	_input_ctrl.size     = SIZE - hit_inset * 2
-	_input_ctrl.position = hit_inset
+	_input_ctrl.size     = lock_hit_size
+	_input_ctrl.position = lock_center - lock_hit_size / 2.0
 	_input_ctrl.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_input_ctrl)
 	if not Engine.is_editor_hint():
