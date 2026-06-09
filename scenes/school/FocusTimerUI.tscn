@@ -6,6 +6,7 @@
 layer = 10
 script = ExtResource("1_ui")
 max_pauses = 5
+min_duration_minutes = 1
 
 [node name="Panel" type="Panel" parent="." unique_id=1163119369]
 anchors_preset = 15

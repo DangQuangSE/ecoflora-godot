@@ -1,5 +1,11 @@
 extends CanvasLayer
 
+const _ITEM_NAME_VI: Dictionary = {
+	"watering can": "Bình tưới",
+	"fertilizer":   "Phân bón",
+	"pesticide":    "Thuốc trừ sâu",
+}
+
 @export var max_pauses: int = 2
 @export var min_duration_minutes: int = 10
 @export var max_duration_minutes: int = 120
@@ -112,7 +118,9 @@ func _on_reward_received(items: Array) -> void:
 	for entry: Variant in items:
 		if not entry is Dictionary:
 			continue
-		lines.append("%s x%d" % [str(entry.get("itemName", "?")), int(entry.get("quantity", 0))])
+		var raw_name := str(entry.get("itemName", "?"))
+		var display_name := _ITEM_NAME_VI.get(raw_name.to_lower(), raw_name)
+		lines.append("%s x%d" % [display_name, int(entry.get("quantity", 0))])
 	_result_label.text = "Phần thưởng:\n" + "\n".join(lines)
 
 func _on_session_paused(pauses_used: int) -> void:
