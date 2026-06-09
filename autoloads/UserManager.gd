@@ -50,6 +50,7 @@ var _rename_http: HTTPRequest
 var _request_in_flight: bool = false
 var _register_in_flight: bool = false
 var _profile_in_flight: bool = false
+var _profile_loaded: bool = false
 var _claim_in_flight: bool = false
 var _purchase_in_flight: bool = false
 var _avatar_in_flight: bool = false
@@ -317,8 +318,10 @@ func fetch_profile_async() -> void:
 		_profile.avatar_index = local_idx
 	xp_gained.emit(0)
 	currency_changed.emit(_profile.currency)
-	if _profile.level != old_level:
+	# Only emit level_up on subsequent syncs — initial load is not a real level-up event
+	if _profile_loaded and _profile.level != old_level:
 		level_up.emit(_profile.level)
+	_profile_loaded = true
 	profile_updated.emit()
 
 func handle_401() -> void:

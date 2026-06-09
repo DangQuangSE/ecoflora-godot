@@ -10,19 +10,19 @@ var _states: Dictionary = {}
 
 func _ready() -> void:
 	_zones = [
-		ZoneDefinition.create("zone_2", 9,
+		ZoneDefinition.create("zone_2", 3,
 			["plot_16","plot_17","plot_18","plot_19","plot_20","plot_21","plot_22","plot_23"],
 			Vector2(-324.0, 843.0)),
-		ZoneDefinition.create("zone_3", 12,
+		ZoneDefinition.create("zone_3", 6,
 			["plot_24","plot_25","plot_26","plot_27","plot_28","plot_29","plot_30","plot_31"],
 			Vector2(-324.0, 1285.0)),
-		ZoneDefinition.create("zone_4", 15,
+		ZoneDefinition.create("zone_4", 9,
 			["plot_32","plot_33","plot_34","plot_35","plot_36","plot_37","plot_38","plot_39"],
 			Vector2(-324.0, 1727.0)),
-		ZoneDefinition.create("zone_5", 18,
+		ZoneDefinition.create("zone_5", 12,
 			["plot_40","plot_41","plot_42","plot_43","plot_44","plot_45","plot_46","plot_47"],
 			Vector2(-324.0, 2169.0)),
-		ZoneDefinition.create("zone_6", 21,
+		ZoneDefinition.create("zone_6", 15,
 			["plot_48","plot_49","plot_50","plot_51","plot_52","plot_53","plot_54","plot_55"],
 			Vector2(-324.0, 2611.0)),
 	]
