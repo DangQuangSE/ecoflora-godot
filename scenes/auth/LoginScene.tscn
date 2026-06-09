@@ -12,8 +12,8 @@ region_rect = Rect2(13, 552, 997, 361)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_pressed"]
 texture = ExtResource("6_login_button")
-region_rect = Rect2(13, 552, 997, 361)
 texture_margin_top = 3.0
+region_rect = Rect2(13, 552, 997, 361)
 
 [node name="LoginScene" type="Control" unique_id=374933870]
 layout_mode = 3
@@ -121,11 +121,11 @@ grow_vertical = 2
 placeholder_text = "Mật khẩu"
 secret = true
 
-[node name="BtnSpacer" type="Control" parent="LoginFrame/FormArea/FormContent" unique_id=4001000001]
+[node name="BtnSpacer" type="Control" parent="LoginFrame/FormArea/FormContent" unique_id=-293967295]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="LoginBtnMargin" type="MarginContainer" parent="LoginFrame/FormArea/FormContent" unique_id=4001000002]
+[node name="LoginBtnMargin" type="MarginContainer" parent="LoginFrame/FormArea/FormContent" unique_id=-293967294]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
@@ -155,8 +155,8 @@ autowrap_mode = 3
 
 [node name="RegisterLink" type="Button" parent="LoginFrame/FormArea/FormContent" unique_id=1732363261]
 layout_mode = 2
-flat = true
 text = "Chưa có tài khoản? Đăng ký"
+flat = true
 
 [node name="LoadingOverlay" type="ColorRect" parent="." unique_id=2132860546]
 visible = false

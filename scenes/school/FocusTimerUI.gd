@@ -1,6 +1,10 @@
 extends CanvasLayer
 
 @export var max_pauses: int = 2
+@export var min_duration_minutes: int = 10
+@export var max_duration_minutes: int = 120
+@export var default_duration_minutes: int = 25
+@export var reward_threshold_minutes: int = 25
 
 @onready var _setup_panel: Control   = $Panel/SetupPanel
 @onready var _running_panel: Control = $Panel/RunningPanel
@@ -9,6 +13,7 @@ extends CanvasLayer
 @onready var _duration_slider: HSlider = $Panel/SetupPanel/SetupBox/DurationSlider
 @onready var _duration_label: Label    = $Panel/SetupPanel/SetupBox/DurationLabel
 @onready var _start_btn: Button        = $Panel/SetupPanel/SetupBox/StartButton
+@onready var _close_btn: Button        = $Panel/SetupPanel/SetupBox/CloseButton
 
 @onready var _countdown_label: Label  = $Panel/RunningPanel/RunningBox/CountdownLabel
 @onready var _violation_label: Label  = $Panel/RunningPanel/RunningBox/ViolationLabel
@@ -22,6 +27,7 @@ extends CanvasLayer
 func _ready() -> void:
 	_duration_slider.value_changed.connect(_on_slider_changed)
 	_start_btn.pressed.connect(_on_start_pressed)
+	_close_btn.pressed.connect(queue_free)
 	_pause_btn.pressed.connect(_on_pause_pressed)
 	_cancel_btn.pressed.connect(_on_cancel_pressed)
 	_return_btn.pressed.connect(_on_return_pressed)
@@ -46,11 +52,11 @@ func _ready() -> void:
 		_setup_panel.visible = true
 		_running_panel.visible = false
 		_result_panel.visible = false
-		_duration_slider.min_value = 10
-		_duration_slider.max_value = 120
+		_duration_slider.min_value = min_duration_minutes
+		_duration_slider.max_value = max_duration_minutes
 		_duration_slider.step = 5
-		_duration_slider.value = 25
-		_duration_label.text = "25 phút"
+		_duration_slider.value = default_duration_minutes
+		_duration_label.text = "%d phút" % default_duration_minutes
 
 func _exit_tree() -> void:
 	if FocusManager.tick.is_connected(_on_tick):
@@ -100,7 +106,7 @@ func _on_session_completed(_minutes: int) -> void:
 
 func _on_reward_received(items: Array) -> void:
 	if items.is_empty():
-		_result_label.text = "Không có phần thưởng\n(cần ít nhất 25 phút)"
+		_result_label.text = "Không có phần thưởng\n(cần ít nhất %d phút)" % reward_threshold_minutes
 		return
 	var lines: PackedStringArray = []
 	for entry: Variant in items:

@@ -7,6 +7,7 @@ signal plant_xp_gained(plot_id: String, xp_amount: int)
 signal icons_registered
 
 @export var use_mock: bool = false
+@export var focus_fail_xp_penalty: int = 20
 
 const GARDEN_ID := "main_garden"
 
@@ -26,7 +27,6 @@ var _ref_svc  # ReferenceDataService instance (preloaded to avoid autoload parse
 
 const _RefDataScript = preload("res://services/ReferenceDataService.gd")
 
-# World positions for 16 plots â€” initial 8 (2Ã—4 grid) + zone_1 (plots 8â€“11) + zone_2 (plots 12â€“15)
 const PLOT_POSITIONS: Array[Vector2] = [
 	Vector2(80, 80),   Vector2(200, 80),
 	Vector2(80, 200),  Vector2(200, 200),
@@ -579,7 +579,7 @@ func _on_focus_reward_received(_items: Array) -> void:
 	pass  # Items granted on BE; InventoryManager handles local state
 
 func _on_focus_session_failed() -> void:
-	apply_focus_xp_bulk(-20)
+	apply_focus_xp_bulk(-focus_fail_xp_penalty)
 
 func _find_plot(plot_id: String) -> Plot:
 	for p: Plot in _plots:

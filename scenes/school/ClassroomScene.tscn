@@ -26,6 +26,7 @@ sprite_scale = 4.0
 layer = 5
 
 [node name="FocusButton" type="Button" parent="FocusLayer" unique_id=500000002]
+anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
