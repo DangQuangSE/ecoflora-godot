@@ -23,11 +23,15 @@ func _ready() -> void:
 	WeatherManager.set_overlay_visible(true)
 	_hud.joystick_direction_changed.connect(_player.set_move_direction)
 	_setup_camera()
+	SceneTransition.apply_spawn_origin(self, _player)
 	_spawn_plots()
 	_spawn_flower_info_card()
 	_spawn_zone_overlays()
 	GardenManager.plots_updated.connect(_on_plots_updated)
 	ZoneManager.zone_notification.connect(_on_zone_notification)
+	if FocusManager.has_recovery_penalty:
+		FocusManager.has_recovery_penalty = false
+		_show_recovery_toast()
 	ZoneManager.zone_unlocked.connect(_on_zone_unlocked)
 	_boundary_rect = _compute_boundary()
 	DecoManager.placements_loaded.connect(_on_placements_loaded)
@@ -88,7 +92,6 @@ func _zone_overlay_pos(plot_ids: Array[String], anchors: Array[Node]) -> Vector2
 			if gp.y < min_y: min_y = gp.y
 	if min_x == INF:
 		return Vector2.ZERO
-	# Top-left of the 360×228 isometric bounding box (half-tile margin each side)
 	return Vector2(min_x - 60.0, min_y - 38.0)
 
 func _on_zone_notification(zone_id: String) -> void:
@@ -110,6 +113,20 @@ func _on_banner_dismissed() -> void:
 	_active_banner = null
 	_active_banner_zone_id = ""
 	_flush_notification_queue()
+
+func _show_recovery_toast() -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 120
+	var lbl := Label.new()
+	lbl.text = "⚠ Session học bị gián đoạn\n-20 XP đã bị trừ"
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	lbl.position.y = 80.0
+	layer.add_child(lbl)
+	add_child(layer)
+	var tw := create_tween()
+	tw.tween_interval(3.0)
+	tw.tween_callback(layer.queue_free)
 
 func _on_zone_unlocked(zone_id: String) -> void:
 	if _active_banner != null and is_instance_valid(_active_banner) and zone_id == _active_banner_zone_id:

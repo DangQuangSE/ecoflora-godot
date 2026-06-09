@@ -21,7 +21,7 @@ centered = false
 [node name="Player" parent="." unique_id=1544198641 instance=ExtResource("2_player")]
 z_index = 1
 position = Vector2(419, 372)
-scale = Vector2(3, 3)
+sprite_scale = 4.0
 
 [node name="HUD" parent="." unique_id=1409293532 instance=ExtResource("3_hud")]
 
@@ -29,6 +29,7 @@ scale = Vector2(3, 3)
 z_index = 2
 position = Vector2(52, 825)
 target_scene = "res://scenes/school/SchoolScene.tscn"
+spawn_offset = Vector2(100, 100)
 
 [node name="WarterTower" type="Sprite2D" parent="." unique_id=1845200915]
 position = Vector2(402, -302)

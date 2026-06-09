@@ -3,9 +3,12 @@ extends Node
 signal session_completed(minutes_focused: int)
 signal session_failed()
 signal session_cancelled()
+signal session_paused(pauses_used: int)
+signal session_resumed()
 signal tick(remaining_seconds: int)
 signal violation_updated(count: int)
 signal session_reward_received(items: Array)
+signal session_recovery_penalized()
 
 enum State { IDLE, ACTIVE, COMPLETED, FAILED }
 
@@ -15,9 +18,13 @@ const MAX_VIOLATIONS := 3
 @export var bypass_violation_detection: bool = false
 
 const _FocusServiceScript = preload("res://services/FocusService.gd")
+const _RECOVERY_FILE := "user://focus_recovery.json"
 
 var _state: State = State.IDLE
 var _session: FocusSession = null
+var _is_paused: bool = false
+var _pause_count: int = 0
+var has_recovery_penalty: bool = false
 
 var _be_session_id: String = ""
 var _create_in_flight: bool = false
@@ -32,6 +39,7 @@ func _ready() -> void:
 	set_process(false)
 	session_completed.connect(GardenManager._on_focus_session_completed)
 	session_failed.connect(GardenManager._on_focus_session_failed)
+	UserManager.login_succeeded.connect(_on_login_succeeded)
 	if not use_mock:
 		_http_create = HTTPRequest.new()
 		_http_create.timeout = 10.0
@@ -48,6 +56,62 @@ func get_state() -> State:
 
 func get_violation_count() -> int:
 	return _session.violation_count if _session != null else 0
+
+func get_pause_count() -> int:
+	return _pause_count
+
+func is_paused() -> bool:
+	return _is_paused
+
+func pause_session() -> void:
+	if _state != State.ACTIVE or _is_paused:
+		return
+	_is_paused = true
+	_pause_count += 1
+	set_process(false)
+	session_paused.emit(_pause_count)
+
+func resume_session() -> void:
+	if _state != State.ACTIVE or not _is_paused:
+		return
+	_is_paused = false
+	set_process(true)
+	session_resumed.emit()
+
+func _save_recovery(session_id: String) -> void:
+	var file := FileAccess.open(_RECOVERY_FILE, FileAccess.WRITE)
+	if file:
+		file.store_string(JSON.stringify({"id": session_id}))
+
+func _clear_recovery() -> void:
+	if FileAccess.file_exists(_RECOVERY_FILE):
+		DirAccess.remove_absolute(_RECOVERY_FILE)
+
+func _on_login_succeeded() -> void:
+	if not use_mock:
+		_apply_recovery_penalty_async()
+
+func _apply_recovery_penalty_async() -> void:
+	if not FileAccess.file_exists(_RECOVERY_FILE):
+		return
+	var file := FileAccess.open(_RECOVERY_FILE, FileAccess.READ)
+	if file == null:
+		return
+	var data: Variant = JSON.parse_string(file.get_as_text())
+	file = null
+	_clear_recovery()
+	if not data is Dictionary:
+		return
+	var old_id: String = data.get("id", "")
+	if old_id.is_empty() or _focus_service == null:
+		return
+	var token: String = UserManager.get_access_token()
+	if token.is_empty():
+		return
+	await _focus_service.fail_async(UserManager.base_url, token, old_id, MAX_VIOLATIONS)
+	has_recovery_penalty = true
+	session_failed.emit()
+	session_recovery_penalized.emit()
 
 ## Coroutine — starts the session locally immediately, then async-POSTs to BE.
 ## Callers that need the BE session id set must await this.
@@ -67,6 +131,7 @@ func start_session(duration_sec: int) -> void:
 			var new_id: String = result.get("id", "")
 			if _state == State.ACTIVE:
 				_be_session_id = new_id
+				_save_recovery(new_id)
 			elif not _pending_terminal_state.is_empty():
 				# Race: session ended while POST was in-flight — fire terminal call now
 				_be_session_id = new_id
@@ -79,6 +144,8 @@ func cancel_session() -> void:
 	if _state not in [State.ACTIVE, State.IDLE]:
 		return
 	var was_active := _state == State.ACTIVE
+	_is_paused = false
+	_pause_count = 0
 	_set_state(State.IDLE)
 	_session = null
 	_be_session_id = ""
@@ -110,7 +177,9 @@ func _process(delta: float) -> void:
 func _notification(what: int) -> void:
 	if bypass_violation_detection:
 		return
-	if what == NOTIFICATION_APPLICATION_PAUSED and _state == State.ACTIVE:
+	var is_focus_lost := what == NOTIFICATION_APPLICATION_PAUSED \
+		or what == NOTIFICATION_APPLICATION_FOCUS_OUT
+	if is_focus_lost and _state == State.ACTIVE:
 		if _session == null:
 			return
 		_session.violation_count += 1
@@ -146,11 +215,14 @@ func _fire_terminal_async(state: String, strikes: int) -> void:
 		if result.is_empty():
 			push_warning("FocusManager: BE complete sync failed for session %s" % id)
 		else:
+			_clear_recovery()
 			session_reward_received.emit(result.get("rewardItems", []))
 	else:
 		var ok: bool = await _focus_service.fail_async(UserManager.base_url, token, id, strikes)
 		if not ok:
 			push_warning("FocusManager: BE fail sync failed for session %s" % id)
+		else:
+			_clear_recovery()
 	_terminal_in_flight = false
 
 func _exit_tree() -> void:

@@ -62,8 +62,10 @@ func get_zone(zone_id: String) -> ZoneDefinition:
 
 func init_from_server(zones_arr: Array) -> void:
 	var pos_map: Dictionary = {}
+	var local_plot_ids_map: Dictionary = {}
 	for z: ZoneDefinition in _zones:
 		pos_map[z.zone_id] = z.world_position
+		local_plot_ids_map[z.zone_id] = z.plot_ids
 	_zones.clear()
 	_states.clear()
 	for z in zones_arr:
@@ -72,12 +74,15 @@ func init_from_server(zones_arr: Array) -> void:
 		var zone_id: String = z.get("zoneId", "")
 		var is_unlocked: bool = z.get("isUnlocked", false)
 		var required_level: int = z.get("requiredLevel", 1)
-		var raw_ids: Array = z.get("plotIds", [])
-		if zone_id.is_empty() or raw_ids.is_empty():
+		if zone_id.is_empty():
 			continue
-		var plot_ids: Array[String] = []
-		for pid in raw_ids:
-			plot_ids.append(str(pid))
+		# Prefer locally-known "plot_N" format ids over server UUID ids so
+		# _zone_overlay_pos() can look up anchor nodes by index.
+		var plot_ids: Array[String] = local_plot_ids_map.get(zone_id, [] as Array[String])
+		if plot_ids.is_empty():
+			var raw_ids: Array = z.get("plotIds", [])
+			for pid in raw_ids:
+				plot_ids.append(str(pid))
 		var pos: Vector2 = pos_map.get(zone_id, Vector2.ZERO)
 		_zones.append(ZoneDefinition.create(zone_id, required_level, plot_ids, pos))
 		_states[zone_id] = ZoneState.UNLOCKED if is_unlocked else ZoneState.LOCKED
