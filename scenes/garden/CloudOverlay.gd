@@ -38,6 +38,14 @@ const SIZE := Vector2(360.0, 228.0)
 			_lock_base_scale = lock_size_px / tex_sz
 			_lock_sprite.scale = _lock_base_scale
 
+## Inset the click-hit rectangle from each edge so transparent cloud corners don't receive input.
+@export var hit_inset: Vector2 = Vector2(50.0, 30.0):
+	set(v):
+		hit_inset = v
+		if is_instance_valid(_input_ctrl):
+			_input_ctrl.size     = SIZE - v * 2
+			_input_ctrl.position = v
+
 func setup(zone_id: String) -> void:
 	_zone_id = zone_id
 	if Engine.is_editor_hint():
@@ -60,20 +68,23 @@ func _ready() -> void:
 		queue_free()
 
 func _build_ui() -> void:
-	_input_ctrl = Control.new()
-	_input_ctrl.size = SIZE
-	_input_ctrl.position = Vector2.ZERO
-	_input_ctrl.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(_input_ctrl)
-	if not Engine.is_editor_hint():
-		_input_ctrl.gui_input.connect(_on_rect_gui_input)
-
+	# Cloud visual — always anchored at (0,0), never moves with hit_inset
 	var cloud := TextureRect.new()
 	cloud.texture = preload("res://assets/plot_locked/cloud.png")
 	cloud.size = SIZE
 	cloud.stretch_mode = TextureRect.STRETCH_SCALE
 	cloud.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_input_ctrl.add_child(cloud)
+	cloud.position = Vector2.ZERO
+	add_child(cloud)
+
+	# Input-only control — inset so transparent cloud edges don't capture taps
+	_input_ctrl = Control.new()
+	_input_ctrl.size     = SIZE - hit_inset * 2
+	_input_ctrl.position = hit_inset
+	_input_ctrl.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_input_ctrl)
+	if not Engine.is_editor_hint():
+		_input_ctrl.gui_input.connect(_on_rect_gui_input)
 
 	_lock_sprite = Sprite2D.new()
 	_lock_sprite.texture = preload("res://assets/plot_locked/lock.png")
