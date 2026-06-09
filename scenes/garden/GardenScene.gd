@@ -92,7 +92,6 @@ func _zone_overlay_pos(plot_ids: Array[String], anchors: Array[Node]) -> Vector2
 			if gp.y < min_y: min_y = gp.y
 	if min_x == INF:
 		return Vector2.ZERO
-	# Top-left of the 360×228 isometric bounding box (half-tile margin each side)
 	return Vector2(min_x - 60.0, min_y - 38.0)
 
 func _on_zone_notification(zone_id: String) -> void:
