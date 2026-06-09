@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dclo62o517w5t"
-path="res://.godot/imported/demo_school.png-b25f91001fd643d9314a0a9ceb4b8e51.ctex"
+uid="uid://ceaxqxj28p2no"
+path="res://.godot/imported/road.png-34096d72a3746735fe69a550616b0d2f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/background/demo_school.png"
-dest_files=["res://.godot/imported/demo_school.png-b25f91001fd643d9314a0a9ceb4b8e51.ctex"]
+source_file="res://assets/school/road.png"
+dest_files=["res://.godot/imported/road.png-34096d72a3746735fe69a550616b0d2f.ctex"]
 
 [params]
 

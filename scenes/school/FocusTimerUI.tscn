@@ -68,6 +68,14 @@ horizontal_alignment = 1
 text = "Vi phạm: 0 / 3"
 horizontal_alignment = 1
 
+[node name="PausesLabel" type="Label" parent="Panel/RunningPanel/RunningBox"]
+text = "Còn 2 lần tạm dừng"
+horizontal_alignment = 1
+
+[node name="PauseButton" type="Button" parent="Panel/RunningPanel/RunningBox"]
+text = "Tạm dừng"
+custom_minimum_size = Vector2(0, 60)
+
 [node name="CancelButton" type="Button" parent="Panel/RunningPanel/RunningBox"]
 text = "Hủy"
 custom_minimum_size = Vector2(0, 60)

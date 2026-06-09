@@ -23,6 +23,7 @@ func _ready() -> void:
 	WeatherManager.set_overlay_visible(true)
 	_hud.joystick_direction_changed.connect(_player.set_move_direction)
 	_setup_camera()
+	SceneTransition.apply_spawn_origin(self, _player)
 	_spawn_plots()
 	_spawn_flower_info_card()
 	_spawn_zone_overlays()

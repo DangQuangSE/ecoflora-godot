@@ -3,6 +3,8 @@ extends Node
 signal session_completed(minutes_focused: int)
 signal session_failed()
 signal session_cancelled()
+signal session_paused(pauses_used: int)
+signal session_resumed()
 signal tick(remaining_seconds: int)
 signal violation_updated(count: int)
 signal session_reward_received(items: Array)
@@ -18,6 +20,8 @@ const _FocusServiceScript = preload("res://services/FocusService.gd")
 
 var _state: State = State.IDLE
 var _session: FocusSession = null
+var _is_paused: bool = false
+var _pause_count: int = 0
 
 var _be_session_id: String = ""
 var _create_in_flight: bool = false
@@ -49,6 +53,27 @@ func get_state() -> State:
 func get_violation_count() -> int:
 	return _session.violation_count if _session != null else 0
 
+func get_pause_count() -> int:
+	return _pause_count
+
+func is_paused() -> bool:
+	return _is_paused
+
+func pause_session() -> void:
+	if _state != State.ACTIVE or _is_paused:
+		return
+	_is_paused = true
+	_pause_count += 1
+	set_process(false)
+	session_paused.emit(_pause_count)
+
+func resume_session() -> void:
+	if _state != State.ACTIVE or not _is_paused:
+		return
+	_is_paused = false
+	set_process(true)
+	session_resumed.emit()
+
 ## Coroutine — starts the session locally immediately, then async-POSTs to BE.
 ## Callers that need the BE session id set must await this.
 func start_session(duration_sec: int) -> void:
@@ -79,6 +104,8 @@ func cancel_session() -> void:
 	if _state not in [State.ACTIVE, State.IDLE]:
 		return
 	var was_active := _state == State.ACTIVE
+	_is_paused = false
+	_pause_count = 0
 	_set_state(State.IDLE)
 	_session = null
 	_be_session_id = ""
@@ -110,7 +137,9 @@ func _process(delta: float) -> void:
 func _notification(what: int) -> void:
 	if bypass_violation_detection:
 		return
-	if what == NOTIFICATION_APPLICATION_PAUSED and _state == State.ACTIVE:
+	var is_focus_lost := what == NOTIFICATION_APPLICATION_PAUSED \
+		or what == NOTIFICATION_APPLICATION_FOCUS_OUT
+	if is_focus_lost and _state == State.ACTIVE:
 		if _session == null:
 			return
 		_session.violation_count += 1

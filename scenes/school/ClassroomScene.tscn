@@ -1,33 +1,37 @@
 [gd_scene format=3 uid="uid://bclassrm001"]
 
-[ext_resource type="Script" path="res://scenes/school/ClassroomScene.gd" id="1_class"]
+[ext_resource type="Script" uid="uid://bkyrpg3rtyprh" path="res://scenes/school/ClassroomScene.gd" id="1_class"]
+[ext_resource type="Texture2D" uid="uid://cuhkluuvr2p27" path="res://assets/school/class_bg.png" id="2_1eroe"]
 [ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/shared/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
-size = Vector2(200.0, 80.0)
+size = Vector2(200, 80)
 
-[node name="ClassroomScene" type="Node2D"]
+[node name="ClassroomScene" type="Node2D" unique_id=1810569524]
 script = ExtResource("1_class")
 
-[node name="Background" type="ColorRect" parent="."]
-z_index = -2
-offset_right = 720.0
-offset_bottom = 920.0
-color = Color(0.55, 0.45, 0.35, 1)
+[node name="ClassBg" type="Sprite2D" parent="." unique_id=1214930008]
+position = Vector2(304.00003, 622)
+scale = Vector2(3.0707965, 3.9942367)
+texture = ExtResource("2_1eroe")
+region_enabled = true
+region_rect = Rect2(64.64996, 42.86498, 452.53998, 347.27002)
 
-[node name="Player" parent="." instance=ExtResource("2_player")]
-position = Vector2(360.0, 700.0)
+[node name="Player" parent="." unique_id=1221276411 instance=ExtResource("2_player")]
+position = Vector2(360, 700)
+sprite_scale = 4.0
 
-[node name="HUD" parent="." instance=ExtResource("3_hud")]
+[node name="HUD" parent="." unique_id=1672678934 instance=ExtResource("3_hud")]
 
-[node name="ClassroomTrigger" type="Area2D" parent="."]
-position = Vector2(360.0, 400.0)
+[node name="ClassroomTrigger" type="Area2D" parent="." unique_id=483091679]
+position = Vector2(360, 400)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ClassroomTrigger"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ClassroomTrigger" unique_id=1983200649]
 shape = SubResource("RectangleShape2D_trigger")
 
-[node name="PortalToSchool" parent="." instance=ExtResource("4_portal")]
-position = Vector2(360.0, 880.0)
+[node name="PortalToSchool" parent="." unique_id=482869196 instance=ExtResource("4_portal")]
+position = Vector2(882, 280)
 target_scene = "res://scenes/school/SchoolScene.tscn"
+spawn_offset = Vector2(-100, 100)

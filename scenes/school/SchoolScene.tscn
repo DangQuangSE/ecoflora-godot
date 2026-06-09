@@ -4,28 +4,48 @@
 [ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/shared/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
-[ext_resource type="Texture2D" uid="uid://bt38vxpt0jddn" path="res://assets/background/demo_school.png" id="5_8u6ur"]
+[ext_resource type="Texture2D" uid="uid://dclo62o517w5t" path="res://assets/background/demo_school.png" id="5_8u6ur"]
+[ext_resource type="Texture2D" uid="uid://bu2yd732pcuff" path="res://assets/school/school.png" id="6_kr807"]
+[ext_resource type="Texture2D" uid="uid://ceaxqxj28p2no" path="res://assets/school/road.png" id="7_pnktn"]
 
 [node name="SchoolScene" type="Node2D" unique_id=7696549]
 script = ExtResource("1_school")
 
+[node name="DemoSchool" type="Sprite2D" parent="." unique_id=2135191802]
+position = Vector2(243, 451.9999)
+scale = Vector2(1.2416992, 1.1791992)
+texture = ExtResource("5_8u6ur")
+
+[node name="School" type="Sprite2D" parent="." unique_id=20169965]
+position = Vector2(260, 6.0000153)
+scale = Vector2(4.209674, 2.370882)
+texture = ExtResource("6_kr807")
+region_enabled = true
+region_rect = Rect2(0, 59.5, 612, 282)
+
+[node name="Road" type="Sprite2D" parent="." unique_id=967291080]
+position = Vector2(232.00002, 580)
+scale = Vector2(8.242, 1.8907285)
+texture = ExtResource("7_pnktn")
+region_enabled = true
+region_rect = Rect2(0, 182.6, 500, 151.25)
+
 [node name="Player" parent="." unique_id=1058296739 instance=ExtResource("2_player")]
 position = Vector2(160, 280)
+scale = Vector2(3, 3)
 
 [node name="HUD" parent="." unique_id=629154414 instance=ExtResource("3_hud")]
+visible = false
 
 [node name="PortalToGarden" parent="." unique_id=688076017 instance=ExtResource("4_portal")]
-position = Vector2(160, 80)
+position = Vector2(-856, 333)
 target_scene = "res://scenes/garden/GardenScene.tscn"
+spawn_offset = Vector2(100, 100)
 
 [node name="PortalToClassroom" parent="." unique_id=2130229250 instance=ExtResource("4_portal")]
-position = Vector2(360, 300)
+position = Vector2(299, 300)
 target_scene = "res://scenes/school/ClassroomScene.tscn"
+spawn_offset = Vector2(-100, 100)
 
-[node name="DecoLayer" type="Node2D" parent="." unique_id=3100000001]
+[node name="DecoLayer" type="Node2D" parent="." unique_id=-1194967295]
 y_sort_enabled = true
-
-[node name="DemoSchool" type="Sprite2D" parent="." unique_id=25017280]
-position = Vector2(707, 561)
-scale = Vector2(0.90743667, 1.3552318)
-texture = ExtResource("5_8u6ur")

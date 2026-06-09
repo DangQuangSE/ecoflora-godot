@@ -1,5 +1,7 @@
 extends CanvasLayer
 
+@export var max_pauses: int = 2
+
 @onready var _setup_panel: Control   = $Panel/SetupPanel
 @onready var _running_panel: Control = $Panel/RunningPanel
 @onready var _result_panel: Control  = $Panel/ResultPanel
@@ -8,9 +10,11 @@ extends CanvasLayer
 @onready var _duration_label: Label    = $Panel/SetupPanel/SetupBox/DurationLabel
 @onready var _start_btn: Button        = $Panel/SetupPanel/SetupBox/StartButton
 
-@onready var _countdown_label: Label = $Panel/RunningPanel/RunningBox/CountdownLabel
-@onready var _violation_label: Label = $Panel/RunningPanel/RunningBox/ViolationLabel
-@onready var _cancel_btn: Button     = $Panel/RunningPanel/RunningBox/CancelButton
+@onready var _countdown_label: Label  = $Panel/RunningPanel/RunningBox/CountdownLabel
+@onready var _violation_label: Label  = $Panel/RunningPanel/RunningBox/ViolationLabel
+@onready var _pauses_label: Label     = $Panel/RunningPanel/RunningBox/PausesLabel
+@onready var _pause_btn: Button       = $Panel/RunningPanel/RunningBox/PauseButton
+@onready var _cancel_btn: Button      = $Panel/RunningPanel/RunningBox/CancelButton
 
 @onready var _result_label: Label = $Panel/ResultPanel/ResultBox/ResultLabel
 @onready var _return_btn: Button  = $Panel/ResultPanel/ResultBox/ReturnButton
@@ -18,11 +22,14 @@ extends CanvasLayer
 func _ready() -> void:
 	_duration_slider.value_changed.connect(_on_slider_changed)
 	_start_btn.pressed.connect(_on_start_pressed)
+	_pause_btn.pressed.connect(_on_pause_pressed)
 	_cancel_btn.pressed.connect(_on_cancel_pressed)
 	_return_btn.pressed.connect(_on_return_pressed)
 
 	FocusManager.tick.connect(_on_tick)
 	FocusManager.violation_updated.connect(_on_violation_updated)
+	FocusManager.session_paused.connect(_on_session_paused)
+	FocusManager.session_resumed.connect(_on_session_resumed)
 	FocusManager.session_completed.connect(_on_session_completed, CONNECT_ONE_SHOT)
 	FocusManager.session_failed.connect(_on_session_failed, CONNECT_ONE_SHOT)
 	FocusManager.session_cancelled.connect(queue_free, CONNECT_ONE_SHOT)
@@ -34,6 +41,7 @@ func _ready() -> void:
 		_running_panel.visible = true
 		_result_panel.visible = false
 		_violation_label.text = "Vi phạm: %d / %d" % [FocusManager.get_violation_count(), FocusManager.MAX_VIOLATIONS]
+		_refresh_pause_ui(FocusManager.get_pause_count())
 	else:
 		_setup_panel.visible = true
 		_running_panel.visible = false
@@ -49,6 +57,10 @@ func _exit_tree() -> void:
 		FocusManager.tick.disconnect(_on_tick)
 	if FocusManager.violation_updated.is_connected(_on_violation_updated):
 		FocusManager.violation_updated.disconnect(_on_violation_updated)
+	if FocusManager.session_paused.is_connected(_on_session_paused):
+		FocusManager.session_paused.disconnect(_on_session_paused)
+	if FocusManager.session_resumed.is_connected(_on_session_resumed):
+		FocusManager.session_resumed.disconnect(_on_session_resumed)
 	if FocusManager.session_reward_received.is_connected(_on_reward_received):
 		FocusManager.session_reward_received.disconnect(_on_reward_received)
 
@@ -63,6 +75,12 @@ func _on_start_pressed() -> void:
 	var total_min := int(_duration_slider.value)
 	_countdown_label.text = "%02d:00" % total_min
 	_violation_label.text = "Vi phạm: 0 / %d" % FocusManager.MAX_VIOLATIONS
+
+func _on_pause_pressed() -> void:
+	if FocusManager.is_paused():
+		FocusManager.resume_session()
+	else:
+		FocusManager.pause_session()
 
 func _on_cancel_pressed() -> void:
 	FocusManager.cancel_session()
@@ -90,6 +108,18 @@ func _on_reward_received(items: Array) -> void:
 			continue
 		lines.append("%s x%d" % [str(entry.get("itemName", "?")), int(entry.get("quantity", 0))])
 	_result_label.text = "Phần thưởng:\n" + "\n".join(lines)
+
+func _on_session_paused(pauses_used: int) -> void:
+	_pause_btn.text = "Tiếp tục"
+	_refresh_pause_ui(pauses_used)
+
+func _on_session_resumed() -> void:
+	_pause_btn.text = "Tạm dừng"
+
+func _refresh_pause_ui(pauses_used: int) -> void:
+	var remaining := max_pauses - pauses_used
+	_pauses_label.text = "Còn %d lần tạm dừng" % remaining
+	_pause_btn.disabled = remaining <= 0 and not FocusManager.is_paused()
 
 func _on_session_failed() -> void:
 	_running_panel.visible = false
