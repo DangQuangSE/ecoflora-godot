@@ -118,8 +118,8 @@ func _on_reward_received(items: Array) -> void:
 	for entry: Variant in items:
 		if not entry is Dictionary:
 			continue
-		var raw_name := str(entry.get("itemName", "?"))
-		var display_name := _ITEM_NAME_VI.get(raw_name.to_lower(), raw_name)
+		var raw_name: String = str((entry as Dictionary).get("itemName", "?"))
+		var display_name: String = _ITEM_NAME_VI.get(raw_name.to_lower(), raw_name)
 		lines.append("%s x%d" % [display_name, int(entry.get("quantity", 0))])
 	_result_label.text = "Phần thưởng:\n" + "\n".join(lines)
 
