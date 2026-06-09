@@ -19,7 +19,7 @@ signal register_failed(reason: String)
 signal profile_updated
 
 @export var use_mock: bool = false
-@export var base_url: String = "http://20.40.58.246:500"
+@export var base_url: String = "http://20.40.58.246:5000"
 
 const _XP_TABLE: Dictionary = {
 	"harvest_anthurium_bloom":         100,
