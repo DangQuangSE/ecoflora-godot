@@ -13,8 +13,8 @@ script = ExtResource("6_gdscript")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=382669791]
 z_index = -2
-position = Vector2(-579.00006, -709)
-scale = Vector2(0.8847656, 0.8886718)
+position = Vector2(-1251, -709)
+scale = Vector2(1.2128905, 1.2167968)
 texture = ExtResource("2_34pd8")
 centered = false
 
@@ -44,7 +44,7 @@ texture = ExtResource("7_34pd8")
 region_enabled = true
 region_rect = Rect2(71.88599, 111.63989, 928.114, 678.8663)
 
-[node name="DecoLayer" type="Node2D" parent="." unique_id=3000000001]
+[node name="DecoLayer" type="Node2D" parent="." unique_id=-1294967295]
 y_sort_enabled = true
 
 [node name="PlotAnchors" type="Node2D" parent="." unique_id=2000000000]
@@ -77,7 +77,7 @@ position = Vector2(180, 194)
 position = Vector2(240, 232)
 
 [node name="Zone2" type="Node2D" parent="PlotAnchors" unique_id=2000000018]
-position = Vector2(-444, -11)
+position = Vector2(-338, -329)
 
 [node name="PlotAnchor_8" type="Marker2D" parent="PlotAnchors/Zone2" unique_id=2000000009]
 position = Vector2(360, 450)
@@ -102,3 +102,138 @@ position = Vector2(180, 564)
 
 [node name="PlotAnchor_15" type="Marker2D" parent="PlotAnchors/Zone2" unique_id=2000000016]
 position = Vector2(240, 602)
+
+[node name="Zone3" type="Node2D" parent="PlotAnchors" unique_id=2000000019]
+position = Vector2(-819, -748)
+
+[node name="PlotAnchor_16" type="Marker2D" parent="PlotAnchors/Zone3" unique_id=2000000020]
+position = Vector2(957, 1194)
+
+[node name="PlotAnchor_17" type="Marker2D" parent="PlotAnchors/Zone3" unique_id=2000000021]
+position = Vector2(1017, 1232)
+
+[node name="PlotAnchor_18" type="Marker2D" parent="PlotAnchors/Zone3" unique_id=2000000022]
+position = Vector2(897, 1232)
+
+[node name="PlotAnchor_19" type="Marker2D" parent="PlotAnchors/Zone3" unique_id=2000000023]
+position = Vector2(957, 1270)
+
+[node name="PlotAnchor_20" type="Marker2D" parent="PlotAnchors/Zone3" unique_id=2000000024]
+position = Vector2(837, 1270)
+
+[node name="PlotAnchor_21" type="Marker2D" parent="PlotAnchors/Zone3" unique_id=2000000025]
+position = Vector2(897, 1308)
+
+[node name="PlotAnchor_22" type="Marker2D" parent="PlotAnchors/Zone3" unique_id=2000000026]
+position = Vector2(777, 1308)
+
+[node name="PlotAnchor_23" type="Marker2D" parent="PlotAnchors/Zone3" unique_id=2000000027]
+position = Vector2(837, 1346)
+
+[node name="Zone4" type="Node2D" parent="PlotAnchors" unique_id=2000000028]
+position = Vector2(-667, -1071)
+
+[node name="PlotAnchor_24" type="Marker2D" parent="PlotAnchors/Zone4" unique_id=2000000029]
+position = Vector2(957, 1636)
+
+[node name="PlotAnchor_25" type="Marker2D" parent="PlotAnchors/Zone4" unique_id=2000000030]
+position = Vector2(1017, 1674)
+
+[node name="PlotAnchor_26" type="Marker2D" parent="PlotAnchors/Zone4" unique_id=2000000031]
+position = Vector2(897, 1674)
+
+[node name="PlotAnchor_27" type="Marker2D" parent="PlotAnchors/Zone4" unique_id=2000000032]
+position = Vector2(957, 1712)
+
+[node name="PlotAnchor_28" type="Marker2D" parent="PlotAnchors/Zone4" unique_id=2000000033]
+position = Vector2(837, 1712)
+
+[node name="PlotAnchor_29" type="Marker2D" parent="PlotAnchors/Zone4" unique_id=2000000034]
+position = Vector2(897, 1750)
+
+[node name="PlotAnchor_30" type="Marker2D" parent="PlotAnchors/Zone4" unique_id=2000000035]
+position = Vector2(777, 1750)
+
+[node name="PlotAnchor_31" type="Marker2D" parent="PlotAnchors/Zone4" unique_id=2000000036]
+position = Vector2(837, 1788)
+
+[node name="Zone5" type="Node2D" parent="PlotAnchors" unique_id=2000000037]
+position = Vector2(-637, -1182)
+
+[node name="PlotAnchor_32" type="Marker2D" parent="PlotAnchors/Zone5" unique_id=2000000038]
+position = Vector2(245, 1583)
+
+[node name="PlotAnchor_33" type="Marker2D" parent="PlotAnchors/Zone5" unique_id=2000000039]
+position = Vector2(305, 1621)
+
+[node name="PlotAnchor_34" type="Marker2D" parent="PlotAnchors/Zone5" unique_id=2000000040]
+position = Vector2(185, 1621)
+
+[node name="PlotAnchor_35" type="Marker2D" parent="PlotAnchors/Zone5" unique_id=2000000041]
+position = Vector2(245, 1659)
+
+[node name="PlotAnchor_36" type="Marker2D" parent="PlotAnchors/Zone5" unique_id=2000000042]
+position = Vector2(125, 1659)
+
+[node name="PlotAnchor_37" type="Marker2D" parent="PlotAnchors/Zone5" unique_id=2000000043]
+position = Vector2(185, 1697)
+
+[node name="PlotAnchor_38" type="Marker2D" parent="PlotAnchors/Zone5" unique_id=2000000044]
+position = Vector2(65, 1697)
+
+[node name="PlotAnchor_39" type="Marker2D" parent="PlotAnchors/Zone5" unique_id=2000000045]
+position = Vector2(125, 1735)
+
+[node name="Zone6" type="Node2D" parent="PlotAnchors" unique_id=2000000046]
+position = Vector2(-502, -1522)
+
+[node name="PlotAnchor_40" type="Marker2D" parent="PlotAnchors/Zone6" unique_id=2000000047]
+position = Vector2(245, 2025)
+
+[node name="PlotAnchor_41" type="Marker2D" parent="PlotAnchors/Zone6" unique_id=2000000048]
+position = Vector2(305, 2063)
+
+[node name="PlotAnchor_42" type="Marker2D" parent="PlotAnchors/Zone6" unique_id=2000000049]
+position = Vector2(185, 2063)
+
+[node name="PlotAnchor_43" type="Marker2D" parent="PlotAnchors/Zone6" unique_id=2000000050]
+position = Vector2(245, 2101)
+
+[node name="PlotAnchor_44" type="Marker2D" parent="PlotAnchors/Zone6" unique_id=2000000051]
+position = Vector2(125, 2101)
+
+[node name="PlotAnchor_45" type="Marker2D" parent="PlotAnchors/Zone6" unique_id=2000000052]
+position = Vector2(185, 2139)
+
+[node name="PlotAnchor_46" type="Marker2D" parent="PlotAnchors/Zone6" unique_id=2000000053]
+position = Vector2(65, 2139)
+
+[node name="PlotAnchor_47" type="Marker2D" parent="PlotAnchors/Zone6" unique_id=2000000054]
+position = Vector2(125, 2177)
+
+[node name="Zone7" type="Node2D" parent="PlotAnchors" unique_id=2000000055]
+position = Vector2(905, -2579)
+
+[node name="PlotAnchor_48" type="Marker2D" parent="PlotAnchors/Zone7" unique_id=2000000056]
+position = Vector2(-84, 2649)
+
+[node name="PlotAnchor_49" type="Marker2D" parent="PlotAnchors/Zone7" unique_id=2000000057]
+position = Vector2(-24, 2687)
+
+[node name="PlotAnchor_50" type="Marker2D" parent="PlotAnchors/Zone7" unique_id=2000000058]
+position = Vector2(-144, 2687)
+
+[node name="PlotAnchor_51" type="Marker2D" parent="PlotAnchors/Zone7" unique_id=2000000059]
+position = Vector2(-84, 2725)
+
+[node name="PlotAnchor_52" type="Marker2D" parent="PlotAnchors/Zone7" unique_id=2000000060]
+position = Vector2(-204, 2725)
+
+[node name="PlotAnchor_53" type="Marker2D" parent="PlotAnchors/Zone7" unique_id=2000000061]
+position = Vector2(-144, 2763)
+
+[node name="PlotAnchor_54" type="Marker2D" parent="PlotAnchors/Zone7" unique_id=2000000062]
+position = Vector2(-264, 2763)
+
+[node name="PlotAnchor_55" type="Marker2D" parent="PlotAnchors/Zone7" unique_id=2000000063]
+position = Vector2(-204, 2801)

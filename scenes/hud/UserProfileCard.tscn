@@ -282,7 +282,7 @@ layout_mode = 2
 vertical_alignment = 1
 theme_override_font_sizes/font_size = 13
 theme_override_colors/font_color = Color(0.35, 0.18, 0.06, 1)
-text = "Hạt giống đang có"
+text = "Hoa và hạt giống"
 
 [node name="FlowersValue" type="Label" parent="Card/Content/RowFlowers"]
 layout_mode = 2

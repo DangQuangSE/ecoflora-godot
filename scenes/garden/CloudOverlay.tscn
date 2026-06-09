@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://b60somq07xdvq" path="res://scenes/garden/CloudOverlay.gd" id="1_overlay"]
 
-[node name="CloudOverlay" type="Node2D" unique_id=1973085058]
+[node name="CloudOverlay" type="Node2D" unique_id=1190885155]
 z_index = 5
+position = Vector2(-200, 70)
+rotation = -0.42760566
 script = ExtResource("1_overlay")
-
-[node name="ColorRect" type="ColorRect" parent="." unique_id=1741568919]
-offset_right = 240.0
-offset_bottom = 240.0
-color = Color(0.75, 0.85, 0.95, 0.92)
+pos_offset = Vector2(-200, 70)
+lock_center = Vector2(340, 140)
+lock_size_px = Vector2(160, 100)

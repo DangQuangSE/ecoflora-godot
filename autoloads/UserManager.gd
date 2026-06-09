@@ -19,7 +19,7 @@ signal register_failed(reason: String)
 signal profile_updated
 
 @export var use_mock: bool = false
-@export var base_url: String = "http://localhost:5000"
+@export var base_url: String = "http://20.40.58.246:5000"
 
 const _XP_TABLE: Dictionary = {
 	"harvest_anthurium_bloom":         100,
@@ -50,6 +50,7 @@ var _rename_http: HTTPRequest
 var _request_in_flight: bool = false
 var _register_in_flight: bool = false
 var _profile_in_flight: bool = false
+var _profile_loaded: bool = false
 var _claim_in_flight: bool = false
 var _purchase_in_flight: bool = false
 var _avatar_in_flight: bool = false
@@ -113,7 +114,8 @@ func _ready() -> void:
 
 	if not use_mock and not base_url.begins_with("https://") \
 			and not base_url.begins_with("http://localhost") \
-			and not base_url.begins_with("http://127."):
+			and not base_url.begins_with("http://127.") \
+			and not base_url.begins_with("http://20.40.58.246"):
 		push_warning("UserManager: base_url is HTTP — tokens transmitted in plaintext")
 
 	GardenManager.harvest_completed.connect(_on_harvest_completed)
@@ -316,8 +318,10 @@ func fetch_profile_async() -> void:
 		_profile.avatar_index = local_idx
 	xp_gained.emit(0)
 	currency_changed.emit(_profile.currency)
-	if _profile.level != old_level:
+	# Only emit level_up on subsequent syncs — initial load is not a real level-up event
+	if _profile_loaded and _profile.level != old_level:
 		level_up.emit(_profile.level)
+	_profile_loaded = true
 	profile_updated.emit()
 
 func handle_401() -> void:
