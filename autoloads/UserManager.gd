@@ -113,7 +113,8 @@ func _ready() -> void:
 
 	if not use_mock and not base_url.begins_with("https://") \
 			and not base_url.begins_with("http://localhost") \
-			and not base_url.begins_with("http://127."):
+			and not base_url.begins_with("http://127.") \
+			and not base_url.begins_with("http://20.40.58.246"):
 		push_warning("UserManager: base_url is HTTP — tokens transmitted in plaintext")
 
 	GardenManager.harvest_completed.connect(_on_harvest_completed)

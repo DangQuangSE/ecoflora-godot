@@ -36,7 +36,7 @@ func get_flower_templates() -> Array[FlowerTemplate]:
 
 func get_initial_plots(garden_id: String) -> Array[Plot]:
 	var plots: Array[Plot] = []
-	for i in range(16):
+	for i in range(56):
 		plots.append(Plot.new("plot_%d" % i, garden_id, i))
 	return plots
 
