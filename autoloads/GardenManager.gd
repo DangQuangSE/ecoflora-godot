@@ -63,7 +63,7 @@ func _ready() -> void:
 		_http_harvest = HTTPRequest.new()
 		_http_harvest.timeout = 15.0
 		add_child(_http_harvest)
-		# Fetch catalogs + garden after login â€” never before
+		# Fetch catalogs + garden after login  -  never before
 		UserManager.login_succeeded.connect(_on_login_succeeded)
 
 func _on_login_succeeded() -> void:
@@ -140,7 +140,7 @@ const _FLOWER_NAME_TO_ASSET: Dictionary = {
 	"rose":                "rose",
 	"sun_flower":          "sun_flower",
 	"tulip":               "tulip",
-	# Variant flowers â€” reuse base asset folder
+	# Variant flowers  -  reuse base asset folder
 	"golden_rose":         "rose",
 	"blue_lotus":          "lotus",
 	"rainbow_tulip":       "tulip",
@@ -169,10 +169,16 @@ func _register_be_icons() -> void:
 		if ResourceLoader.exists(icon_path):
 			ItemIconRegistry.register(tid, load(icon_path))
 
-	# Register item icons by UUID using keyword-contains matching.
-	# sickle.png is the harvest UI button â€” NOT an item icon.
+	# Register item icons by UUID.
+	# First try image_url as a static-key alias (e.g. watering_can already pre-registered).
+	# Fall back to name-contains matching for items whose imageUrl is not set.
+	# sickle.png is the harvest UI button - NOT an item icon.
 	for iid: String in _item_cache:
 		var item: Dictionary = _item_cache[iid]
+		var image_url: String = str(item.get("image_url", ""))
+		if not image_url.is_empty() and ItemIconRegistry.has_icon(image_url):
+			ItemIconRegistry.register(iid, ItemIconRegistry.get_icon(image_url))
+			continue
 		var raw_name: String = str(item.get("name", "")).to_lower()
 		var icon_path: String
 		if "watering can" in raw_name:
@@ -229,7 +235,7 @@ func _fetch_garden() -> void:
 	var parsed_plots: Array[Plot] = garden_svc.parse_plots(plots_arr, _templates)
 	parsed_plots.sort_custom(func(a: Plot, b: Plot) -> bool: return a.plot_index < b.plot_index)
 	if parsed_plots.is_empty():
-		push_warning("GardenManager._fetch_garden: BE returned 0 plots â€” keeping mock plots")
+		push_warning("GardenManager._fetch_garden: BE returned 0 plots  -  keeping mock plots")
 		return
 	_plots = parsed_plots
 	plots_updated.emit(_plots)
@@ -383,7 +389,7 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 			if care_user_xp != null and care_user_level != null:
 				UserManager.apply_server_xp(int(care_user_xp), int(care_user_level))
 		else:
-			push_warning("GardenManager._care_action: 200 but envelope malformed â€” rolling back")
+			push_warning("GardenManager._care_action: 200 but envelope malformed  -  rolling back")
 			_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
 	else:
 		if status == 401:
@@ -573,7 +579,7 @@ func apply_focus_xp_bulk(xp_delta: int) -> void:
 	plots_updated.emit(_plots)
 
 func _on_focus_session_completed(_minutes: int) -> void:
-	pass  # XP reward replaced by item reward â€” handled via session_reward_received
+	pass  # XP reward replaced by item reward  -  handled via session_reward_received
 
 func _on_focus_reward_received(_items: Array) -> void:
 	pass  # Items granted on BE; InventoryManager handles local state
