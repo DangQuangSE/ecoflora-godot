@@ -5,10 +5,16 @@ const ALLOWED_SCENES: Array[String] = [
 	"res://scenes/auth/RegisterScene.tscn",
 	"res://scenes/garden/GardenScene.tscn",
 	"res://scenes/school/SchoolScene.tscn",
+	"res://scenes/school/ClassroomScene.tscn",
 ]
+
+var _spawn_origin: String = ""
 
 var _overlay: ColorRect
 var _is_transitioning: bool = false
+
+func set_spawn_origin(origin: String) -> void:
+	_spawn_origin = origin
 
 func is_transitioning() -> bool:
 	return _is_transitioning
@@ -41,6 +47,18 @@ func _fade_in() -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(_overlay, "color:a", 1.0, 0.3)
 	await tween.finished
+
+## Call from each scene's _ready() to spawn player near the portal they came from.
+## Pass the root node to search for Portal children.
+func apply_spawn_origin(scene_root: Node, player: Player) -> void:
+	if _spawn_origin.is_empty():
+		return
+	for child in scene_root.get_children():
+		var portal := child as Portal
+		if portal != null and portal.target_scene == _spawn_origin:
+			player.global_position = portal.global_position + portal.spawn_offset
+			break
+	_spawn_origin = ""
 
 func force_clear() -> void:
 	_overlay.color.a = 0.0

@@ -1,96 +1,114 @@
 [gd_scene format=3 uid="uid://bfocustui01"]
 
-[ext_resource type="Script" path="res://scenes/school/FocusTimerUI.gd" id="1_ui"]
+[ext_resource type="Script" uid="uid://c1sg5o8ccrhwl" path="res://scenes/school/FocusTimerUI.gd" id="1_ui"]
 
-[node name="FocusTimerUI" type="CanvasLayer"]
+[node name="FocusTimerUI" type="CanvasLayer" unique_id=2068807753]
 layer = 10
 script = ExtResource("1_ui")
+max_pauses = 5
+min_duration_minutes = 1
 
-[node name="Panel" type="Panel" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 0.0
-offset_bottom = 0.0
-
-[node name="SetupPanel" type="Control" parent="Panel"]
+[node name="Panel" type="Panel" parent="." unique_id=1163119369]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="SetupBox" type="VBoxContainer" parent="Panel/SetupPanel"]
+[node name="SetupPanel" type="Control" parent="Panel" unique_id=2014287106]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="SetupBox" type="VBoxContainer" parent="Panel/SetupPanel" unique_id=1823935469]
+layout_mode = 0
 anchor_left = 0.1
 anchor_top = 0.25
 anchor_right = 0.9
 anchor_bottom = 0.75
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 
-[node name="TitleLabel" type="Label" parent="Panel/SetupPanel/SetupBox"]
+[node name="TitleLabel" type="Label" parent="Panel/SetupPanel/SetupBox" unique_id=171285006]
+layout_mode = 2
 text = "Chọn thời gian tập trung"
 horizontal_alignment = 1
 
-[node name="DurationSlider" type="HSlider" parent="Panel/SetupPanel/SetupBox"]
-min_value = 5.0
+[node name="DurationSlider" type="HSlider" parent="Panel/SetupPanel/SetupBox" unique_id=1176163298]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+min_value = 10.0
 max_value = 120.0
 step = 5.0
 value = 25.0
-custom_minimum_size = Vector2(0, 40)
 
-[node name="DurationLabel" type="Label" parent="Panel/SetupPanel/SetupBox"]
+[node name="DurationLabel" type="Label" parent="Panel/SetupPanel/SetupBox" unique_id=1057147258]
+layout_mode = 2
 text = "25 phút"
 horizontal_alignment = 1
 
-[node name="StartButton" type="Button" parent="Panel/SetupPanel/SetupBox"]
-text = "Bắt đầu"
+[node name="StartButton" type="Button" parent="Panel/SetupPanel/SetupBox" unique_id=791339508]
 custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Bắt đầu"
 
-[node name="RunningPanel" type="Control" parent="Panel"]
+[node name="CloseButton" type="Button" parent="Panel/SetupPanel/SetupBox" unique_id=500000010]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Thoát"
+
+[node name="RunningPanel" type="Control" parent="Panel" unique_id=1209493519]
 visible = false
+anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="RunningBox" type="VBoxContainer" parent="Panel/RunningPanel"]
+[node name="RunningBox" type="VBoxContainer" parent="Panel/RunningPanel" unique_id=922018891]
+layout_mode = 0
 anchor_left = 0.1
 anchor_top = 0.25
 anchor_right = 0.9
 anchor_bottom = 0.75
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 
-[node name="CountdownLabel" type="Label" parent="Panel/RunningPanel/RunningBox"]
+[node name="CountdownLabel" type="Label" parent="Panel/RunningPanel/RunningBox" unique_id=149407056]
+layout_mode = 2
 text = "25:00"
 horizontal_alignment = 1
 
-[node name="ViolationLabel" type="Label" parent="Panel/RunningPanel/RunningBox"]
+[node name="ViolationLabel" type="Label" parent="Panel/RunningPanel/RunningBox" unique_id=1644708323]
+layout_mode = 2
 text = "Vi phạm: 0 / 3"
 horizontal_alignment = 1
 
-[node name="CancelButton" type="Button" parent="Panel/RunningPanel/RunningBox"]
-text = "Hủy"
-custom_minimum_size = Vector2(0, 60)
+[node name="PausesLabel" type="Label" parent="Panel/RunningPanel/RunningBox" unique_id=1778730671]
+layout_mode = 2
+text = "Còn 2 lần tạm dừng"
+horizontal_alignment = 1
 
-[node name="ResultPanel" type="Control" parent="Panel"]
+[node name="PauseButton" type="Button" parent="Panel/RunningPanel/RunningBox" unique_id=1142939583]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Tạm dừng"
+
+[node name="CancelButton" type="Button" parent="Panel/RunningPanel/RunningBox" unique_id=1018660640]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Hủy"
+
+[node name="ResultPanel" type="Control" parent="Panel" unique_id=638449741]
 visible = false
+anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 
-[node name="ResultBox" type="VBoxContainer" parent="Panel/ResultPanel"]
+[node name="ResultBox" type="VBoxContainer" parent="Panel/ResultPanel" unique_id=357963498]
+layout_mode = 0
 anchor_left = 0.1
 anchor_top = 0.3
 anchor_right = 0.9
 anchor_bottom = 0.7
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 0.0
-offset_bottom = 0.0
 
-[node name="ResultLabel" type="Label" parent="Panel/ResultPanel/ResultBox"]
-text = ""
+[node name="ResultLabel" type="Label" parent="Panel/ResultPanel/ResultBox" unique_id=1728458284]
+layout_mode = 2
 horizontal_alignment = 1
 
-[node name="ReturnButton" type="Button" parent="Panel/ResultPanel/ResultBox"]
-text = "Quay lại trường"
+[node name="ReturnButton" type="Button" parent="Panel/ResultPanel/ResultBox" unique_id=525383243]
 custom_minimum_size = Vector2(0, 60)
+layout_mode = 2
+text = "Quay lại trường"
