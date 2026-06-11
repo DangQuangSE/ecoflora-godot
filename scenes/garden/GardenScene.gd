@@ -23,11 +23,15 @@ func _ready() -> void:
 	WeatherManager.set_overlay_visible(true)
 	_hud.joystick_direction_changed.connect(_player.set_move_direction)
 	_setup_camera()
+	SceneTransition.apply_spawn_origin(self, _player)
 	_spawn_plots()
 	_spawn_flower_info_card()
 	_spawn_zone_overlays()
 	GardenManager.plots_updated.connect(_on_plots_updated)
 	ZoneManager.zone_notification.connect(_on_zone_notification)
+	if FocusManager.has_recovery_penalty:
+		FocusManager.has_recovery_penalty = false
+		_show_recovery_toast()
 	ZoneManager.zone_unlocked.connect(_on_zone_unlocked)
 	_boundary_rect = _compute_boundary()
 	DecoManager.placements_loaded.connect(_on_placements_loaded)
@@ -66,11 +70,29 @@ func _on_show_flower_info(plot_id: String) -> void:
 	_flower_info_card.call("show_flower", plot_id, plot.current_plant, template)
 
 func _spawn_zone_overlays() -> void:
+	var anchors: Array[Node] = []
+	for zone_node in _plot_anchors.get_children():
+		anchors.append_array(zone_node.get_children())
 	for zone: ZoneDefinition in ZoneManager.get_all_zones():
-		var overlay: Node2D = CloudOverlayScene.instantiate()
-		overlay.call("setup", zone.zone_id)
-		overlay.position = zone.world_position
+		var overlay: CloudOverlay = CloudOverlayScene.instantiate()
+		overlay.setup(zone.zone_id)
+		overlay.position = _zone_overlay_pos(zone.plot_ids, anchors) + overlay.pos_offset
 		add_child(overlay)
+
+func _zone_overlay_pos(plot_ids: Array[String], anchors: Array[Node]) -> Vector2:
+	var min_x := INF
+	var min_y := INF
+	for pid: String in plot_ids:
+		if not pid.begins_with("plot_"):
+			continue
+		var idx := pid.trim_prefix("plot_").to_int()
+		if idx < anchors.size():
+			var gp: Vector2 = (anchors[idx] as Node2D).global_position
+			if gp.x < min_x: min_x = gp.x
+			if gp.y < min_y: min_y = gp.y
+	if min_x == INF:
+		return Vector2.ZERO
+	return Vector2(min_x - 60.0, min_y - 38.0)
 
 func _on_zone_notification(zone_id: String) -> void:
 	_pending_notifications.append(zone_id)
@@ -91,6 +113,20 @@ func _on_banner_dismissed() -> void:
 	_active_banner = null
 	_active_banner_zone_id = ""
 	_flush_notification_queue()
+
+func _show_recovery_toast() -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 120
+	var lbl := Label.new()
+	lbl.text = "⚠ Session học bị gián đoạn\n-20 XP đã bị trừ"
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	lbl.position.y = 80.0
+	layer.add_child(lbl)
+	add_child(layer)
+	var tw := create_tween()
+	tw.tween_interval(3.0)
+	tw.tween_callback(layer.queue_free)
 
 func _on_zone_unlocked(zone_id: String) -> void:
 	if _active_banner != null and is_instance_valid(_active_banner) and zone_id == _active_banner_zone_id:

@@ -11,6 +11,7 @@ var _boundary_rect: Rect2 = Rect2()
 func _ready() -> void:
 	_hud.joystick_direction_changed.connect(_player.set_move_direction)
 	_player.setup_camera_limits(Rect2i(), Vector2i(16, 16))
+	SceneTransition.apply_spawn_origin(self, _player)
 	if not has_node("DemoSchool"):
 		return
 	_deco_layer = get_node("DecoLayer") as Node2D
