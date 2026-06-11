@@ -26,6 +26,7 @@ func _ready() -> void:
 	add_child(_overlay)
 	_overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_overlay.color = Color(0.0, 0.0, 0.0, 0.0)
+	UserManager.login_required.connect(_on_login_required)
 
 func fade_to(scene_path: String) -> void:
 	if _is_transitioning:
@@ -77,3 +78,12 @@ func _fade_out() -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(_overlay, "color:a", 0.0, 0.3)
 	await tween.finished
+
+func _on_login_required() -> void:
+	if get_tree().current_scene and get_tree().current_scene.scene_file_path == "res://scenes/auth/LoginScene.tscn":
+		return
+	var loading_screen = get_node_or_null("/root/LoadingScreen")
+	if loading_screen:
+		loading_screen.load_scene_async("res://scenes/auth/LoginScene.tscn")
+	else:
+		fade_to("res://scenes/auth/LoginScene.tscn")

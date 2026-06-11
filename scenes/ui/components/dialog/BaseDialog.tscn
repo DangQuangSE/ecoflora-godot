@@ -1,9 +1,58 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/components/dialog/BaseDialog.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/frame/dialog/dialog.png" id="2_dialog_bg"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="3_primary_button"]
 [ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="4_global_theme"]
+[ext_resource type="Texture2D" path="res://assets/icon/close.png" id="5_close_icon"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_cancel_normal"]
+bg_color = Color(0.82, 0.43, 0.35, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.58, 0.28, 0.22, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_cancel_hover"]
+bg_color = Color(0.88, 0.53, 0.45, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.64, 0.33, 0.26, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_cancel_pressed"]
+bg_color = Color(0.70, 0.34, 0.27, 1)
+border_width_left = 2
+border_width_top = 3
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.48, 0.22, 0.17, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
 
 [node name="BaseDialog" type="Control"]
 layout_mode = 3
@@ -49,6 +98,33 @@ grow_vertical = 2
 texture = ExtResource("2_dialog_bg")
 expand_mode = 1
 
+[node name="CancelBtn" type="Button" parent="DialogBox"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -62.0
+offset_top = 32.0
+offset_right = -26.0
+offset_bottom = 68.0
+flat = true
+
+[node name="Icon" type="TextureRect" parent="DialogBox/CancelBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_close_icon")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="Content" type="MarginContainer" parent="DialogBox"]
 layout_mode = 1
 anchors_preset = 15
@@ -90,12 +166,6 @@ autowrap_mode = 3
 layout_mode = 2
 theme_override_constants/separation = 20
 alignment = 1
-
-[node name="CancelBtn" parent="DialogBox/Content/Layout/ButtonRow" instance=ExtResource("3_primary_button")]
-custom_minimum_size = Vector2(130, 44)
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Hủy"
 
 [node name="ConfirmBtn" parent="DialogBox/Content/Layout/ButtonRow" instance=ExtResource("3_primary_button")]
 custom_minimum_size = Vector2(130, 44)

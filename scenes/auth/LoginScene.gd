@@ -29,6 +29,9 @@ func _ready() -> void:
 	UserManager.login_failed.connect(show_error)
 
 	if UserManager.is_logged_in():
+		_set_loading(true)
+		_loading_label.text = "Đang tải..."
+		await UserManager.fetch_profile_async()
 		SceneTransition.fade_to(GARDEN_SCENE)
 		return
 
@@ -92,5 +95,5 @@ func _show_error(msg: String) -> void:
 	_error_label.visible = true
 
 func _set_loading(active: bool) -> void:
-	_loading.visible = false
+	_loading.visible = active
 	_login_btn.disabled = active

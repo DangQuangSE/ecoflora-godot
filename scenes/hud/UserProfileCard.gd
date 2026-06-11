@@ -1,12 +1,15 @@
 class_name UserProfileCard
 extends CanvasLayer
 
-const _CARD_H_SMALL: float  = 300.0
-const _CARD_H_LARGE: float  = 420.0
+const _CARD_H_SMALL: float  = 660.0
+const _CARD_H_LARGE: float  = 660.0
 
 @onready var _dimmer: ColorRect             = $Dimmer
 @onready var _card: Panel                   = $Card
 @onready var _close_btn: Button             = $Card/CloseBtn
+@onready var _logout_btn: Button            = $Card/BottomRow/LogoutBtn
+@onready var _bottom_row: HBoxContainer     = $Card/BottomRow
+@onready var _content: VBoxContainer        = $Card/Content
 @onready var _avatar_frame: Panel           = $Card/Content/AvatarRow/AvatarFrame
 @onready var _avatar_image: TextureRect     = $Card/Content/AvatarRow/AvatarFrame/AvatarImage
 @onready var _username_row: HBoxContainer   = $Card/Content/AvatarRow/InfoCol/UsernameRow
@@ -23,9 +26,10 @@ const _CARD_H_LARGE: float  = 420.0
 @onready var _harvest_value: Label          = $Card/Content/RowHarvest/HarvestValue
 @onready var _streak_value: Label           = $Card/Content/RowStreak/StreakValue
 @onready var _flowers_value: Label          = $Card/Content/RowFlowers/FlowersValue
-@onready var _avatar_picker: PanelContainer = $Card/AvatarPicker
-@onready var _picker_row: HBoxContainer     = $Card/AvatarPicker/VBox/PickerRow
-@onready var _confirm_btn: Button           = $Card/AvatarPicker/VBox/ConfirmBtn
+@onready var _avatar_picker: VBoxContainer  = $Card/AvatarPicker
+@onready var _picker_grid: GridContainer    = $Card/AvatarPicker/Grid
+@onready var _confirm_btn: Button           = $Card/AvatarPicker/ButtonRow/ConfirmBtn
+@onready var _cancel_btn: Button            = $Card/AvatarPicker/ButtonRow/CancelBtn
 
 var _is_closing: bool = false
 var _pending_idx: int = -1
@@ -33,16 +37,18 @@ var _pending_idx: int = -1
 func _ready() -> void:
 	visible = false
 	_close_btn.pressed.connect(close)
+	_logout_btn.pressed.connect(_on_logout_pressed)
 	_dimmer.gui_input.connect(_on_dimmer_input)
 	_avatar_frame.gui_input.connect(_on_avatar_frame_input)
 	_confirm_btn.pressed.connect(_on_confirm_avatar)
+	_cancel_btn.pressed.connect(_collapse_card)
 	_edit_btn.pressed.connect(_enter_rename_mode)
 	_rename_save_btn.pressed.connect(_on_rename_save)
 	_rename_cancel_btn.pressed.connect(_exit_rename_mode)
 	_rename_edit.text_submitted.connect(func(_t: String) -> void: _on_rename_save())
 	_load_picker_icons()
 	for i in 7:
-		var btn := _picker_row.get_child(i) as Button
+		var btn := _picker_grid.get_child(i) as Button
 		if btn:
 			btn.pressed.connect(_on_avatar_selected.bind(i))
 	UserManager.profile_updated.connect(_refresh_data)
@@ -107,10 +113,10 @@ func _count_flowers() -> int:
 
 func _load_picker_icons() -> void:
 	for i in 7:
-		var btn := _picker_row.get_child(i) as Button
+		var btn := _picker_grid.get_child(i) as Button
 		if not btn:
 			continue
-		var tex := btn.get_child(0) as TextureRect
+		var tex := btn.get_node_or_null("Margin/Tex") as TextureRect
 		if not tex:
 			continue
 		var path := _avatar_path(i)
@@ -159,7 +165,6 @@ func _on_avatar_frame_input(event: InputEvent) -> void:
 
 func _on_avatar_selected(idx: int) -> void:
 	_pending_idx = idx
-	_refresh_avatar(idx)
 	_update_picker_highlight()
 
 func _on_confirm_avatar() -> void:
@@ -168,25 +173,35 @@ func _on_confirm_avatar() -> void:
 	_collapse_card()
 
 func _expand_card() -> void:
+	_content.visible = false
+	_bottom_row.visible = false
 	_avatar_picker.visible = true
 	var tween := create_tween().set_parallel(true)
-	tween.tween_property(_card, "offset_top",    -(_CARD_H_LARGE * 0.5), 0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(_card, "offset_bottom",   _CARD_H_LARGE * 0.5,  0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_card, "offset_top",    -(_CARD_H_LARGE * 0.5), 0.1)
+	tween.tween_property(_card, "offset_bottom",   _CARD_H_LARGE * 0.5,  0.1)
 
 func _collapse_card() -> void:
 	_avatar_picker.visible = false
+	_content.visible = true
+	_bottom_row.visible = true
 	_refresh_avatar(UserManager.get_profile().avatar_index)
 	var tween := create_tween().set_parallel(true)
-	tween.tween_property(_card, "offset_top",    -(_CARD_H_SMALL * 0.5), 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(_card, "offset_bottom",   _CARD_H_SMALL * 0.5,  0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(_card, "offset_top",    -(_CARD_H_SMALL * 0.5), 0.1)
+	tween.tween_property(_card, "offset_bottom",   _CARD_H_SMALL * 0.5,  0.1)
 
 func _update_picker_highlight() -> void:
 	for i in 7:
-		var btn := _picker_row.get_child(i) as Button
+		var btn := _picker_grid.get_child(i) as Button
 		if btn:
-			btn.modulate = Color(1, 0.82, 0.22, 1) if i == _pending_idx else Color(1, 1, 1, 1)
+			var border := btn.get_node_or_null("SelectedBorder") as Panel
+			if border:
+				border.visible = (i == _pending_idx)
 
 func _on_dimmer_input(event: InputEvent) -> void:
 	if (event is InputEventMouseButton and event.pressed) \
 	or (event is InputEventScreenTouch and event.pressed):
 		close()
+
+func _on_logout_pressed() -> void:
+	close()
+	UserManager.logout()

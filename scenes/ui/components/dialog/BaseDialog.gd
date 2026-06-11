@@ -9,7 +9,7 @@ signal cancelled
 @onready var title_label: Label = $DialogBox/Content/Layout/TitleLabel
 @onready var message_label: Label = $DialogBox/Content/Layout/MessageScroll/MessageLabel
 @onready var confirm_btn: Button = $DialogBox/Content/Layout/ButtonRow/ConfirmBtn
-@onready var cancel_btn: Button = $DialogBox/Content/Layout/ButtonRow/CancelBtn
+@onready var cancel_btn: Button = $DialogBox/CancelBtn
 
 var _title: String = "Thông báo"
 var _message: String = ""
@@ -54,7 +54,6 @@ func _update_ui() -> void:
 	if _cancel_text.is_empty():
 		cancel_btn.visible = false
 	else:
-		cancel_btn.text = _cancel_text
 		cancel_btn.visible = true
 
 # Đóng Dialog với hiệu ứng thu nhỏ và mờ dần (Pop-out)

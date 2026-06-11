@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" path="res://scenes/shop/ShopItemCard.gd" id="1_card"]
 [ext_resource type="Texture2D" path="res://assets/icon/coin.png" id="2_coin"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="3_primary_button"]
+[ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="4_global_theme"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
 bg_color = Color(0.86, 0.93, 0.72, 1)
@@ -89,15 +91,12 @@ layout_mode = 2
 mouse_filter = 2
 text = "0"
 theme_override_font_sizes/font_size = 12
-theme_override_colors/font_color = Color(1.0, 0.88, 0.3, 1)
+theme_override_colors/font_color = Color(0.35, 0.22, 0.11, 1)
 
-[node name="BuyButton" type="Button" parent="VBoxContainer"]
+[node name="BuyButton" parent="VBoxContainer" instance=ExtResource("3_primary_button")]
 layout_mode = 2
 size_flags_horizontal = 3
 custom_minimum_size = Vector2(0, 38)
+theme = ExtResource("4_global_theme")
 text = "Mua"
 theme_override_font_sizes/font_size = 13
-theme_override_styles/normal = SubResource("StyleBoxFlat_buy")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_buy")
-theme_override_styles/hover = SubResource("StyleBoxFlat_buy")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_buy_disabled")

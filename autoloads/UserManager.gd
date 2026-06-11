@@ -205,7 +205,7 @@ func login_async(account: String, password: String) -> bool:
 	_token_store.access_token = tokens["accessToken"]
 	_token_store.save_refresh_token(tokens["refreshToken"])
 	if not use_mock:
-		fetch_profile_async()
+		await fetch_profile_async()
 	login_succeeded.emit()
 	return true
 

@@ -129,6 +129,7 @@ func load_scene_async(scene_path: String) -> void:
 	_fade_tween = create_tween()
 	main_container.modulate.a = 0.0
 	_fade_tween.tween_property(main_container, "modulate:a", 1.0, 0.25)
+	await _fade_tween.finished
 	
 	var err := ResourceLoader.load_threaded_request(scene_path)
 	if err != OK:

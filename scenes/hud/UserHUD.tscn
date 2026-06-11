@@ -74,11 +74,11 @@ stretch_mode = 5
 
 [node name="LevelLabel" type="Label" parent="." unique_id=1506605877]
 layout_mode = 0
-offset_left = 124.750015
+offset_left = 124.75
 offset_top = 63.25
-offset_right = 144.75002
+offset_right = 144.75
 offset_bottom = 83.25
-theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_color = Color(0.28, 0.14, 0.04, 1)
 theme_override_font_sizes/font_size = 14
 text = "1"
 horizontal_alignment = 1
