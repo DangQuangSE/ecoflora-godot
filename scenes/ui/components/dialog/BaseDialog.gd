@@ -91,7 +91,12 @@ static func show_alert(parent: Node, title: String, message: String, confirm_tex
 		push_error("BaseDialog: Không tìm thấy file BaseDialog.tscn")
 		return null
 	var dialog := scene.instantiate() as BaseDialog
-	parent.add_child(dialog)
+	var canvas := CanvasLayer.new()
+	canvas.layer = 200
+	parent.get_tree().root.add_child(canvas)
+	canvas.add_child(dialog)
+	# Tự dọn dẹp CanvasLayer khi dialog bị xóa
+	dialog.tree_exited.connect(canvas.queue_free)
 	dialog.setup(title, message, confirm_text, "")
 	return dialog
 
@@ -102,6 +107,11 @@ static func show_confirm(parent: Node, title: String, message: String, confirm_t
 		push_error("BaseDialog: Không tìm thấy file BaseDialog.tscn")
 		return null
 	var dialog := scene.instantiate() as BaseDialog
-	parent.add_child(dialog)
+	var canvas := CanvasLayer.new()
+	canvas.layer = 200
+	parent.get_tree().root.add_child(canvas)
+	canvas.add_child(dialog)
+	# Tự dọn dẹp CanvasLayer khi dialog bị xóa
+	dialog.tree_exited.connect(canvas.queue_free)
 	dialog.setup(title, message, confirm_text, cancel_text)
 	return dialog
