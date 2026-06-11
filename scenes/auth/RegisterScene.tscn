@@ -3,10 +3,12 @@
 [ext_resource type="Script" uid="uid://fkay4cl08qt8" path="res://scenes/auth/RegisterScene.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://i77c84g73osi" path="res://assets/background/login/login_bg.png" id="2_loginbg"]
 [ext_resource type="Texture2D" uid="uid://bep46xeiy8wdd" path="res://assets/logo/logo.png" id="3_hgf62"]
-[ext_resource type="Texture2D" uid="uid://ccsrm1ycfhdof" path="res://assets/frame/login_frame.png" id="5_login_frame"]
 [ext_resource type="PackedScene" path="res://scenes/auth/components/AuthInput.tscn" id="7_auth_input"]
 [ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="8_global_theme"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="9_primary_button"]
+[ext_resource type="Texture2D" path="res://assets/frame/login_frame_1.png" id="10_frame_top"]
+[ext_resource type="Texture2D" path="res://assets/frame/login_frame_2.png" id="11_frame_mid"]
+[ext_resource type="Texture2D" path="res://assets/frame/login_frame_3.png" id="12_frame_bot"]
 
 
 [node name="RegisterScene" type="Control" unique_id=821908537]
@@ -46,27 +48,46 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -240.0
-offset_top = -320.0
+offset_top = -275.0
 offset_right = 240.0
-offset_bottom = 320.0
+offset_bottom = 275.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="FrameBg" type="TextureRect" parent="RegisterFrame" unique_id=1050153088]
+[node name="FrameBg" type="VBoxContainer" parent="RegisterFrame" unique_id=1050153088]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -2.9999998
-offset_top = 59.999992
-offset_right = -0.822937
-offset_bottom = 62.77777
+offset_left = -3.0
+offset_top = 60.0
+offset_right = -1.0
+offset_bottom = 63.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(1.0041226, 1.0799987)
 mouse_filter = 2
-texture = ExtResource("5_login_frame")
+theme_override_constants/separation = 0
+
+[node name="FrameTop" type="TextureRect" parent="RegisterFrame/FrameBg"]
+custom_minimum_size = Vector2(0, 172)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("10_frame_top")
+expand_mode = 1
+
+[node name="FrameMid" type="TextureRect" parent="RegisterFrame/FrameBg"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+texture = ExtResource("11_frame_mid")
+expand_mode = 1
+
+[node name="FrameBot" type="TextureRect" parent="RegisterFrame/FrameBg"]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("12_frame_bot")
 expand_mode = 1
 
 [node name="FormArea" type="MarginContainer" parent="RegisterFrame" unique_id=1270315840]
@@ -74,67 +95,66 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 68.0
-offset_bottom = 68.0
+offset_top = 60.0
+offset_bottom = 60.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.99579185, 1)
 theme_override_constants/margin_left = 90
-theme_override_constants/margin_top = 120
+theme_override_constants/margin_top = 100
 theme_override_constants/margin_right = 90
 theme_override_constants/margin_bottom = 30
 
-[node name="CenterContainer" type="CenterContainer" parent="RegisterFrame/FormArea" unique_id=75189524]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="FormContent" type="VBoxContainer" parent="RegisterFrame/FormArea/CenterContainer" unique_id=733718747]
+[node name="FormContent" type="VBoxContainer" parent="RegisterFrame/FormArea" unique_id=733718747]
 custom_minimum_size = Vector2(270, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="FirstNameInput" parent="RegisterFrame/FormArea/CenterContainer/FormContent" instance=ExtResource("7_auth_input")]
+[node name="NameRow" type="HBoxContainer" parent="RegisterFrame/FormArea/FormContent"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="FirstNameInput" parent="RegisterFrame/FormArea/FormContent/NameRow" instance=ExtResource("7_auth_input")]
 placeholder_text = "Họ"
 
-[node name="LastNameInput" parent="RegisterFrame/FormArea/CenterContainer/FormContent" instance=ExtResource("7_auth_input")]
+[node name="LastNameInput" parent="RegisterFrame/FormArea/FormContent/NameRow" instance=ExtResource("7_auth_input")]
 placeholder_text = "Tên"
 
-[node name="AccountInput" parent="RegisterFrame/FormArea/CenterContainer/FormContent" instance=ExtResource("7_auth_input")]
+[node name="AccountInput" parent="RegisterFrame/FormArea/FormContent" instance=ExtResource("7_auth_input")]
 placeholder_text = "Tài khoản hoặc Email"
 
-[node name="PasswordInput" parent="RegisterFrame/FormArea/CenterContainer/FormContent" instance=ExtResource("7_auth_input")]
+[node name="PasswordInput" parent="RegisterFrame/FormArea/FormContent" instance=ExtResource("7_auth_input")]
 placeholder_text = "Mật khẩu"
 secret = true
 
-[node name="ConfirmPasswordInput" parent="RegisterFrame/FormArea/CenterContainer/FormContent" instance=ExtResource("7_auth_input")]
+[node name="ConfirmPasswordInput" parent="RegisterFrame/FormArea/FormContent" instance=ExtResource("7_auth_input")]
 placeholder_text = "Xác nhận mật khẩu"
 secret = true
 
-[node name="BtnSpacer" type="Control" parent="RegisterFrame/FormArea/CenterContainer/FormContent" unique_id=243457098]
+[node name="BtnSpacer" type="Control" parent="RegisterFrame/FormArea/FormContent" unique_id=243457098]
 custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 
-[node name="RegisterBtnMargin" type="MarginContainer" parent="RegisterFrame/FormArea/CenterContainer/FormContent" unique_id=1552706785]
+[node name="RegisterBtnMargin" type="MarginContainer" parent="RegisterFrame/FormArea/FormContent" unique_id=1552706785]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
-[node name="RegisterBtn" parent="RegisterFrame/FormArea/CenterContainer/FormContent/RegisterBtnMargin" unique_id=767580248 instance=ExtResource("9_primary_button")]
+[node name="RegisterBtn" parent="RegisterFrame/FormArea/FormContent/RegisterBtnMargin" unique_id=767580248 instance=ExtResource("9_primary_button")]
 layout_mode = 2
 text = "Đăng ký"
 
-
-[node name="ErrorLabel" type="Label" parent="RegisterFrame/FormArea/CenterContainer/FormContent" unique_id=1264203308]
+[node name="ErrorLabel" type="Label" parent="RegisterFrame/FormArea/FormContent" unique_id=1264203308]
 visible = false
 layout_mode = 2
 horizontal_alignment = 1
 autowrap_mode = 3
 
-[node name="LoginLink" type="Button" parent="RegisterFrame/FormArea/CenterContainer/FormContent" unique_id=949022335]
+[node name="LoginLink" type="Button" parent="RegisterFrame/FormArea/FormContent" unique_id=949022335]
 layout_mode = 2
 text = "Đã có tài khoản? Đăng nhập"
 flat = true
+
 
 [node name="LoadingOverlay" type="ColorRect" parent="." unique_id=1823672432]
 visible = false

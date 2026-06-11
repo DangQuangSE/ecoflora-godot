@@ -3,15 +3,15 @@ extends Control
 const LOGIN_SCENE := "res://scenes/auth/LoginScene.tscn"
 const GARDEN_SCENE := "res://scenes/garden/GardenScene.tscn"
 
-@onready var _first_name_input: AuthInput = $RegisterFrame/FormArea/CenterContainer/FormContent/FirstNameInput
-@onready var _last_name_input: AuthInput = $RegisterFrame/FormArea/CenterContainer/FormContent/LastNameInput
-@onready var _account_input: AuthInput = $RegisterFrame/FormArea/CenterContainer/FormContent/AccountInput
-@onready var _password_input: AuthInput = $RegisterFrame/FormArea/CenterContainer/FormContent/PasswordInput
-@onready var _confirm_password_input: AuthInput = $RegisterFrame/FormArea/CenterContainer/FormContent/ConfirmPasswordInput
+@onready var _first_name_input: AuthInput = $RegisterFrame/FormArea/FormContent/NameRow/FirstNameInput
+@onready var _last_name_input: AuthInput = $RegisterFrame/FormArea/FormContent/NameRow/LastNameInput
+@onready var _account_input: AuthInput = $RegisterFrame/FormArea/FormContent/AccountInput
+@onready var _password_input: AuthInput = $RegisterFrame/FormArea/FormContent/PasswordInput
+@onready var _confirm_password_input: AuthInput = $RegisterFrame/FormArea/FormContent/ConfirmPasswordInput
 @onready var _confirm_password_field: LineEdit = _confirm_password_input.get_line_edit()
-@onready var _register_btn: Button = $RegisterFrame/FormArea/CenterContainer/FormContent/RegisterBtnMargin/RegisterBtn
-@onready var _login_link: Button = $RegisterFrame/FormArea/CenterContainer/FormContent/LoginLink
-@onready var _error_label: Label = $RegisterFrame/FormArea/CenterContainer/FormContent/ErrorLabel
+@onready var _register_btn: Button = $RegisterFrame/FormArea/FormContent/RegisterBtnMargin/RegisterBtn
+@onready var _login_link: Button = $RegisterFrame/FormArea/FormContent/LoginLink
+@onready var _error_label: Label = $RegisterFrame/FormArea/FormContent/ErrorLabel
 @onready var _loading: ColorRect = $LoadingOverlay
 @onready var _loading_label: Label = $LoadingOverlay/LoadingLabel
 
@@ -94,7 +94,7 @@ func _on_confirm_password_gui_input(event: InputEvent) -> void:
 
 func show_error(message: String) -> void:
 	_set_loading(false)
-	_show_error(message)
+	BaseDialog.show_alert(self, "Lỗi Đăng Ký", message)
 
 func on_register_success() -> void:
 	_set_loading(false)

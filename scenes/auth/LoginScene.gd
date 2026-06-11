@@ -75,7 +75,7 @@ func _on_register_link_pressed() -> void:
 
 func show_error(message: String) -> void:
 	_set_loading(false)
-	_show_error(message)
+	BaseDialog.show_alert(self, "Lỗi Đăng Nhập", message)
 
 func on_login_success() -> void:
 	_loading_label.text = "Đang tải..."

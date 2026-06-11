@@ -8,15 +8,6 @@
 [ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="8_global_theme"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="9_primary_button"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_normal"]
-texture = ExtResource("6_login_button")
-region_rect = Rect2(13, 552, 997, 361)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_pressed"]
-texture = ExtResource("6_login_button")
-texture_margin_top = 3.0
-region_rect = Rect2(13, 552, 997, 361)
-
 [node name="LoginScene" type="Control" unique_id=374933870]
 layout_mode = 3
 anchors_preset = 15
