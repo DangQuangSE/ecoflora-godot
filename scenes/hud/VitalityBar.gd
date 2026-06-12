@@ -84,46 +84,8 @@ func _on_vitality_claimed(reward_type: String, reward_amount: int) -> void:
 	_show_reward_popup(reward_type, reward_amount)
 
 func _show_reward_popup(reward_type: String, reward_amount: int) -> void:
-	var popup := CanvasLayer.new()
-	popup.layer = 100
-	get_tree().root.add_child(popup)
-
-	var dimmer := ColorRect.new()
-	dimmer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	dimmer.color = Color(0.0, 0.0, 0.0, 0.5)
-	dimmer.mouse_filter = Control.MOUSE_FILTER_STOP
-	popup.add_child(dimmer)
-
-	var panel := Panel.new()
-	panel.custom_minimum_size = Vector2(280.0, 140.0)
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.offset_left  = -140.0
-	panel.offset_top   = -70.0
-	panel.offset_right =  140.0
-	panel.offset_bottom = 70.0
-	popup.add_child(panel)
-
-	var lbl := Label.new()
-	lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
-	lbl.offset_left   = 16.0
-	lbl.offset_top    = 16.0
-	lbl.offset_right  = -16.0
-	lbl.offset_bottom = -16.0
-	lbl.text = "🎉 Chúc mừng!\nBạn nhận được: %s x%d" % [reward_type, reward_amount]
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
-	lbl.autowrap_mode = TextServer.AUTOWRAP_WORD
-	lbl.add_theme_font_size_override("font_size", 17)
-	panel.add_child(lbl)
-
-	dimmer.gui_input.connect(func(e: InputEvent) -> void:
-		if (e is InputEventMouseButton or e is InputEventScreenTouch) and e.is_pressed():
-			popup.queue_free()
-	)
-	get_tree().create_timer(4.0).timeout.connect(func() -> void:
-		if is_instance_valid(popup):
-			popup.queue_free()
-	)
+	var msg := "Bạn nhận được: %s x%d" % [reward_type, reward_amount]
+	BaseDialog.show_alert(self, "🎉 Chúc mừng!", msg, "Đồng ý")
 
 func _tick() -> void:
 	_refresh_display()

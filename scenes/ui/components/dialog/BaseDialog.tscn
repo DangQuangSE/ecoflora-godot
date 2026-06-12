@@ -1,0 +1,174 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scenes/ui/components/dialog/BaseDialog.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/frame/dialog/dialog.png" id="2_dialog_bg"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="3_primary_button"]
+[ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="4_global_theme"]
+[ext_resource type="Texture2D" path="res://assets/icon/close.png" id="5_close_icon"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_cancel_normal"]
+bg_color = Color(0.82, 0.43, 0.35, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.58, 0.28, 0.22, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_cancel_hover"]
+bg_color = Color(0.88, 0.53, 0.45, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.64, 0.33, 0.26, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_cancel_pressed"]
+bg_color = Color(0.70, 0.34, 0.27, 1)
+border_width_left = 2
+border_width_top = 3
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.48, 0.22, 0.17, 1)
+corner_radius_top_left = 24
+corner_radius_top_right = 24
+corner_radius_bottom_right = 24
+corner_radius_bottom_left = 24
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+
+[node name="BaseDialog" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("4_global_theme")
+script = ExtResource("1_script")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="DialogBox" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -240.0
+offset_top = -170.0
+offset_right = 240.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(240, 170)
+
+[node name="Background" type="TextureRect" parent="DialogBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_dialog_bg")
+expand_mode = 1
+
+[node name="CancelBtn" type="Button" parent="DialogBox"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -62.0
+offset_top = 32.0
+offset_right = -26.0
+offset_bottom = 68.0
+flat = true
+
+[node name="Icon" type="TextureRect" parent="DialogBox/CancelBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_close_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Content" type="MarginContainer" parent="DialogBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 70
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 80
+
+[node name="Layout" type="VBoxContainer" parent="DialogBox/Content"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TitleLabel" type="Label" parent="DialogBox/Content/Layout"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
+theme_override_font_sizes/font_size = 20
+text = "Thông báo"
+horizontal_alignment = 1
+
+[node name="MessageScroll" type="ScrollContainer" parent="DialogBox/Content/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="MessageLabel" type="Label" parent="DialogBox/Content/Layout/MessageScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.45098, 0.317647, 0.207843, 1)
+theme_override_font_sizes/font_size = 15
+text = "Nội dung thông báo..."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ButtonRow" type="HBoxContainer" parent="DialogBox/Content/Layout"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ConfirmBtn" parent="DialogBox/Content/Layout/ButtonRow" instance=ExtResource("3_primary_button")]
+custom_minimum_size = Vector2(130, 44)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Xác nhận"

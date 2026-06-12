@@ -27,7 +27,7 @@ const _TAB_CATEGORIES := ["Seed", "Consumable", "Decoration", ""]
 @onready var _qty_plus: Button           = $ConfirmDialog/VBox/QuantityRow/PlusButton
 @onready var _total_label: Label         = $ConfirmDialog/VBox/TotalRow/TotalLabel
 @onready var _confirm_btn: Button        = $ConfirmDialog/VBox/ButtonRow/ConfirmButton
-@onready var _cancel_btn: Button         = $ConfirmDialog/VBox/ButtonRow/CancelButton
+@onready var _cancel_btn: Button         = $ConfirmDialog/CancelButton
 @onready var _toast: Panel               = $ToastNotification
 @onready var _toast_label: Label         = $ToastNotification/ToastLabel
 @onready var _loading: Label             = $LoadingSpinner
@@ -92,18 +92,17 @@ func _ready() -> void:
 
 func _build_tab_styles() -> void:
 	for s in [_style_tab_normal, _style_tab_active, _style_tab_hover]:
-		s.corner_radius_top_left  = 8
-		s.corner_radius_top_right = 8
-		s.border_width_left  = 1
-		s.border_width_top   = 1
-		s.border_width_right = 1
-	_style_tab_normal.bg_color    = Color(0.40, 0.24, 0.10, 1)
-	_style_tab_normal.border_color = Color(0.62, 0.44, 0.24, 1)
-	_style_tab_active.bg_color    = Color(0.76, 0.55, 0.30, 1)
-	_style_tab_active.border_color = Color(0.95, 0.78, 0.50, 1)
-	_style_tab_active.border_width_top = 2
-	_style_tab_hover.bg_color     = Color(0.52, 0.34, 0.16, 1)
-	_style_tab_hover.border_color  = Color(0.72, 0.52, 0.30, 1)
+		s.corner_radius_top_left  = 16
+		s.corner_radius_top_right = 16
+		s.border_width_left  = 2
+		s.border_width_top   = 2
+		s.border_width_right = 2
+		s.border_width_bottom = 0
+		s.border_color = Color(0.35, 0.22, 0.11, 1)
+	
+	_style_tab_normal.bg_color = Color(0.46, 0.28, 0.12, 1)
+	_style_tab_hover.bg_color  = Color(0.58, 0.38, 0.20, 1)
+	_style_tab_active.bg_color = Color(0.96, 0.90, 0.78, 1)
 
 func _build_toast_styles() -> void:
 	for style in [_style_toast_ok, _style_toast_err]:
@@ -169,8 +168,11 @@ func _set_active_tab(idx: int) -> void:
 		btn.add_theme_stylebox_override("normal",   _style_tab_active if is_active else _style_tab_normal)
 		btn.add_theme_stylebox_override("pressed",  _style_tab_active)
 		btn.add_theme_stylebox_override("hover",    _style_tab_active if is_active else _style_tab_hover)
-		btn.add_theme_color_override("font_color",
-			Color(0.18, 0.09, 0.02, 1) if is_active else Color(1.0, 0.92, 0.72, 1))
+		
+		var font_color := Color(0.35, 0.22, 0.11, 1) if is_active else Color(0.96, 0.90, 0.78, 1)
+		btn.add_theme_color_override("font_color", font_color)
+		btn.add_theme_color_override("font_hover_color", font_color)
+		btn.add_theme_color_override("font_pressed_color", font_color)
 
 func _render_items(items: Array[ShopItem]) -> void:
 	for child in _grid.get_children():

@@ -4,16 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://i77c84g73osi" path="res://assets/background/login/login_bg.png" id="2_loginbg"]
 [ext_resource type="Texture2D" uid="uid://bep46xeiy8wdd" path="res://assets/logo/logo.png" id="3_hgf62"]
 [ext_resource type="Texture2D" uid="uid://ccsrm1ycfhdof" path="res://assets/frame/login_frame.png" id="5_login_frame"]
-[ext_resource type="Texture2D" uid="uid://bvtwuucb8im40" path="res://assets/button/login_button.png" id="6_login_button"]
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_normal"]
-texture = ExtResource("6_login_button")
-region_rect = Rect2(13, 552, 997, 361)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_btn_pressed"]
-texture = ExtResource("6_login_button")
-texture_margin_top = 3.0
-region_rect = Rect2(13, 552, 997, 361)
+[ext_resource type="PackedScene" path="res://scenes/auth/components/AuthInput.tscn" id="7_auth_input"]
+[ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="8_global_theme"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="9_primary_button"]
 
 [node name="LoginScene" type="Control" unique_id=374933870]
 layout_mode = 3
@@ -23,6 +16,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+theme = ExtResource("8_global_theme")
 
 [node name="Background" type="TextureRect" parent="." unique_id=1347790292]
 layout_mode = 1
@@ -38,7 +32,7 @@ stretch_mode = 6
 
 [node name="Logo" type="Sprite2D" parent="." unique_id=1382780961]
 position = Vector2(361, 188)
-scale = Vector2(0.12056992, 0.15493287)
+scale = Vector2(0.165, 0.165)
 texture = ExtResource("3_hgf62")
 region_enabled = true
 region_rect = Rect2(0, 388.16245, 1920, 1119.212)
@@ -50,10 +44,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -220.0
-offset_top = -195.0
-offset_right = 220.0
-offset_bottom = 195.0
+offset_left = -240.0
+offset_top = -220.0
+offset_right = 240.0
+offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -77,47 +71,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 75
-theme_override_constants/margin_top = 90
-theme_override_constants/margin_right = 75
-theme_override_constants/margin_bottom = 18
+theme_override_constants/margin_left = 90
+theme_override_constants/margin_top = 120
+theme_override_constants/margin_right = 90
+theme_override_constants/margin_bottom = 30
 
 [node name="FormContent" type="VBoxContainer" parent="LoginFrame/FormArea" unique_id=1270553234]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="UsernameWrapper" type="TextureRect" parent="LoginFrame/FormArea/FormContent" unique_id=-1293856185]
-custom_minimum_size = Vector2(0, 44)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="UsernameField" type="LineEdit" parent="LoginFrame/FormArea/FormContent/UsernameWrapper" unique_id=1586846444]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="UsernameInput" parent="LoginFrame/FormArea/FormContent" instance=ExtResource("7_auth_input")]
 placeholder_text = "Tài khoản hoặc Email"
 
-[node name="PasswordWrapper" type="TextureRect" parent="LoginFrame/FormArea/FormContent" unique_id=-1293856184]
-custom_minimum_size = Vector2(0, 44)
-layout_mode = 2
-size_flags_horizontal = 3
-mouse_filter = 2
-
-[node name="PasswordField" type="LineEdit" parent="LoginFrame/FormArea/FormContent/PasswordWrapper" unique_id=2055015535]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="PasswordInput" parent="LoginFrame/FormArea/FormContent" instance=ExtResource("7_auth_input")]
 placeholder_text = "Mật khẩu"
 secret = true
 
@@ -130,16 +96,10 @@ layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_right = 20
 
-[node name="LoginBtn" type="Button" parent="LoginFrame/FormArea/FormContent/LoginBtnMargin" unique_id=1805267717]
-custom_minimum_size = Vector2(0, 56)
+[node name="LoginBtn" parent="LoginFrame/FormArea/FormContent/LoginBtnMargin" unique_id=1805267717 instance=ExtResource("9_primary_button")]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/normal = SubResource("StyleBoxTexture_btn_normal")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_btn_pressed")
-theme_override_styles/hover = SubResource("StyleBoxTexture_btn_normal")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_btn_normal")
-theme_override_styles/focus = SubResource("StyleBoxTexture_btn_normal")
 text = "Đăng nhập"
+
 
 [node name="SuccessLabel" type="Label" parent="LoginFrame/FormArea/FormContent" unique_id=1732363259]
 visible = false

@@ -19,7 +19,7 @@ signal register_failed(reason: String)
 signal profile_updated
 
 @export var use_mock: bool = false
-@export var base_url: String = "http://20.40.58.246:5000"
+@export var base_url: String = "https://ecocham.xyz"
 
 const _XP_TABLE: Dictionary = {
 	"harvest_anthurium_bloom":         100,
@@ -47,6 +47,7 @@ var _shop_purchase_http: HTTPRequest
 var _vitality_poll_timer: Timer
 var _avatar_http: HTTPRequest
 var _rename_http: HTTPRequest
+var _refresh_http: HTTPRequest
 var _request_in_flight: bool = false
 var _register_in_flight: bool = false
 var _profile_in_flight: bool = false
@@ -54,6 +55,7 @@ var _claim_in_flight: bool = false
 var _purchase_in_flight: bool = false
 var _avatar_in_flight: bool = false
 var _rename_in_flight: bool = false
+var _refresh_in_flight: bool = false
 
 var shop_open_tab: int = 0
 var _registration_success_message: String = ""
@@ -99,6 +101,10 @@ func _ready() -> void:
 	_rename_http.timeout = 10.0
 	add_child(_rename_http)
 
+	_refresh_http = HTTPRequest.new()
+	_refresh_http.timeout = 10.0
+	add_child(_refresh_http)
+
 	_vitality_service = _VitalityServiceScript.new(_vitality_http, _vitality_claim_http)
 	_shop_service = _ShopServiceScript.new(_shop_http, _shop_purchase_http)
 
@@ -120,7 +126,7 @@ func _ready() -> void:
 	GardenManager.harvest_completed.connect(_on_harvest_completed)
 
 func is_logged_in() -> bool:
-	return use_mock or not _token_store.access_token.is_empty()
+	return not _token_store.access_token.is_empty()
 
 func get_access_token() -> String:
 	if use_mock:
@@ -136,6 +142,7 @@ func get_auth_header() -> String:
 
 func login_async(account: String, password: String) -> bool:
 	if use_mock:
+		_token_store.access_token = "mock_token"
 		login_succeeded.emit()
 		return true
 
@@ -146,6 +153,7 @@ func login_async(account: String, password: String) -> bool:
 	var body: String = _auth_service.build_login_body(account, password)
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
 	_request_in_flight = true
+	_show_loading()
 
 	var error: int = _http.request(
 		base_url + "/api/auth/login",
@@ -155,11 +163,13 @@ func login_async(account: String, password: String) -> bool:
 	)
 	if error != OK:
 		_request_in_flight = false
+		_hide_loading()
 		push_warning("UserManager.login_async: HTTPRequest.request() failed — %d" % error)
 		return false
 
 	var raw: Variant = await _http.request_completed
 	_request_in_flight = false
+	_hide_loading()
 
 	var http_result: int = raw[0]
 	var status_code: int = raw[1]
@@ -202,7 +212,7 @@ func login_async(account: String, password: String) -> bool:
 	_token_store.access_token = tokens["accessToken"]
 	_token_store.save_refresh_token(tokens["refreshToken"])
 	if not use_mock:
-		fetch_profile_async()
+		await fetch_profile_async()
 	login_succeeded.emit()
 	return true
 
@@ -226,6 +236,7 @@ func register_async(first_name: String, last_name: String,
 		first_name, last_name, account, password)
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
 	_register_in_flight = true
+	_show_loading()
 
 	var error: int = _http_register.request(
 		base_url + "/api/auth/register",
@@ -235,11 +246,13 @@ func register_async(first_name: String, last_name: String,
 	)
 	if error != OK:
 		_register_in_flight = false
+		_hide_loading()
 		push_warning("UserManager.register_async: HTTPRequest.request() failed — %d" % error)
 		return false
 
 	var raw: Variant = await _http_register.request_completed
 	_register_in_flight = false
+	_hide_loading()
 
 	var http_result: int = raw[0]
 	var status_code: int = raw[1]
@@ -321,7 +334,76 @@ func fetch_profile_async() -> void:
 		level_up.emit(_profile.level)
 	profile_updated.emit()
 
+## Khi gap 401, thu refresh token truoc.
+## Neu refresh thanh cong -> giu phien, khong da nguoi dung ra.
+## Neu refresh that bai -> xoa token va ve man hinh login.
 func handle_401() -> void:
+	if use_mock:
+		return
+	if _refresh_in_flight:
+		# Dang refresh roi, cho ket qua — khong lam gi them.
+		return
+	_refresh_access_token_async()
+
+func _refresh_access_token_async() -> void:
+	var refresh_token: String = _token_store.load_refresh_token()
+	if refresh_token.is_empty():
+		push_warning("UserManager._refresh_access_token_async: no refresh token stored — forcing logout")
+		_force_logout()
+		return
+
+	if _refresh_in_flight:
+		return
+	_refresh_in_flight = true
+
+	var body := JSON.stringify({"refreshToken": refresh_token})
+	var headers := PackedStringArray(["Content-Type: application/json"])
+	var err := _refresh_http.request(
+		base_url + "/api/auth/refresh",
+		headers,
+		HTTPClient.METHOD_POST,
+		body
+	)
+	if err != OK:
+		_refresh_in_flight = false
+		push_warning("UserManager._refresh_access_token_async: request error %d — forcing logout" % err)
+		_force_logout()
+		return
+
+	var raw: Variant = await _refresh_http.request_completed
+	_refresh_in_flight = false
+
+	var http_result: int = raw[0]
+	var status_code: int = raw[1]
+	var body_bytes: PackedByteArray = raw[3]
+
+	if http_result != HTTPRequest.RESULT_SUCCESS or status_code != 200:
+		push_warning("UserManager._refresh_access_token_async: refresh failed HTTP %d — forcing logout" % status_code)
+		_force_logout()
+		return
+
+	var json := JSON.new()
+	if json.parse(body_bytes.get_string_from_utf8()) != OK:
+		push_warning("UserManager._refresh_access_token_async: JSON parse error — forcing logout")
+		_force_logout()
+		return
+
+	var data: Variant = json.get_data()
+	if not data is Dictionary:
+		_force_logout()
+		return
+
+	var tokens: Dictionary = _auth_service.parse_login_response(data)
+	if tokens.is_empty():
+		push_warning("UserManager._refresh_access_token_async: could not parse new tokens — forcing logout")
+		_force_logout()
+		return
+
+	_token_store.access_token = tokens["accessToken"]
+	_token_store.save_refresh_token(tokens["refreshToken"])
+	push_warning("UserManager._refresh_access_token_async: token refreshed successfully")
+
+func _force_logout() -> void:
 	_token_store.access_token = ""
 	login_required.emit()
 
@@ -538,4 +620,17 @@ func _exit_tree() -> void:
 	if _rename_in_flight:
 		_rename_http.cancel_request()
 		_rename_in_flight = false
+	if _refresh_in_flight:
+		_refresh_http.cancel_request()
+		_refresh_in_flight = false
 	_vitality_poll_timer.stop()
+
+func _show_loading() -> void:
+	var loading := get_node_or_null("/root/LoadingScreen")
+	if loading:
+		loading.show_loading()
+
+func _hide_loading() -> void:
+	var loading := get_node_or_null("/root/LoadingScreen")
+	if loading:
+		loading.hide_loading()

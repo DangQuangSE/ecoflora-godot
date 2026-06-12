@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://db55ccf5x01by" path="res://assets/icon/sickle.png" id="6_yixhj"]
 [ext_resource type="PackedScene" uid="uid://shopscene001" path="res://scenes/shop/ShopScene.tscn" id="7_shopscene"]
 [ext_resource type="Texture2D" uid="uid://bjci1pjvrftfs" path="res://assets/icon/recall_deco.png" id="8_recall"]
+[ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="9_primary_button_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_invbtn"]
 bg_color = Color(0.1, 0.14, 0.08, 0.88)
@@ -18,10 +19,10 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.45, 0.62, 0.3, 1)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_invbtn_hover"]
 bg_color = Color(0.16, 0.22, 0.12, 0.95)
@@ -30,10 +31,10 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.6, 0.82, 0.4, 1)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-corner_radius_bottom_right = 14
-corner_radius_bottom_left = 14
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selected"]
 bg_color = Color(0.1, 0.14, 0.08, 0.92)
@@ -42,10 +43,10 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.7, 0.9, 0.4, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_deselect"]
 bg_color = Color(0.6, 0.15, 0.15, 1)
@@ -97,18 +98,14 @@ script = ExtResource("1_hud")
 [node name="DynamicJoystick" parent="." unique_id=1996316913 instance=ExtResource("2_joystick")]
 
 [node name="InventoryButton" type="Button" parent="." unique_id=581721140]
-anchors_preset = -1
+script = ExtResource("9_primary_button_script")
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 0.4
 anchor_right = 1.0
-anchor_bottom = 0.4
-offset_left = -100.0
-offset_top = 82.0
+offset_left = -92.0
+offset_top = 496.0
 offset_right = -16.0
-offset_bottom = 166.0
-theme_override_styles/normal = SubResource("StyleBoxFlat_invbtn")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_invbtn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_invbtn_hover")
+offset_bottom = 572.0
 flat = true
 
 [node name="Icon" type="TextureRect" parent="InventoryButton" unique_id=2086235613]
@@ -116,10 +113,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = 9.0
+offset_left = 8.0
+offset_top = 8.0
 offset_right = -8.0
-offset_bottom = -11.0
+offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -128,15 +125,13 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="SelectedItemSlot" type="Panel" parent="." unique_id=1657277381]
-anchors_preset = -1
+anchors_preset = 1
 anchor_left = 1.0
-anchor_top = 0.4
 anchor_right = 1.0
-anchor_bottom = 0.4
-offset_left = -100.0
-offset_top = 10.0
-offset_right = -40.0
-offset_bottom = 72.0
+offset_left = -92.0
+offset_top = 404.0
+offset_right = -16.0
+offset_bottom = 480.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_selected")
 
 [node name="SelectedIcon" type="TextureRect" parent="SelectedItemSlot" unique_id=298424826]
@@ -144,10 +139,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = -6.0
-offset_bottom = -6.0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -177,36 +172,54 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="HarvestButton" type="Button" parent="." unique_id=407304471]
-offset_left = 620.0
-offset_top = 290.0
-offset_right = 704.0
-offset_bottom = 374.0
+script = ExtResource("9_primary_button_script")
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -92.0
+offset_top = 312.0
+offset_right = -16.0
+offset_bottom = 388.0
 flat = true
 
 [node name="Icon" type="TextureRect" parent="HarvestButton" unique_id=2020280548]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 74.0
-offset_bottom = 74.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("6_yixhj")
 expand_mode = 1
 stretch_mode = 5
 
 [node name="ShopButton" type="Button" parent="." unique_id=270074715]
-offset_left = 620.0
-offset_top = 220.0
-offset_right = 696.0
-offset_bottom = 292.0
+script = ExtResource("9_primary_button_script")
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -94.0
+offset_top = 216.0
+offset_right = -14.0
+offset_bottom = 296.0
 flat = true
 
 [node name="ShopIcon" type="TextureRect" parent="ShopButton" unique_id=830214295]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 80.0
-offset_bottom = 82.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("5_dui1j")
 expand_mode = 1
@@ -250,6 +263,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_savebtn")
 text = "Save"
 
 [node name="RecallDecoButton" type="Button" parent="." unique_id=700000001]
+script = ExtResource("9_primary_button_script")
 visible = false
 offset_left = 8.0
 offset_top = 236.0

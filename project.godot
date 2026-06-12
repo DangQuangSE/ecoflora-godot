@@ -11,12 +11,13 @@ config_version=5
 [application]
 
 config/name="flow-flora-godot"
-run/main_scene="res://scenes/auth/LoginScene.tscn"
+run/main_scene="res://scenes/shared/SplashScene.tscn"
 config/features=PackedStringArray("4.6", "Mobile")
 config/icon="res://icon.svg"
 
 [autoload]
 
+LoadingScreen="*res://scenes/shared/LoadingScreen.tscn"
 SceneTransition="*res://autoloads/SceneTransition.gd"
 InteractionManager="*res://autoloads/InteractionManager.gd"
 GardenManager="*res://autoloads/GardenManager.gd"
@@ -36,11 +37,17 @@ window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
 
+[gui]
+
+theme/custom="res://themes/game_theme.tres"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"
 
 [rendering]
 
-renderer/rendering_method="mobile"
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 textures/decals/filter=0

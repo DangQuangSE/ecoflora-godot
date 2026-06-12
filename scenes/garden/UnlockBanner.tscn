@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://be8ni0mauh0a3"]
 
 [ext_resource type="Script" path="res://scenes/garden/UnlockBanner.gd" id="1_banner"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="2_primary_button"]
+[ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="3_global_theme"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.06, 0.09, 0.04, 0.97)
@@ -51,7 +53,7 @@ autowrap_mode = 3
 theme_override_font_sizes/font_size = 16
 theme_override_colors/font_color = Color(0.9, 0.95, 0.8, 1)
 
-[node name="CloseButton" type="Button" parent="Panel"]
+[node name="CloseButton" parent="Panel" instance=ExtResource("2_primary_button")]
 layout_mode = 1
 anchor_left = 0.5
 anchor_top = 1.0
@@ -61,6 +63,6 @@ offset_left = -70.0
 offset_top = -52.0
 offset_right = 70.0
 offset_bottom = -12.0
-text = "Dong lai"
+theme = ExtResource("3_global_theme")
+text = "Đóng lại"
 theme_override_font_sizes/font_size = 15
-theme_override_styles/normal = SubResource("StyleBoxFlat_btn")

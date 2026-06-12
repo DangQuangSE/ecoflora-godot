@@ -1,6 +1,9 @@
 [gd_scene format=3 uid="uid://bflowercard01"]
 
 [ext_resource type="Script" path="res://scenes/garden/FlowerInfoCard.gd" id="1_card"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="2_primary_button"]
+[ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="3_global_theme"]
+[ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="4_primary_button_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
 bg_color = Color(0.96, 0.90, 0.78, 1)
@@ -136,6 +139,7 @@ theme_override_colors/font_color = Color(0.22, 0.48, 0.10, 1)
 theme_override_font_sizes/font_size = 14
 
 [node name="CloseBtn" type="Button" parent="Card/Content/HeaderPanel/HBox"]
+script = ExtResource("4_primary_button_script")
 layout_mode = 2
 custom_minimum_size = Vector2(38, 38)
 size_flags_vertical = 4
@@ -181,13 +185,10 @@ autowrap_mode = 3
 theme_override_colors/font_color = Color(0.22, 0.12, 0.04, 1)
 theme_override_font_sizes/font_size = 13
 
-[node name="ActionBtn" type="Button" parent="Card/Content/BodyMargin/BodyVBox"]
+[node name="ActionBtn" parent="Card/Content/BodyMargin/BodyVBox" instance=ExtResource("2_primary_button")]
 layout_mode = 2
 visible = false
 custom_minimum_size = Vector2(0, 50)
+theme = ExtResource("3_global_theme")
 text = "Thu Hoạch"
-theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
-theme_override_styles/normal = SubResource("StyleBoxFlat_harvest")
-theme_override_styles/hover = SubResource("StyleBoxFlat_harvest")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_harvest")
