@@ -23,11 +23,11 @@ Tài liệu này hướng dẫn kiểm tra và tinh chỉnh hiệu ứng **Syner
 2. Scene tree (không còn icon tĩnh):
 
 ```
-SynergyZoneIndicator (Node2D)
-└── RiseSparkles (CPUParticles2D)  ← hạt lấp lánh bay thẳng lên từ mép đất zone
+SynergyZoneIndicator (Node2D)  ← xoay theo trục isometric
+└── (runtime) CPUParticles2D × N  ← một emitter tại mỗi ô đất trong zone
 ```
 
-3. Vị trí/size tự fit theo 8 ô plot của zone (tính từ `PlotAnchors`).
+3. Vị trí/hướng tự fit theo **PlotAnchors** isometric (xoay theo trục lưới đất, hạt bay lên đỉnh kim cương).
 
 ---
 

@@ -88,11 +88,45 @@ func _spawn_synergy_indicators() -> void:
 		var plot_ids: Array[String] = []
 		for idx: int in indices:
 			plot_ids.append("plot_%d" % idx)
-		var bounds: Dictionary = _zone_bounds(plot_ids)
+		var layout: Dictionary = _zone_isometric_layout(plot_ids)
 		var indicator: SynergyZoneIndicator = SynergyIndicatorScene.instantiate()
 		add_child(indicator)
-		indicator.setup(zone_id, bounds["center"], bounds["extents"])
+		indicator.setup(
+			zone_id,
+			layout["center"],
+			layout["axis_u"],
+			layout["plot_globals"]
+		)
 		_synergy_indicators[zone_id] = indicator
+
+func _zone_isometric_layout(plot_ids: Array[String]) -> Dictionary:
+	var globals: PackedVector2Array = PackedVector2Array()
+	for pid: String in plot_ids:
+		if not pid.begins_with("plot_"):
+			continue
+		var idx := pid.trim_prefix("plot_").to_int()
+		if idx < _plot_anchors_flat.size():
+			globals.append((_plot_anchors_flat[idx] as Node2D).global_position)
+
+	if globals.size() < 3:
+		var bounds: Dictionary = _zone_bounds(plot_ids)
+		return {
+			"center": bounds["center"],
+			"axis_u": Vector2.RIGHT,
+			"plot_globals": globals,
+		}
+
+	var center := Vector2.ZERO
+	for gp: Vector2 in globals:
+		center += gp
+	center /= float(globals.size())
+
+	var axis_u: Vector2 = (globals[1] - globals[0]).normalized()
+	return {
+		"center": center,
+		"axis_u": axis_u,
+		"plot_globals": globals,
+	}
 
 func _zone_bounds(plot_ids: Array[String]) -> Dictionary:
 	var min_p := Vector2(INF, INF)
