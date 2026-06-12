@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://synergy_zone_indicator"]
+
+[ext_resource type="Script" path="res://scenes/garden/SynergyZoneIndicator.gd" id="1_script"]
+
+[node name="SynergyZoneIndicator" type="Node2D"]
+visible = false
+z_index = 2
+script = ExtResource("1_script")

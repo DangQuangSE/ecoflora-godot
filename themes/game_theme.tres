@@ -1,14 +1,18 @@
-[gd_resource type="Theme" load_steps=4 format=3]
+[gd_resource type="Theme" format=3 uid="uid://djnyu7sr2s6be"]
 
-[ext_resource type="FontFile" path="res://assets/fonts/Fredoka-VariableFont_wdth_wght.ttf" id="1_fredoka"]
-
-[sub_resource type="FontVariation" id="FontVariation_fredoka_semibold"]
-base_font = ExtResource("1_fredoka")
-variation_opentype = {"wght": 750.0}
+[ext_resource type="FontFile" uid="uid://mwofahrkmgmj" path="res://assets/fonts/Fredoka-VariableFont_wdth_wght.ttf" id="1_fredoka"]
 
 [sub_resource type="FontVariation" id="FontVariation_fredoka_bold"]
 base_font = ExtResource("1_fredoka")
-variation_opentype = {"wght": 850.0}
+variation_opentype = {
+"wght": 850.0
+}
+
+[sub_resource type="FontVariation" id="FontVariation_fredoka_semibold"]
+base_font = ExtResource("1_fredoka")
+variation_opentype = {
+"wght": 750.0
+}
 
 [resource]
 default_font = SubResource("FontVariation_fredoka_semibold")
