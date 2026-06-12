@@ -5,6 +5,7 @@ const FlowerInfoCardScene := preload("res://scenes/garden/FlowerInfoCard.tscn")
 const CloudOverlayScene   := preload("res://scenes/garden/CloudOverlay.tscn")
 const UnlockBannerScene   := preload("res://scenes/garden/UnlockBanner.tscn")
 const DecoNodeScene       := preload("res://scenes/shared/DecoNode.tscn")
+const SynergyIndicatorScene := preload("res://scenes/garden/SynergyZoneIndicator.tscn")
 
 @onready var _player: Player           = $Player
 @onready var _hud: HUD                 = $HUD
@@ -18,6 +19,8 @@ var _active_banner_zone_id: String = ""
 var _pending_notifications: Array[String] = []
 var _drag_applied: Dictionary = {}
 var _boundary_rect: Rect2 = Rect2()
+var _synergy_indicators: Dictionary = {}
+var _plot_anchors_flat: Array[Node] = []
 
 func _ready() -> void:
 	WeatherManager.set_overlay_visible(true)
@@ -27,7 +30,12 @@ func _ready() -> void:
 	_spawn_plots()
 	_spawn_flower_info_card()
 	_spawn_zone_overlays()
+	_cache_plot_anchors()
+	_spawn_synergy_indicators()
+	_refresh_synergy_indicators()
 	GardenManager.plots_updated.connect(_on_plots_updated)
+	if GardenManager.icons_registered.is_connected(_refresh_synergy_indicators) == false:
+		GardenManager.icons_registered.connect(_refresh_synergy_indicators)
 	ZoneManager.zone_notification.connect(_on_zone_notification)
 	if FocusManager.has_recovery_penalty:
 		FocusManager.has_recovery_penalty = false
@@ -68,6 +76,64 @@ func _on_show_flower_info(plot_id: String) -> void:
 	if template == null:
 		return
 	_flower_info_card.call("show_flower", plot_id, plot.current_plant, template)
+
+func _cache_plot_anchors() -> void:
+	_plot_anchors_flat.clear()
+	for zone_node in _plot_anchors.get_children():
+		_plot_anchors_flat.append_array(zone_node.get_children())
+
+func _spawn_synergy_indicators() -> void:
+	for zone_id: String in ZonePlotMap.get_all_zone_ids():
+		var indices: Array[int] = ZonePlotMap.get_plot_indices_for_zone(zone_id)
+		var plot_ids: Array[String] = []
+		for idx: int in indices:
+			plot_ids.append("plot_%d" % idx)
+		var bounds: Dictionary = _zone_bounds(plot_ids)
+		var indicator: SynergyZoneIndicator = SynergyIndicatorScene.instantiate()
+		add_child(indicator)
+		indicator.setup(zone_id, bounds["center"], bounds["extents"])
+		_synergy_indicators[zone_id] = indicator
+
+func _zone_bounds(plot_ids: Array[String]) -> Dictionary:
+	var min_p := Vector2(INF, INF)
+	var max_p := Vector2(-INF, -INF)
+	for pid: String in plot_ids:
+		if not pid.begins_with("plot_"):
+			continue
+		var idx := pid.trim_prefix("plot_").to_int()
+		if idx < _plot_anchors_flat.size():
+			var gp: Vector2 = (_plot_anchors_flat[idx] as Node2D).global_position
+			min_p.x = minf(min_p.x, gp.x)
+			min_p.y = minf(min_p.y, gp.y)
+			max_p.x = maxf(max_p.x, gp.x)
+			max_p.y = maxf(max_p.y, gp.y)
+	if min_p.x == INF:
+		return {"center": Vector2.ZERO, "extents": Vector2(80, 60)}
+	var center := (min_p + max_p) * 0.5
+	var half := (max_p - min_p) * 0.5
+	return {"center": center, "extents": half + Vector2(24.0, 20.0)}
+
+func _zone_center_pos(plot_ids: Array[String]) -> Vector2:
+	return (_zone_bounds(plot_ids)["center"] as Vector2)
+
+func _refresh_synergy_indicators() -> void:
+	var plots: Array[Plot] = GardenManager.get_plots()
+	var plots_by_index: Dictionary = {}
+	for p: Plot in plots:
+		plots_by_index[p.plot_index] = p
+	var templates: Dictionary = GardenManager.get_templates()
+	var synergy_cache: Dictionary = GardenManager.get_synergy_cache()
+	for zone_id: String in ZonePlotMap.get_all_zone_ids():
+		var indicator: SynergyZoneIndicator = _synergy_indicators.get(zone_id, null)
+		if indicator == null:
+			continue
+		var indices: Array[int] = ZonePlotMap.get_plot_indices_for_zone(zone_id)
+		var result: Dictionary = SynergyEvaluator.evaluate_zone_with_cache(
+			indices, plots_by_index, templates, synergy_cache)
+		indicator.set_active(
+			result.get("active", false),
+			str(result.get("synergy_name", ""))
+		)
 
 func _spawn_zone_overlays() -> void:
 	var anchors: Array[Node] = []
@@ -135,6 +201,8 @@ func _on_zone_unlocked(zone_id: String) -> void:
 func _exit_tree() -> void:
 	if GardenManager.plots_updated.is_connected(_on_plots_updated):
 		GardenManager.plots_updated.disconnect(_on_plots_updated)
+	if GardenManager.icons_registered.is_connected(_refresh_synergy_indicators):
+		GardenManager.icons_registered.disconnect(_refresh_synergy_indicators)
 	if InteractionManager.show_flower_info.is_connected(_on_show_flower_info):
 		InteractionManager.show_flower_info.disconnect(_on_show_flower_info)
 	if ZoneManager.zone_notification.is_connected(_on_zone_notification):
@@ -282,3 +350,4 @@ func _input(event: InputEvent) -> void:
 func _on_plots_updated(plots: Array[Plot]) -> void:
 	for i in range(mini(plots.size(), _plot_nodes.size())):
 		_plot_nodes[i].update_plot(plots[i])
+	_refresh_synergy_indicators()

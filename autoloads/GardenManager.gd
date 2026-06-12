@@ -3,7 +3,7 @@ extends Node
 signal plots_updated(plots: Array[Plot])
 signal plant_failed(plot_id: String, reason: String)
 signal harvest_completed(plot_id: String, product_id: String)
-signal plant_xp_gained(plot_id: String, xp_amount: int)
+signal plant_xp_gained(plot_id: String, xp_amount: int, synergy_bonus: int)
 signal icons_registered
 
 @export var use_mock: bool = false
@@ -46,6 +46,8 @@ func _ready() -> void:
 	_plots = garden_svc.get_initial_plots(GARDEN_ID)
 	for t: FlowerTemplate in garden_svc.get_flower_templates():
 		_templates[t.id] = t
+	if use_mock:
+		_seed_mock_synergies()
 
 	InteractionManager.plot_action_requested.connect(_on_plot_action)
 	FocusManager.session_reward_received.connect(_on_focus_reward_received)
@@ -93,6 +95,11 @@ func _fetch_catalogs() -> void:
 		base + "/api/synergies?pageSize=1000", auth)
 	if synergies_ok.size() > 0:
 		_synergy_cache = _ref_svc.parse_synergies(synergies_ok)
+	elif not use_mock:
+		push_warning(
+			"GardenManager: synergy catalog empty — zone bonus disabled. "
+			+ "Seed Synergies on BE (Admin API) or assign SynergyId to FlowerTemplates."
+		)
 
 	_register_be_icons()
 	icons_registered.emit()
@@ -269,6 +276,23 @@ func get_templates() -> Dictionary:
 func get_plot(plot_id: String) -> Plot:
 	return _find_plot(plot_id)
 
+func _build_plots_by_index() -> Dictionary:
+	var map: Dictionary = {}
+	for p: Plot in _plots:
+		map[p.plot_index] = p
+	return map
+
+func _get_synergy_bonus(plot_id: String) -> int:
+	var plot: Plot = _find_plot(plot_id)
+	if plot == null:
+		return 0
+	return SynergyEvaluator.get_bonus_for_plot(
+		plot.plot_index,
+		_build_plots_by_index(),
+		_templates,
+		_synergy_cache
+	)
+
 func water(plot_id: String, ref_id: String = "") -> void:
 	if use_mock:
 		const WATER_XP := 20
@@ -279,9 +303,11 @@ func water(plot_id: String, ref_id: String = "") -> void:
 		if template == null:
 			return
 		plot.is_pending_sync = true
-		plot.current_plant.current_xp += WATER_XP
+		var bonus := _get_synergy_bonus(plot_id)
+		var total := WATER_XP + bonus
+		plot.current_plant.current_xp += total
 		plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
-		plant_xp_gained.emit(plot_id, WATER_XP)
+		plant_xp_gained.emit(plot_id, total, bonus)
 		plots_updated.emit(_plots)
 		await get_tree().process_frame
 		plot.is_pending_sync = false
@@ -299,9 +325,11 @@ func fertilize(plot_id: String, ref_id: String = "") -> void:
 		if template == null:
 			return
 		plot.is_pending_sync = true
-		plot.current_plant.current_xp += FERTILIZE_XP
+		var bonus := _get_synergy_bonus(plot_id)
+		var total := FERTILIZE_XP + bonus
+		plot.current_plant.current_xp += total
 		plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
-		plant_xp_gained.emit(plot_id, FERTILIZE_XP)
+		plant_xp_gained.emit(plot_id, total, bonus)
 		plots_updated.emit(_plots)
 		await get_tree().process_frame
 		plot.is_pending_sync = false
@@ -333,12 +361,15 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	var snapshot_item_qty: int   = inv_item.quantity
 
 	var item_data: Dictionary = _item_cache.get(ref_id, {})
-	var xp_delta: int = int(item_data.get("received_exp", 0))
-	if xp_delta == 0:
+	var base_xp: int = int(item_data.get("received_exp", 0))
+	if base_xp == 0:
 		match action_value:
-			0: xp_delta = 20
-			1: xp_delta = 50
-			2: xp_delta = 50
+			0: base_xp = 20
+			1: base_xp = 50
+			2: base_xp = 50
+
+	var bonus := _get_synergy_bonus(plot_id)
+	var xp_delta: int = base_xp + bonus
 
 	plot.is_pending_sync = true
 	InventoryManager.consume_item(ref_id)
@@ -346,7 +377,7 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
 	if action_value == 0:
 		plot.current_plant.last_watered_at = int(Time.get_unix_time_from_system())
-	plant_xp_gained.emit(plot_id, xp_delta)
+	plant_xp_gained.emit(plot_id, xp_delta, bonus)
 	plots_updated.emit(_plots)
 
 	var url := UserManager.base_url + "/api/garden/plots/%s/care" % plot_id
@@ -575,7 +606,7 @@ func apply_focus_xp_bulk(xp_delta: int) -> void:
 			continue
 		plot.current_plant.current_xp = maxi(0, plot.current_plant.current_xp + xp_delta)
 		plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
-		plant_xp_gained.emit(plot.id, xp_delta)
+		plant_xp_gained.emit(plot.id, xp_delta, 0)
 	plots_updated.emit(_plots)
 
 func _on_focus_session_completed(_minutes: int) -> void:
@@ -592,6 +623,27 @@ func _find_plot(plot_id: String) -> Plot:
 		if p.id == plot_id:
 			return p
 	return null
+
+
+func _seed_mock_synergies() -> void:
+	_synergy_cache = {
+		"synergy_sun": {
+			"id": "synergy_sun",
+			"name": "Sun Chaser",
+			"xp_plus": 10,
+			"cooldown_minus": 0,
+		},
+		"synergy_water": {
+			"id": "synergy_water",
+			"name": "Water Lover",
+			"xp_plus": 5,
+			"cooldown_minus": 60,
+		},
+	}
+	if _templates.has("lotus"):
+		(_templates["lotus"] as FlowerTemplate).synergy_id = "synergy_water"
+	if _templates.has("periwinkle"):
+		(_templates["periwinkle"] as FlowerTemplate).synergy_id = "synergy_sun"
 
 func debug_next_stage(plot_id: String) -> void:
 	var plot: Plot = _find_plot(plot_id)

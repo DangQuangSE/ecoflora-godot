@@ -127,8 +127,13 @@ func _try_harvest() -> void:
 	if _current_plot.current_plant.current_stage >= template.get_max_stage_level():
 		InteractionManager.request_plot_action(plot_id, "harvest")
 
-func _on_plant_xp_gained(gained_plot_id: String, xp_amount: int) -> void:
-	if gained_plot_id == plot_id:
+func _on_plant_xp_gained(gained_plot_id: String, xp_amount: int, synergy_bonus: int = 0) -> void:
+	if gained_plot_id != plot_id:
+		return
+	if synergy_bonus > 0:
+		var base_xp := xp_amount - synergy_bonus
+		_spawn_float_label("+%d XP\n+%d 🌿" % [base_xp, synergy_bonus], Color(0.4, 1.0, 0.5, 1.0))
+	else:
 		_spawn_float_label("+%d XP" % xp_amount)
 
 func _spawn_float_label(text_val: String, color: Color = Color(1, 0.88, 0.1, 1)) -> void:
