@@ -2,6 +2,10 @@ extends Node
 
 # AudioManager singleton for handling background music (BGM) and sound effects (SFX)
 
+const BGM_VOLUMES := {
+	"res://sounds/lobby.mp3": -20.0
+}
+
 var _bgm_player: AudioStreamPlayer
 var _current_bgm_path: String = ""
 var _fade_tween: Tween
@@ -32,13 +36,15 @@ func play_bgm(stream_path: String, loop: bool = true, fade_in_duration: float = 
 	_bgm_player.stream = stream
 	_current_bgm_path = stream_path
 	
+	var target_volume: float = BGM_VOLUMES.get(stream_path, 0.0)
+	
 	if fade_in_duration > 0.0:
 		_bgm_player.volume_db = -80.0
 		_bgm_player.play()
 		_fade_tween = create_tween()
-		_fade_tween.tween_property(_bgm_player, "volume_db", 0.0, fade_in_duration)
+		_fade_tween.tween_property(_bgm_player, "volume_db", target_volume, fade_in_duration)
 	else:
-		_bgm_player.volume_db = 0.0
+		_bgm_player.volume_db = target_volume
 		_bgm_player.play()
 
 func stop_bgm(fade_out_duration: float = 0.0) -> void:
