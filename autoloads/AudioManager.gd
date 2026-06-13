@@ -3,7 +3,7 @@ extends Node
 # AudioManager singleton for handling background music (BGM) and sound effects (SFX)
 
 const BGM_VOLUMES := {
-	"res://sounds/lobby.mp3": -20.0
+	"res://sounds/lobby.mp3": -35.0
 }
 
 var _bgm_player: AudioStreamPlayer
