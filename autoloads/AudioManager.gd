@@ -8,13 +8,17 @@ const BGM_VOLUMES := {
 
 const SFX_VOLUMES := {
 	"res://sounds/item_bag_click.wav": -15.0,
-	"res://sounds/plant.wav": -15.0
+	"res://sounds/plant.wav": -15.0,
+	"res://sounds/click.wav": -15.0
 }
 
 var _bgm_player: AudioStreamPlayer
 var _current_bgm_path: String = ""
 var _fade_tween: Tween
 var footstep_stream: AudioStreamWAV
+
+var _click_detected: bool = false
+var _last_other_sfx_time: int = -1000
 
 func _ready() -> void:
 	_bgm_player = AudioStreamPlayer.new()
@@ -74,6 +78,9 @@ func get_footstep_stream() -> AudioStreamWAV:
 	return footstep_stream
 
 func play_sfx(stream_path: String, volume_db: float = 0.0) -> void:
+	if stream_path != "res://sounds/click.wav" and stream_path != "res://sounds/footstep.wav":
+		_last_other_sfx_time = Time.get_ticks_msec()
+
 	var stream := load(stream_path) as AudioStream
 	if not stream:
 		push_error("AudioManager: Failed to load SFX from path: %s" % stream_path)
@@ -146,3 +153,25 @@ func is_bgm_playing() -> bool:
 
 func get_current_bgm_path() -> String:
 	return _current_bgm_path
+
+func suppress_click_sfx() -> void:
+	_last_other_sfx_time = Time.get_ticks_msec()
+
+func _input(event: InputEvent) -> void:
+	var is_click: bool = false
+	if event is InputEventMouseButton:
+		is_click = event.button_index == MOUSE_BUTTON_LEFT and not event.pressed
+	elif event is InputEventScreenTouch:
+		is_click = not event.pressed
+
+	if is_click:
+		if not _click_detected:
+			_click_detected = true
+			_play_click_deferred.call_deferred()
+
+func _play_click_deferred() -> void:
+	if _click_detected:
+		var current_time := Time.get_ticks_msec()
+		if current_time - _last_other_sfx_time > 250:
+			play_sfx("res://sounds/click.wav")
+	_click_detected = false
