@@ -32,6 +32,8 @@ func _ready() -> void:
 		SceneTransition.fade_to(GARDEN_SCENE)
 		return
 
+	AudioManager.play_bgm("res://sounds/lobby.mp3")
+
 	_first_name_input.focus_field()
 
 func _apply_theme() -> void:

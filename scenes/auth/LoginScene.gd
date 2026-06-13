@@ -35,6 +35,8 @@ func _ready() -> void:
 		SceneTransition.fade_to(GARDEN_SCENE)
 		return
 
+	AudioManager.play_bgm("res://sounds/lobby.mp3")
+
 	var success_msg := UserManager.take_registration_success_message()
 	if not success_msg.is_empty():
 		_show_success(success_msg)

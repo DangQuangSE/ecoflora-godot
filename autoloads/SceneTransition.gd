@@ -36,6 +36,10 @@ func fade_to(scene_path: String) -> void:
 		return
 	_is_transitioning = true
 	
+	var is_auth_scene := scene_path.contains("LoginScene") or scene_path.contains("RegisterScene")
+	if not is_auth_scene and AudioManager.get_current_bgm_path() == "res://sounds/lobby.mp3":
+		AudioManager.stop_bgm(0.3)
+	
 	var is_heavy_scene := scene_path.contains("GardenScene") or scene_path.contains("SchoolScene")
 	var loading_screen = get_node_or_null("/root/LoadingScreen")
 	
