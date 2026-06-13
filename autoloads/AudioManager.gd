@@ -3,11 +3,11 @@ extends Node
 # AudioManager singleton for handling background music (BGM) and sound effects (SFX)
 
 const BGM_VOLUMES := {
-	"res://sounds/lobby.mp3": -40.0
+	"res://sounds/lobby_v2.mp3": -20.0
 }
 
 const SFX_VOLUMES := {
-	"res://sounds/item_bag_click.wav": -25.0
+	"res://sounds/item_bag_click.wav": -15.0
 }
 
 var _bgm_player: AudioStreamPlayer
@@ -55,9 +55,9 @@ func _generate_procedural_footstep() -> void:
 		# Muffle the sound by low-passing the white noise
 		lp_state = (lp_state * alpha) + (white_noise * (1.0 - alpha))
 		
-		# Lower amplitude scale (10000.0 instead of 32767.0) for a quieter, gentler sound
+		# Lower amplitude scale (15000.0 instead of 32767.0) for a quieter, gentler sound
 		var sample_val := lp_state * envelope
-		var sample := int(sample_val * 10000.0)
+		var sample := int(sample_val * 15000.0)
 		
 		# Clip sample to 16-bit range
 		sample = clamp(sample, -32768, 32767)

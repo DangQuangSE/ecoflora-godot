@@ -80,5 +80,5 @@ func _handle_footsteps(delta: float) -> void:
 func _play_footstep_sound() -> void:
 	if _footstep_player and _footstep_player.stream:
 		_footstep_player.pitch_scale = randf_range(0.85, 1.15)
-		_footstep_player.volume_db = -8.5
+		_footstep_player.volume_db = 5
 		_footstep_player.play()
