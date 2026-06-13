@@ -269,6 +269,7 @@ func _show_toast(message: String, success: bool) -> void:
 func show_panel(tab_idx: int = 0) -> void:
 	show()
 	_on_tab_pressed(tab_idx)
+	AudioManager.play_sfx("res://sounds/item_bag_click.wav")
 
 func _filter_known_seeds(items: Array[ShopItem]) -> Array[ShopItem]:
 	var result: Array[ShopItem] = []
@@ -313,4 +314,5 @@ func _on_bg_dimmer_input(event: InputEvent) -> void:
 		_on_back()
 
 func _on_back() -> void:
+	AudioManager.play_sfx("res://sounds/item_bag_click.wav")
 	hide()

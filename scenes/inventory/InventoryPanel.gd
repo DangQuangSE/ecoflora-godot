@@ -20,7 +20,7 @@ var _current_filter: int = -1
 
 func _ready() -> void:
 	_build_tab_styles()
-	_close_btn.pressed.connect(hide)
+	_close_btn.pressed.connect(hide_panel)
 	_bg_dimmer.gui_input.connect(_on_dimmer_input)
 	_btn_all.pressed.connect(func(): _set_filter(-1))
 	_btn_seed.pressed.connect(func(): _set_filter(InventoryItem.Category.SEED))
@@ -51,6 +51,7 @@ func show_panel() -> void:
 	_refresh(InventoryManager.get_inventory())
 	_update_tab_styles()
 	visible = true
+	AudioManager.play_sfx("res://sounds/item_bag_click.wav")
 
 func _set_filter(category: int) -> void:
 	_current_filter = category
@@ -95,8 +96,13 @@ func _get_filtered_items(inventory: UserInventory) -> Array[InventoryItem]:
 			result.append(item)
 	return result
 
+func hide_panel() -> void:
+	if visible:
+		AudioManager.play_sfx("res://sounds/item_bag_click.wav")
+		hide()
+
 func _on_dimmer_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed:
-		hide()
+		hide_panel()
 	elif event is InputEventScreenTouch and event.pressed:
-		hide()
+		hide_panel()

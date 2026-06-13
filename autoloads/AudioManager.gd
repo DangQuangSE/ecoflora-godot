@@ -3,7 +3,11 @@ extends Node
 # AudioManager singleton for handling background music (BGM) and sound effects (SFX)
 
 const BGM_VOLUMES := {
-	"res://sounds/lobby.mp3": -35.0
+	"res://sounds/lobby.mp3": -40.0
+}
+
+const SFX_VOLUMES := {
+	"res://sounds/item_bag_click.wav": -25.0
 }
 
 var _bgm_player: AudioStreamPlayer
@@ -67,6 +71,21 @@ func _generate_procedural_footstep() -> void:
 
 func get_footstep_stream() -> AudioStreamWAV:
 	return footstep_stream
+
+func play_sfx(stream_path: String, volume_db: float = 0.0) -> void:
+	var stream := load(stream_path) as AudioStream
+	if not stream:
+		push_error("AudioManager: Failed to load SFX from path: %s" % stream_path)
+		return
+		
+	var sfx_player := AudioStreamPlayer.new()
+	sfx_player.stream = stream
+	var target_volume: float = SFX_VOLUMES.get(stream_path, volume_db)
+	sfx_player.volume_db = target_volume
+	sfx_player.bus = "Master"
+	add_child(sfx_player)
+	sfx_player.finished.connect(sfx_player.queue_free)
+	sfx_player.play()
 
 func play_bgm(stream_path: String, loop: bool = true, fade_in_duration: float = 0.0) -> void:
 	if _current_bgm_path == stream_path and _bgm_player.playing:
