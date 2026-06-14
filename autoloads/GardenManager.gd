@@ -547,6 +547,7 @@ func harvest(plot_id: String) -> void:
 
 	plot.is_pending_sync = true
 	plot.clear()
+	AudioManager.play_sfx("res://sounds/harvest.wav")
 	plots_updated.emit(_plots)
 
 	if use_mock:

@@ -9,7 +9,8 @@ const BGM_VOLUMES := {
 const SFX_VOLUMES := {
 	"res://sounds/item_bag_click.wav": -15.0,
 	"res://sounds/plant.wav": -15.0,
-	"res://sounds/click.wav": -15.0
+	"res://sounds/click.wav": -15.0,
+	"res://sounds/harvest.wav": -15.0
 }
 
 var _bgm_player: AudioStreamPlayer
