@@ -60,6 +60,7 @@ func _inject_defaults(t: FlowerTemplate) -> void:
 		s.level       = pair[0]
 		s.xp_required = pair[1]
 		t.stages.append(s)
+	t.sort_stages()
 
 # Parses GET /api/items response array into raw Dictionary cache keyed by id.
 func parse_items(arr: Array) -> Dictionary:

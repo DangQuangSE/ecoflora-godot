@@ -3,6 +3,8 @@ extends Node
 signal inventory_updated(inventory: UserInventory)
 signal item_selected(item: InventoryItem)
 
+const _HARVEST_SAVE_PATH := "user://harvest_products.json"
+
 @export var use_mock: bool = false
 
 var _inventory: UserInventory
@@ -69,10 +71,7 @@ func _fetch_inventory() -> void:
 		return
 	var inv_svc := InventoryService.new()
 	var fetched: UserInventory = inv_svc.parse_inventory(items_arr)
-	# Preserve any locally-appended harvest products from this session
-	for item: InventoryItem in _inventory.items:
-		if item.category == InventoryItem.Category.HARVEST_PRODUCT:
-			fetched.items.append(item)
+	_merge_harvest_products_from_disk(fetched)
 	_inventory = fetched
 	inventory_updated.emit(_inventory)
 
@@ -156,6 +155,7 @@ func remove_harvest_product(product_id: String) -> void:
 		_inventory.items.erase(existing)
 	else:
 		existing.quantity -= 1
+	_save_harvest_products()
 	inventory_updated.emit(_inventory)
 
 func add_reward_item(item_id: String, _item_name: String, quantity: int) -> void:
@@ -182,7 +182,7 @@ func _on_focus_reward_items(items: Array) -> void:
 			continue
 		add_reward_item(item_id, item_name, qty)
 
-# BE-local only — harvest products are appended in-memory and never synced to BE
+# BE-local only — harvest products are appended in-memory and persisted to user://
 func add_harvest_product(product_id: String) -> void:
 	var existing: InventoryItem = _inventory.find_harvest_product(product_id)
 	if existing != null:
@@ -194,4 +194,57 @@ func add_harvest_product(product_id: String) -> void:
 		new_item.category = InventoryItem.Category.HARVEST_PRODUCT
 		new_item.quantity = 1
 		_inventory.items.append(new_item)
+	_save_harvest_products()
 	inventory_updated.emit(_inventory)
+
+func clear_harvest_products() -> void:
+	var i := _inventory.items.size() - 1
+	while i >= 0:
+		if _inventory.items[i].category == InventoryItem.Category.HARVEST_PRODUCT:
+			_inventory.items.remove_at(i)
+		i -= 1
+	var file := FileAccess.open(_HARVEST_SAVE_PATH, FileAccess.WRITE)
+	if file != null:
+		file.store_string("[]")
+	inventory_updated.emit(_inventory)
+
+func _save_harvest_products() -> void:
+	var arr: Array = []
+	for item: InventoryItem in _inventory.items:
+		if item.category == InventoryItem.Category.HARVEST_PRODUCT:
+			arr.append({"id": item.id, "harvest_product_id": item.harvest_product_id, "quantity": item.quantity})
+	var file := FileAccess.open(_HARVEST_SAVE_PATH, FileAccess.WRITE)
+	if file == null:
+		push_warning("InventoryManager._save_harvest_products: cannot write to %s" % _HARVEST_SAVE_PATH)
+		return
+	file.store_string(JSON.stringify(arr))
+
+func _merge_harvest_products_from_disk(into: UserInventory) -> void:
+	var file := FileAccess.open(_HARVEST_SAVE_PATH, FileAccess.READ)
+	if file == null:
+		return
+	var json := JSON.new()
+	if json.parse(file.get_as_text()) != OK:
+		push_warning("InventoryManager._merge_harvest_products_from_disk: JSON parse error")
+		return
+	var arr: Variant = json.get_data()
+	if not arr is Array:
+		return
+	for entry: Variant in arr:
+		if not entry is Dictionary:
+			continue
+		var d: Dictionary = entry
+		var product_id: String = str(d.get("harvest_product_id", ""))
+		var qty: int = int(d.get("quantity", 0))
+		if product_id.is_empty() or qty <= 0:
+			continue
+		var existing: InventoryItem = into.find_harvest_product(product_id)
+		if existing != null:
+			existing.quantity = qty
+		else:
+			var new_item := InventoryItem.new()
+			new_item.id = str(d.get("id", "harvest_%s_0" % product_id))
+			new_item.harvest_product_id = product_id
+			new_item.category = InventoryItem.Category.HARVEST_PRODUCT
+			new_item.quantity = qty
+			into.items.append(new_item)

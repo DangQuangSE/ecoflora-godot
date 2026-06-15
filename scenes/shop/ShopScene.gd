@@ -135,6 +135,8 @@ func _on_tab_pressed(idx: int) -> void:
 
 func _set_loading(on: bool) -> void:
 	_loading.visible = on
+	for btn: Variant in _tab_btns:
+		(btn as Button).disabled = on
 	if on:
 		for child in _grid.get_children():
 			child.queue_free()

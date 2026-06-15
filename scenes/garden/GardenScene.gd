@@ -13,8 +13,8 @@ const SynergyIndicatorScene := preload("res://scenes/garden/SynergyZoneIndicator
 @onready var _deco_layer: Node2D       = $DecoLayer
 
 var _plot_nodes: Array[PlotNode] = []
-var _flower_info_card: CanvasLayer = null
-var _active_banner: CanvasLayer = null
+var _flower_info_card: FlowerInfoCard = null
+var _active_banner: UnlockBanner = null
 var _active_banner_zone_id: String = ""
 var _pending_notifications: Array[String] = []
 var _drag_applied: Dictionary = {}
@@ -75,7 +75,7 @@ func _on_show_flower_info(plot_id: String) -> void:
 	var template: FlowerTemplate = GardenManager.get_templates().get(plot.current_plant.flower_template_id)
 	if template == null:
 		return
-	_flower_info_card.call("show_flower", plot_id, plot.current_plant, template)
+	_flower_info_card.show_flower(plot_id, plot.current_plant, template)
 
 func _cache_plot_anchors() -> void:
 	_plot_anchors_flat.clear()
@@ -207,7 +207,7 @@ func _flush_notification_queue() -> void:
 	_active_banner = UnlockBannerScene.instantiate()
 	get_tree().root.add_child(_active_banner)
 	_active_banner.connect("dismissed", _on_banner_dismissed)
-	_active_banner.call("show_for_zone", _active_banner_zone_id)
+	_active_banner.show_for_zone(_active_banner_zone_id)
 
 func _on_banner_dismissed() -> void:
 	_active_banner = null
@@ -230,7 +230,7 @@ func _show_recovery_toast() -> void:
 
 func _on_zone_unlocked(zone_id: String) -> void:
 	if _active_banner != null and is_instance_valid(_active_banner) and zone_id == _active_banner_zone_id:
-		_active_banner.call("dismiss")
+		_active_banner.dismiss()
 
 func _exit_tree() -> void:
 	if GardenManager.plots_updated.is_connected(_on_plots_updated):
