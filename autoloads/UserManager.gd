@@ -52,6 +52,7 @@ var _request_in_flight: bool = false
 var _register_in_flight: bool = false
 var _profile_in_flight: bool = false
 var _claim_in_flight: bool = false
+var _catalog_in_flight: bool = false
 var _purchase_in_flight: bool = false
 var _avatar_in_flight: bool = false
 var _rename_in_flight: bool = false
@@ -171,14 +172,12 @@ func login_async(account: String, password: String) -> bool:
 	_request_in_flight = false
 	_hide_loading()
 
-	var http_result: int = raw[0]
-	var status_code: int = raw[1]
-	var body_bytes: PackedByteArray = raw[3]
-
-	if http_result != HTTPRequest.RESULT_SUCCESS:
-		push_warning("UserManager.login_async: network error %d" % http_result)
+	var decoded := _decode_raw(raw, "login_async")
+	if decoded.is_empty():
 		login_failed.emit("Lỗi kết nối. Kiểm tra mạng và thử lại.")
 		return false
+	var status_code: int            = decoded["status"]
+	var body_bytes: PackedByteArray = decoded["bytes"]
 
 	if status_code == 401 or status_code == 403:
 		login_failed.emit("Tài khoản hoặc mật khẩu không đúng.")
@@ -193,14 +192,8 @@ func login_async(account: String, password: String) -> bool:
 		login_failed.emit("Lỗi máy chủ (%d). Vui lòng thử lại sau." % status_code)
 		return false
 
-	var json := JSON.new()
-	if json.parse(body_bytes.get_string_from_utf8()) != OK:
-		push_warning("UserManager.login_async: JSON parse error")
-		login_failed.emit("Phản hồi không hợp lệ từ máy chủ.")
-		return false
-
-	var data: Variant = json.get_data()
-	if not data is Dictionary:
+	var data: Variant = _parse_json_body(body_bytes, "login_async")
+	if data == null:
 		login_failed.emit("Phản hồi không hợp lệ từ máy chủ.")
 		return false
 
@@ -254,14 +247,12 @@ func register_async(first_name: String, last_name: String,
 	_register_in_flight = false
 	_hide_loading()
 
-	var http_result: int = raw[0]
-	var status_code: int = raw[1]
-	var body_bytes: PackedByteArray = raw[3]
-
-	if http_result != HTTPRequest.RESULT_SUCCESS:
-		push_warning("UserManager.register_async: network error %d" % http_result)
+	var decoded := _decode_raw(raw, "register_async")
+	if decoded.is_empty():
 		register_failed.emit("Lỗi kết nối. Kiểm tra mạng và thử lại.")
 		return false
+	var status_code: int            = decoded["status"]
+	var body_bytes: PackedByteArray = decoded["bytes"]
 
 	if status_code == 400:
 		var msg: String = _parse_error_message(body_bytes)
@@ -272,14 +263,8 @@ func register_async(first_name: String, last_name: String,
 		register_failed.emit("Lỗi máy chủ (%d). Vui lòng thử lại sau." % status_code)
 		return false
 
-	var json := JSON.new()
-	if json.parse(body_bytes.get_string_from_utf8()) != OK:
-		push_warning("UserManager.register_async: JSON parse error")
-		register_failed.emit("Phản hồi không hợp lệ từ máy chủ.")
-		return false
-
-	var data: Variant = json.get_data()
-	if not data is Dictionary:
+	var data: Variant = _parse_json_body(body_bytes, "register_async")
+	if data == null:
 		register_failed.emit("Phản hồi không hợp lệ từ máy chủ.")
 		return false
 
@@ -305,20 +290,19 @@ func fetch_profile_async() -> void:
 		return
 	var raw: Variant = await _http_profile.request_completed
 	_profile_in_flight = false
-	var status_code: int    = raw[1]
-	var body: PackedByteArray = raw[3]
+	var decoded := _decode_raw(raw, "fetch_profile_async")
+	if decoded.is_empty():
+		return
+	var status_code: int      = decoded["status"]
+	var body: PackedByteArray = decoded["bytes"]
 	if status_code == 401:
 		handle_401()
 		return
 	if status_code != 200:
 		push_warning("UserManager.fetch_profile_async: HTTP %d" % status_code)
 		return
-	var json := JSON.new()
-	if json.parse(body.get_string_from_utf8()) != OK:
-		push_warning("UserManager.fetch_profile_async: JSON parse error")
-		return
-	var envelope: Variant = json.get_data()
-	if not envelope is Dictionary:
+	var envelope: Variant = _parse_json_body(body, "fetch_profile_async")
+	if envelope == null:
 		return
 	var data: Variant = HttpHelper.unwrap_envelope(envelope)
 	if not data is Dictionary:
@@ -373,23 +357,19 @@ func _refresh_access_token_async() -> void:
 	var raw: Variant = await _refresh_http.request_completed
 	_refresh_in_flight = false
 
-	var http_result: int = raw[0]
-	var status_code: int = raw[1]
-	var body_bytes: PackedByteArray = raw[3]
-
-	if http_result != HTTPRequest.RESULT_SUCCESS or status_code != 200:
+	var decoded := _decode_raw(raw, "_refresh_access_token_async")
+	if decoded.is_empty():
+		_force_logout()
+		return
+	var status_code: int            = decoded["status"]
+	var body_bytes: PackedByteArray = decoded["bytes"]
+	if status_code != 200:
 		push_warning("UserManager._refresh_access_token_async: refresh failed HTTP %d — forcing logout" % status_code)
 		_force_logout()
 		return
 
-	var json := JSON.new()
-	if json.parse(body_bytes.get_string_from_utf8()) != OK:
-		push_warning("UserManager._refresh_access_token_async: JSON parse error — forcing logout")
-		_force_logout()
-		return
-
-	var data: Variant = json.get_data()
-	if not data is Dictionary:
+	var data: Variant = _parse_json_body(body_bytes, "_refresh_access_token_async")
+	if data == null:
 		_force_logout()
 		return
 
@@ -405,10 +385,12 @@ func _refresh_access_token_async() -> void:
 
 func _force_logout() -> void:
 	_token_store.access_token = ""
+	InventoryManager.clear_harvest_products()
 	login_required.emit()
 
 func logout() -> void:
 	_token_store.clear()
+	InventoryManager.clear_harvest_products()
 	login_required.emit()
 
 func get_profile() -> UserProfile:
@@ -464,7 +446,12 @@ func _poll_vitality_status() -> void:
 func get_shop_catalog_async(category: String = "") -> Array[ShopItem]:
 	if use_mock:
 		return []
-	return await _shop_service.get_catalog_async(base_url, _token_store.access_token, category)
+	if _catalog_in_flight:
+		return []
+	_catalog_in_flight = true
+	var result: Array[ShopItem] = await _shop_service.get_catalog_async(base_url, _token_store.access_token, category)
+	_catalog_in_flight = false
+	return result
 
 func claim_vitality_async() -> void:
 	if use_mock:
@@ -589,6 +576,25 @@ func set_username_async(new_name: String) -> void:
 		profile_updated.emit()
 		push_warning("UserManager.set_username_async: BE sync failed HTTP %d" % status_code)
 
+func _decode_raw(raw: Variant, context: String) -> Dictionary:
+	var http_result: int       = raw[0]
+	var status: int            = raw[1]
+	var bytes: PackedByteArray = raw[3]
+	if http_result != HTTPRequest.RESULT_SUCCESS:
+		push_warning("UserManager.%s: network error %d" % [context, http_result])
+		return {}
+	return {"status": status, "bytes": bytes}
+
+func _parse_json_body(bytes: PackedByteArray, context: String) -> Variant:
+	var json := JSON.new()
+	if json.parse(bytes.get_string_from_utf8()) != OK:
+		push_warning("UserManager.%s: JSON parse error" % context)
+		return null
+	var data: Variant = json.get_data()
+	if not data is Dictionary:
+		return null
+	return data
+
 func _parse_error_message(body: PackedByteArray) -> String:
 	var json := JSON.new()
 	if json.parse(body.get_string_from_utf8()) != OK:
@@ -611,6 +617,9 @@ func _exit_tree() -> void:
 	if _claim_in_flight:
 		_vitality_claim_http.cancel_request()
 		_claim_in_flight = false
+	if _catalog_in_flight:
+		_shop_http.cancel_request()
+		_catalog_in_flight = false
 	if _purchase_in_flight:
 		_shop_purchase_http.cancel_request()
 		_purchase_in_flight = false

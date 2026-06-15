@@ -45,7 +45,7 @@ var _timer: Timer
 var _http: HTTPRequest
 var _mock_service: MockWeatherService
 var _weather_service: WeatherService
-var _overlay: Node  # WeatherOverlay instance — typed as Node to avoid upward static import
+var _overlay: WeatherOverlay
 
 func _ready() -> void:
 	_mock_service = MockWeatherService.new()
@@ -66,7 +66,7 @@ func _ready() -> void:
 	_overlay = OVERLAY_SCENE.instantiate()
 	assert(_overlay != null, "WeatherManager: failed to instantiate WeatherOverlay.tscn")
 	add_child(_overlay)
-	_overlay.call("apply_state", WeatherState.make_default())
+	_overlay.apply_state(WeatherState.make_default())
 
 	# Default state set before first poll so get_current_state() is never null
 	_current_state = WeatherState.make_default()
@@ -149,5 +149,5 @@ func _apply_new_state(new_state: WeatherState) -> void:
 	if _current_state != null and _current_state.equals(new_state):
 		return
 	_current_state = new_state
-	_overlay.call("apply_state", new_state)  # duck-typed call avoids static import of scenes/ class
+	_overlay.apply_state(new_state)
 	weather_changed.emit(_current_state)

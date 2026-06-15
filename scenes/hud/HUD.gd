@@ -6,8 +6,8 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _joystick: DynamicJoystick = $DynamicJoystick
 @onready var _inv_btn: Button           = $InventoryButton
 @onready var _inv_icon: TextureRect     = $InventoryButton/Icon
-@onready var _inv_panel: Node           = $InventoryPanel
-@onready var _shop_panel: Node          = $ShopScene
+@onready var _inv_panel: InventoryPanelNode = $InventoryPanel
+@onready var _shop_panel: ShopScene         = $ShopScene
 @onready var _selected_slot: Panel      = $SelectedItemSlot
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
@@ -53,7 +53,7 @@ func _toggle_inventory() -> void:
 	if _inv_panel.visible:
 		_inv_panel.hide()
 	else:
-		_inv_panel.call("show_panel")
+		_inv_panel.show_panel()
 
 func _on_item_selected(item: InventoryItem) -> void:
 	if item != null:
@@ -70,7 +70,7 @@ func _on_harvest_mode_changed(active: bool) -> void:
 func open_shop(tab_idx: int = 0) -> void:
 	if _shop_panel == null:
 		return
-	_shop_panel.call("show_panel", tab_idx)
+	_shop_panel.show_panel(tab_idx)
 
 func _open_shop() -> void:
 	open_shop(0)
