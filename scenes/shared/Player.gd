@@ -9,8 +9,6 @@ var move_direction: Vector2 = Vector2.ZERO
 var _last_facing: String = "down"
 
 var _footstep_player: AudioStreamPlayer2D
-var _footstep_timer: float = 0.0
-const FOOTSTEP_INTERVAL: float = 0.35
 
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var _camera: Camera2D = $Camera2D
@@ -19,12 +17,14 @@ func _ready() -> void:
 	motion_mode = MOTION_MODE_FLOATING
 	_camera.zoom = Vector2(camera_zoom, camera_zoom)
 	_sprite.scale = Vector2(sprite_scale, sprite_scale)
-	
+
 	_footstep_player = AudioStreamPlayer2D.new()
 	_footstep_player.bus = "Master"
 	add_child(_footstep_player)
-	if AudioManager.get_footstep_stream():
-		_footstep_player.stream = AudioManager.get_footstep_stream()
+	var stream := AudioManager.get_footstep_stream()
+	if stream:
+		_footstep_player.stream = stream
+		_footstep_player.volume_db = AudioManager.get_footstep_volume_db()
 
 func set_move_direction(dir: Vector2) -> void:
 	move_direction = dir
@@ -46,7 +46,7 @@ func _physics_process(delta: float) -> void:
 	velocity = move_direction.normalized() * speed if move_direction.length() > 0.1 else Vector2.ZERO
 	move_and_slide()
 	_update_animation()
-	_handle_footsteps(delta)
+	_handle_footsteps()
 
 func _update_animation() -> void:
 	if move_direction.length() < 0.1:
@@ -68,17 +68,13 @@ func _update_animation() -> void:
 		_last_facing = "up"
 		_sprite.play("walk_up")
 
-func _handle_footsteps(delta: float) -> void:
-	if velocity.length() > 10.0:
-		_footstep_timer += delta
-		if _footstep_timer >= FOOTSTEP_INTERVAL:
-			_play_footstep_sound()
-			_footstep_timer = 0.0
-	else:
-		_footstep_timer = FOOTSTEP_INTERVAL - 0.05
+func _handle_footsteps() -> void:
+	if _footstep_player == null or _footstep_player.stream == null:
+		return
 
-func _play_footstep_sound() -> void:
-	if _footstep_player and _footstep_player.stream:
-		_footstep_player.pitch_scale = randf_range(0.85, 1.15)
-		_footstep_player.volume_db = 5
-		_footstep_player.play()
+	var is_moving := velocity.length() > 10.0
+	if is_moving:
+		if not _footstep_player.playing:
+			_footstep_player.play()
+	elif _footstep_player.playing:
+		_footstep_player.stop()
