@@ -11,6 +11,10 @@ var harvest_product_id: String
 # compute_stage_for_xp relies on this — it does NOT sort on each call (Q3 decision).
 var stages: Array[StageDefinition] = []
 
+func sort_stages() -> void:
+	stages.sort_custom(func(a: StageDefinition, b: StageDefinition) -> bool:
+		return a.xp_required < b.xp_required)
+
 func get_max_stage_level() -> int:
 	var max_level := 1
 	for s: StageDefinition in stages:

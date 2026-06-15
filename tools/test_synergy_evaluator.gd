@@ -60,6 +60,7 @@ func _test_synergy_evaluator() -> void:
 	}
 	var templates: Dictionary = {
 		"flower_sun": _make_template("flower_sun", synergy_a),
+		"flower_periwinkle": _make_template("flower_periwinkle", synergy_a),
 		"flower_rose": _make_template("flower_rose", ""),
 		"flower_lotus": _make_template("flower_lotus", "synergy_water"),
 	}
@@ -76,16 +77,26 @@ func _test_synergy_evaluator() -> void:
 	var r1: Dictionary = SynergyEvaluatorScript.evaluate_zone(indices, plots_by_index, templates)
 	_assert_eq(r1.get("active", true), false, "one occupied")
 
-	# 2 same synergy → active, xp_plus 10
+	# 2 same template, same synergy → inactive (single flower type)
 	plots_by_index[1] = _make_plot(1, "flower_sun", true)
 	var r2: Dictionary = SynergyEvaluatorScript.evaluate_zone(indices, plots_by_index, templates)
-	_assert_eq(r2.get("active", false), true, "two same synergy active")
-	_assert_eq(r2.get("xp_plus", 0), 10, "two same xp_plus")
+	_assert_eq(r2.get("active", true), false, "two same template inactive")
 
-	# 3 same synergy → still active
+	# 3 same template, same synergy → still inactive
 	plots_by_index[2] = _make_plot(2, "flower_sun", true)
 	var r3: Dictionary = SynergyEvaluatorScript.evaluate_zone(indices, plots_by_index, templates)
-	_assert_eq(r3.get("active", false), true, "three same synergy")
+	_assert_eq(r3.get("active", true), false, "three same template inactive")
+
+	# 2 distinct templates, same synergy → active
+	plots_by_index[1] = _make_plot(1, "flower_periwinkle", true)
+	var r3b: Dictionary = SynergyEvaluatorScript.evaluate_zone(indices, plots_by_index, templates)
+	_assert_eq(r3b.get("active", false), true, "two distinct same synergy active")
+
+	# 3 same + 1 distinct, same synergy → active
+	plots_by_index[2] = _make_plot(2, "flower_sun", true)
+	plots_by_index[3] = _make_plot(3, "flower_periwinkle", true)
+	var r3c: Dictionary = SynergyEvaluatorScript.evaluate_zone(indices, plots_by_index, templates)
+	_assert_eq(r3c.get("active", false), true, "three plus one distinct active")
 
 	# mixed synergy → inactive
 	plots_by_index[2] = _make_plot(2, "flower_lotus", true)
@@ -103,7 +114,12 @@ func _test_synergy_evaluator() -> void:
 		0, plots_by_index, templates, cache)
 	_assert_eq(bonus, 0, "bonus with inactive zone")
 
-	plots_by_index[1] = _make_plot(1, "flower_sun", true)
+	plots_by_index[1] = _make_plot(1, "flower_periwinkle", true)
 	plots_by_index[2] = _make_plot(2, "flower_sun", true)
 	bonus = SynergyEvaluatorScript.get_bonus_for_plot(0, plots_by_index, templates, cache)
 	_assert_eq(bonus, 10, "bonus when active")
+
+	plots_by_index[1] = _make_plot(1, "flower_sun", true)
+	plots_by_index[2] = _make_plot(2, "flower_sun", true)
+	bonus = SynergyEvaluatorScript.get_bonus_for_plot(0, plots_by_index, templates, cache)
+	_assert_eq(bonus, 0, "no bonus for single flower type")
