@@ -5,11 +5,13 @@ extends Node
 const BGM_VOLUMES := {
 	"res://sounds/lobby_v2.mp3": -20.0,
 	"res://sounds/sunny_sound.mp3": -10.0,
-	"res://sounds/night-sound.mp3": -10.0
+	"res://sounds/night-sound.mp3": -10.0,
+	"res://sounds/raining.mp3": -20.0
 }
 
 const DAY_BGM := "res://sounds/sunny_sound.mp3"
 const NIGHT_BGM := "res://sounds/night-sound.mp3"
+const RAIN_BGM := "res://sounds/raining.mp3"
 
 const SFX_VOLUMES := {
 	"res://sounds/item_bag_click.wav": -15.0,
@@ -200,6 +202,10 @@ func _is_clear_weather(condition: WeatherState.Condition) -> bool:
 	return condition == WeatherState.Condition.SUNNY or condition == WeatherState.Condition.CLOUDY
 
 
+func _is_wet_weather(condition: WeatherState.Condition) -> bool:
+	return condition == WeatherState.Condition.RAINY or condition == WeatherState.Condition.STORM
+
+
 func update_bgm_for_weather_state() -> void:
 	var current_scene := get_tree().current_scene
 	if current_scene == null:
@@ -218,12 +224,10 @@ func update_bgm_for_weather_state() -> void:
 	if state == null:
 		return
 
-	if not _is_clear_weather(state.condition):
-		if get_current_bgm_path() == DAY_BGM or get_current_bgm_path() == NIGHT_BGM:
-			stop_bgm(0.5)
-		return
-
-	if state.is_day:
-		play_bgm(DAY_BGM, true, 0.5)
-	else:
-		play_bgm(NIGHT_BGM, true, 0.5)
+	if _is_wet_weather(state.condition):
+		play_bgm(RAIN_BGM, true, 0.5)
+	elif _is_clear_weather(state.condition):
+		if state.is_day:
+			play_bgm(DAY_BGM, true, 0.5)
+		else:
+			play_bgm(NIGHT_BGM, true, 0.5)
