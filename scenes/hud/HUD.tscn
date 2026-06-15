@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c20fqhu6g4b1b" path="res://scenes/hud/HUD.gd" id="1_hud"]
 [ext_resource type="PackedScene" uid="uid://bjoysticksc01" path="res://scenes/hud/DynamicJoystick.tscn" id="2_joystick"]
 [ext_resource type="PackedScene" uid="uid://binvpanel01" path="res://scenes/inventory/InventoryPanel.tscn" id="3_invpanel"]
+[ext_resource type="PackedScene" uid="uid://btipspanel01" path="res://scenes/tips/TipsPanel.tscn" id="3_tipspanel"]
 [ext_resource type="Texture2D" uid="uid://cg1jfhacjporg" path="res://assets/icon/bag.png" id="3_oxkr6"]
 [ext_resource type="PackedScene" uid="uid://buserhud001" path="res://scenes/hud/UserHUD.tscn" id="4_userhud"]
 [ext_resource type="Texture2D" uid="uid://den0btskh8bn3" path="res://assets/icon/shop.png" id="5_dui1j"]
@@ -171,6 +172,12 @@ anchors_preset = 15
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="TipsPanel" parent="." instance=ExtResource("3_tipspanel")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="HarvestButton" type="Button" parent="." unique_id=407304471]
 script = ExtResource("9_primary_button_script")
 anchors_preset = 1
@@ -228,8 +235,8 @@ stretch_mode = 5
 [node name="VitalityBar" parent="." unique_id=1979910139 instance=ExtResource("5_vbar")]
 offset_left = 8.0
 offset_top = 158.0
-offset_right = 60.0
-offset_bottom = 230.0
+offset_right = 80.0
+offset_bottom = 306.0
 
 [node name="ShopScene" parent="." unique_id=500000100 instance=ExtResource("7_shopscene")]
 layout_mode = 3
