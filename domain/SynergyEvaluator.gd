@@ -6,6 +6,7 @@ static func evaluate_zone(
 		plots_by_index: Dictionary,
 		templates: Dictionary) -> Dictionary:
 	var occupied_synergy_ids: Array[String] = []
+	var template_ids: Dictionary = {}
 	for idx: int in zone_plot_indices:
 		var plot: Plot = plots_by_index.get(idx, null)
 		if plot == null or not plot.is_occupied or plot.current_plant == null:
@@ -17,8 +18,12 @@ static func evaluate_zone(
 		if sid.is_empty():
 			return {"active": false, "synergy_id": "", "xp_plus": 0, "synergy_name": ""}
 		occupied_synergy_ids.append(sid)
+		template_ids[plot.current_plant.flower_template_id] = true
 
 	if occupied_synergy_ids.size() < 2:
+		return {"active": false, "synergy_id": "", "xp_plus": 0, "synergy_name": ""}
+
+	if template_ids.size() < 2:
 		return {"active": false, "synergy_id": "", "xp_plus": 0, "synergy_name": ""}
 
 	var first: String = occupied_synergy_ids[0]

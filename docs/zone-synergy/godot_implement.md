@@ -59,24 +59,26 @@ Thay texture Icon: kéo PNG lá/sparkle vào **Inspector → Icon → Texture**.
 
 ## 5. Smoke Test Checklist
 
-- [ ] Trồng **2 cây cùng Synergy** trong cùng zone → icon + particle xuất hiện ở giữa zone
+- [ ] Trồng **≥2 loài hoa khác nhau** cùng Synergy trong cùng zone → icon + particle xuất hiện ở giữa zone
+- [ ] Trồng **2 cây cùng loài** cùng Synergy → **không** có indicator
 - [ ] Chỉ **1 cây** → không có indicator
 - [ ] Trồng cây thứ 3 **khác Synergy** → indicator **tắt ngay**
 - [ ] Tưới cây khi synergy active → float label `+20 XP` và `+10 🌿` (mock water + Sun Chaser)
-- [ ] Harvest 1 cây (còn 1) → indicator tắt
+- [ ] Harvest 1 cây (còn 1 loài) → indicator tắt
 
 ### Mock mode (Inspector)
 
 1. Chọn autoload `GardenManager` → bật **Use Mock** = `true`
-2. Trồng `periwinkle` × 2 (Sun Chaser, +10) hoặc `lotus` × 2 (Water Lover, +5)
+2. Trồng **2 loài khác nhau** cùng synergy (vd. `periwinkle` + hoa khác Sun Chaser) — **2× cùng loài không đủ**
 
 ### BE mode (`use_mock = false`)
 
-Synergy **vẫn hoạt động** nếu đủ 3 điều kiện:
+Synergy **vẫn hoạt động** nếu đủ 4 điều kiện:
 
 1. **Login** — catalog tải sau login (`/api/synergies`, `/api/flowertemplates`)
 2. **DB có Synergy** — restart API để Seeder chạy (3 synergy mặc định: Water Lover, Sun Chaser, Night Bloom)
-3. **Hoa có `synergyId`** — trồng ≥2 cây cùng synergy trong 1 zone (vd. 2× `sun_flower`)
+3. **Hoa có `synergyId`**
+4. **≥2 loài hoa khác nhau** (`flower_template_id`) cùng synergy trong 1 zone
 
 **Lưu ý timing:** indicator refresh khi `icons_registered` (sau catalog load) và mỗi lần `plots_updated`.
 
@@ -85,8 +87,8 @@ Nếu không thấy hiệu ứng, mở **Output** → tìm warning `synergy cata
 **Test nhanh BE:**
 1. Restart API (Seeder gán synergy cho flower templates có sẵn)
 2. Login player → vào vườn
-3. Mua/trồng 2 hạt `sun_flower` cùng zone → hiệu ứng lấp lánh quanh zone
-4. Tưới → XP = base + 10 (Sun Chaser)
+3. Mua/trồng **2 loài khác nhau** cùng synergy trong 1 zone → hiệu ứng lấp lánh quanh zone
+4. Tưới → XP = base + bonus synergy
 
 ---
 
@@ -94,7 +96,7 @@ Nếu không thấy hiệu ứng, mở **Output** → tìm warning `synergy cata
 
 | Triệu chứng | Nguyên nhân | Cách fix |
 |-------------|-------------|----------|
-| Không thấy indicator | Chưa đủ 2 cây cùng Synergy | Trồng thêm cây cùng nhóm |
+| Không thấy indicator | Chưa đủ **2 loài** cùng Synergy | Trồng thêm **loài hoa khác** cùng nhóm synergy |
 | Indicator không tắt sau harvest | `plots_updated` chưa fire | Kiểm tra GardenManager emit sau harvest |
 | Bonus XP = 0 (mock) | `_synergy_cache` rỗng | Bật `use_mock` — `_seed_mock_synergies()` tự chạy |
 | Indicator lệch vị trí | PlotAnchors thiếu node | Kiểm tra `PlotAnchors` có đủ 56 anchor |
