@@ -60,12 +60,18 @@ func _on_login_succeeded() -> void:
 			_tasks = DailyTaskService.build_offline_fallback()
 		tasks_updated.emit(_tasks, _progress.values())
 		return
-	var server_time: int = result.get("server_time", 0)
+	var server_time: int = int(result.get("server_time", 0))
 	if server_time > 0:
 		_maybe_reset_progress(server_time)
 		_last_reset_epoch = server_time
-	var server_tasks: Array[DailyTask] = result.get("tasks", [])
-	var server_progress: Array[TaskProgress] = result.get("progress", [])
+	var _raw_t: Variant = result.get("tasks", null)
+	var server_tasks: Array[DailyTask] = []
+	if _raw_t is Array:
+		server_tasks.assign(_raw_t)
+	var _raw_p: Variant = result.get("progress", null)
+	var server_progress: Array[TaskProgress] = []
+	if _raw_p is Array:
+		server_progress.assign(_raw_p)
 	if not server_tasks.is_empty():
 		_tasks = server_tasks
 	elif _tasks.is_empty():
