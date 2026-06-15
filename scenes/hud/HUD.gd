@@ -8,11 +8,13 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _inv_icon: TextureRect     = $InventoryButton/Icon
 @onready var _inv_panel: InventoryPanelNode = $InventoryPanel
 @onready var _shop_panel: ShopScene         = $ShopScene
+@onready var _task_panel: Control           = $DailyTaskPanel
 @onready var _selected_slot: Panel      = $SelectedItemSlot
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
 @onready var _harvest_btn: Button       = $HarvestButton
 @onready var _shop_btn: Button          = $ShopButton
+@onready var _task_btn: Button          = $TaskButton
 @onready var _edit_btn: Button          = $EditModeButton
 @onready var _save_btn: Button          = $SaveButton
 @onready var _recall_btn: Button        = $RecallDecoButton
@@ -38,6 +40,8 @@ func _ready() -> void:
 			var shop_node := _shop_btn.get_node_or_null("ShopIcon") as TextureRect
 			if shop_node:
 				shop_node.texture = load(shop_icon_path)
+	if _task_btn:
+		_task_btn.pressed.connect(_open_tasks)
 	_edit_btn.visible = false
 	_save_btn.visible = false
 	_recall_btn.visible = false
@@ -74,6 +78,11 @@ func open_shop(tab_idx: int = 0) -> void:
 
 func _open_shop() -> void:
 	open_shop(0)
+
+func _open_tasks() -> void:
+	if _task_panel == null:
+		return
+	_task_panel.call("show_panel", 0)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _recall_btn.visible:

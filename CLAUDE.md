@@ -37,7 +37,8 @@ Autoloads registered in project.godot:
 - `UserManager` → res://autoloads/UserManager.gd (must load AFTER GardenManager)
 - `ZoneManager` → res://autoloads/ZoneManager.gd (must load AFTER UserManager)
 - `FocusManager` → res://autoloads/FocusManager.gd (must load AFTER ZoneManager)
-- `WeatherManager` → res://autoloads/WeatherManager.gd (must load AFTER FocusManager)
+- `TaskManager` → res://autoloads/TaskManager.gd (must load AFTER FocusManager)
+- `WeatherManager` → res://autoloads/WeatherManager.gd (must load AFTER TaskManager)
 
 ## Code Style
 

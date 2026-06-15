@@ -1,0 +1,65 @@
+class_name DailyTaskPanel
+extends Control
+
+const _TaskCardScene := preload("res://scenes/daily_task/TaskCard.tscn")
+
+@onready var _card_list:  VBoxContainer = $Panel/VBox/Scroll/CardList
+@onready var _daily_btn:  Button        = $Panel/VBox/TabRow/DailyBtn
+@onready var _weekly_btn: Button        = $Panel/VBox/TabRow/WeeklyBtn
+@onready var _close_btn:  Button        = $Panel/VBox/Header/HeaderRow/CloseBtn
+
+var _current_tab: int       = DailyTask.DAILY
+var _card_map:    Dictionary = {}  # task_id -> Node (TaskCard)
+
+func _ready() -> void:
+	visible = false
+	TaskManager.tasks_updated.connect(_on_tasks_updated)
+	_daily_btn.pressed.connect(func() -> void: _rebuild_list(DailyTask.DAILY))
+	_weekly_btn.pressed.connect(func() -> void: _rebuild_list(DailyTask.WEEKLY))
+	_close_btn.pressed.connect(func() -> void: visible = false)
+
+func show_panel(tab: int = DailyTask.DAILY) -> void:
+	_current_tab = tab
+	visible = true
+	_rebuild_list(tab)
+
+func _on_tasks_updated(_tasks: Array, _progress: Array) -> void:
+	if visible:
+		_rebuild_list(_current_tab)
+
+func _rebuild_list(cycle: int) -> void:
+	_current_tab = cycle
+	_card_map    = {}
+	for child in _card_list.get_children():
+		child.queue_free()
+	var tasks: Array[DailyTask] = TaskManager.get_tasks()
+	for task: DailyTask in tasks:
+		if task.cycle != cycle:
+			continue
+		var prog: TaskProgress = TaskManager.get_progress(task.id)
+		var card = _TaskCardScene.instantiate()
+		card.task_id    = task.id
+		card.title_text = task.title
+		card.target     = task.target
+		card.progress   = prog.progress if prog != null else 0
+		card.is_claimed = prog.claimed  if prog != null else false
+		var task_id := task.id
+		card.claim_pressed.connect(func() -> void: _on_claim_pressed(task_id))
+		_card_list.add_child(card)
+		_card_map[task.id] = card
+
+func _on_claim_pressed(task_id: String) -> void:
+	var card = _card_map.get(task_id, null)
+	if card != null:
+		card.disable_claim()
+	TaskManager.claim_task_async(task_id)
+	TaskManager.claim_result_received.connect(
+		func(id: String, success: bool) -> void:
+			if id != task_id:
+				return
+			if not success:
+				var c = _card_map.get(task_id, null)
+				if c != null:
+					c.enable_claim(),
+		CONNECT_ONE_SHOT
+	)

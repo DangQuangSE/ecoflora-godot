@@ -1,0 +1,169 @@
+[gd_scene format=3 uid="uid://dailytaskpnl01"]
+
+[ext_resource type="Script" path="res://scenes/daily_task/DailyTaskPanel.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.97, 0.95, 0.88, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.60, 0.46, 0.22, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+shadow_color = Color(0, 0, 0, 0.35)
+shadow_size = 10
+shadow_offset = Vector2(2, 4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_header"]
+bg_color = Color(0.80, 0.64, 0.40, 1)
+border_width_bottom = 2
+border_color = Color(0.48, 0.30, 0.08, 0.8)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+content_margin_left = 12.0
+content_margin_right = 12.0
+content_margin_top = 8.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_active"]
+bg_color = Color(0.30, 0.60, 0.18, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 3
+border_color = Color(0.14, 0.38, 0.06, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 6.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_normal"]
+bg_color = Color(0.76, 0.72, 0.62, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 3
+border_color = Color(0.52, 0.46, 0.32, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 8.0
+content_margin_right = 8.0
+content_margin_top = 6.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_btn"]
+bg_color = Color(0.55, 0.12, 0.08, 0.92)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_hover"]
+bg_color = Color(0.78, 0.18, 0.10, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[node name="DailyTaskPanel" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="BGDimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.50)
+mouse_filter = 0
+
+[node name="Panel" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -445.0
+offset_right = 340.0
+offset_bottom = 445.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_header")
+
+[node name="HeaderRow" type="HBoxContainer" parent="Panel/VBox/Header"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleLabel" type="Label" parent="Panel/VBox/Header/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Nhiệm vụ hàng ngày"
+theme_override_font_sizes/font_size = 17
+
+[node name="CloseBtn" type="Button" parent="Panel/VBox/Header/HeaderRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(36, 36)
+text = "✕"
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_close_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_close_hover")
+
+[node name="TabRow" type="HBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DailyBtn" type="Button" parent="Panel/VBox/TabRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hằng ngày"
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_active")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_active")
+theme_override_styles/focus = SubResource("StyleBoxFlat_tab_active")
+
+[node name="WeeklyBtn" type="Button" parent="Panel/VBox/TabRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Hằng tuần"
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_tab_normal")
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CardList" type="VBoxContainer" parent="Panel/VBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
