@@ -53,6 +53,7 @@ func fade_to(scene_path: String) -> void:
 		# second ensures new scene's _ready() has completed.
 		await get_tree().process_frame
 		await get_tree().process_frame
+		AudioManager.update_bgm_for_weather_state()
 		await _fade_out()
 		
 	_is_transitioning = false

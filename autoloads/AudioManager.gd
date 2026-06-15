@@ -3,7 +3,8 @@ extends Node
 # AudioManager singleton for handling background music (BGM) and sound effects (SFX)
 
 const BGM_VOLUMES := {
-	"res://sounds/lobby_v2.mp3": -20.0
+	"res://sounds/lobby_v2.mp3": -20.0,
+	"res://sounds/night-sound.mp3": -10.0
 }
 
 const SFX_VOLUMES := {
@@ -26,6 +27,7 @@ func _ready() -> void:
 	_bgm_player.bus = "Master"
 	add_child(_bgm_player)
 	_init_footstep_stream()
+	_connect_weather_manager.call_deferred()
 
 func _init_footstep_stream() -> void:
 	var custom_path := "res://sounds/footstep.wav"
@@ -176,3 +178,29 @@ func _play_click_deferred() -> void:
 		if current_time - _last_other_sfx_time > 250:
 			play_sfx("res://sounds/click.wav")
 	_click_detected = false
+
+func _connect_weather_manager() -> void:
+	var wm = get_node_or_null("/root/WeatherManager")
+	if wm:
+		wm.connect("weather_changed", func(_state): update_bgm_for_weather_state())
+
+func update_bgm_for_weather_state() -> void:
+	var current_scene := get_tree().current_scene
+	if current_scene == null:
+		return
+	var scene_path := current_scene.scene_file_path
+	var is_auth_scene := scene_path.contains("LoginScene") or scene_path.contains("RegisterScene") or scene_path.contains("SplashScene")
+	
+	if is_auth_scene:
+		return
+		
+	var wm = get_node_or_null("/root/WeatherManager")
+	if wm:
+		var state = wm.call("get_current_state")
+		if state and not state.is_day:
+			# Play night sound loop BGM
+			play_bgm("res://sounds/night-sound.mp3", true, 0.5)
+		else:
+			# Stop night sound loop BGM
+			if get_current_bgm_path() == "res://sounds/night-sound.mp3":
+				stop_bgm(0.5)
