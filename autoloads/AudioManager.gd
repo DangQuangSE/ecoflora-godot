@@ -4,8 +4,12 @@ extends Node
 
 const BGM_VOLUMES := {
 	"res://sounds/lobby_v2.mp3": -20.0,
+	"res://sounds/sunny_sound.mp3": -10.0,
 	"res://sounds/night-sound.mp3": -10.0
 }
+
+const DAY_BGM := "res://sounds/sunny_sound.mp3"
+const NIGHT_BGM := "res://sounds/night-sound.mp3"
 
 const SFX_VOLUMES := {
 	"res://sounds/item_bag_click.wav": -15.0,
@@ -181,8 +185,20 @@ func _play_click_deferred() -> void:
 
 func _connect_weather_manager() -> void:
 	var wm = get_node_or_null("/root/WeatherManager")
-	if wm:
-		wm.connect("weather_changed", func(_state): update_bgm_for_weather_state())
+	if wm == null:
+		return
+	if not wm.weather_changed.is_connected(_on_weather_changed):
+		wm.weather_changed.connect(_on_weather_changed)
+	update_bgm_for_weather_state.call_deferred()
+
+
+func _on_weather_changed(_state: WeatherState) -> void:
+	update_bgm_for_weather_state()
+
+
+func _is_clear_weather(condition: WeatherState.Condition) -> bool:
+	return condition == WeatherState.Condition.SUNNY or condition == WeatherState.Condition.CLOUDY
+
 
 func update_bgm_for_weather_state() -> void:
 	var current_scene := get_tree().current_scene
@@ -195,12 +211,19 @@ func update_bgm_for_weather_state() -> void:
 		return
 		
 	var wm = get_node_or_null("/root/WeatherManager")
-	if wm:
-		var state = wm.call("get_current_state")
-		if state and not state.is_day:
-			# Play night sound loop BGM
-			play_bgm("res://sounds/night-sound.mp3", true, 0.5)
-		else:
-			# Stop night sound loop BGM
-			if get_current_bgm_path() == "res://sounds/night-sound.mp3":
-				stop_bgm(0.5)
+	if wm == null:
+		return
+
+	var state: WeatherState = wm.get_current_state()
+	if state == null:
+		return
+
+	if not _is_clear_weather(state.condition):
+		if get_current_bgm_path() == DAY_BGM or get_current_bgm_path() == NIGHT_BGM:
+			stop_bgm(0.5)
+		return
+
+	if state.is_day:
+		play_bgm(DAY_BGM, true, 0.5)
+	else:
+		play_bgm(NIGHT_BGM, true, 0.5)

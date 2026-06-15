@@ -46,6 +46,9 @@ func fade_to(scene_path: String) -> void:
 	if is_heavy_scene and loading_screen:
 		loading_screen.load_scene_async(scene_path)
 		await loading_screen.loading_completed
+		await get_tree().process_frame
+		await get_tree().process_frame
+		AudioManager.update_bgm_for_weather_state()
 	else:
 		await _fade_in()
 		get_tree().change_scene_to_file(scene_path)
