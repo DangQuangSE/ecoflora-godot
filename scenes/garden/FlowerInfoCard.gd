@@ -2,15 +2,15 @@ class_name FlowerInfoCard
 extends CanvasLayer
 
 @onready var _dimmer: ColorRect    = $Dimmer
-@onready var _card: Panel          = $Card
-@onready var _close_btn: Button    = $Card/Content/HeaderPanel/HBox/CloseBtn
-@onready var _icon: TextureRect    = $Card/Content/HeaderPanel/HBox/Icon
-@onready var _name_label: Label    = $Card/Content/HeaderPanel/HBox/InfoVBox/NameLabel
-@onready var _level_label: Label   = $Card/Content/HeaderPanel/HBox/InfoVBox/LevelLabel
-@onready var _xp_bar: ProgressBar  = $Card/Content/BodyMargin/BodyVBox/XPBar
-@onready var _xp_label: Label      = $Card/Content/BodyMargin/BodyVBox/XPLabel
-@onready var _desc_label: Label    = $Card/Content/BodyMargin/BodyVBox/DescLabel
-@onready var _action_btn: Button   = $Card/Content/BodyMargin/BodyVBox/ActionBtn
+@onready var _card: Control        = $DialogBox
+@onready var _close_btn: Button    = $DialogBox/CloseBtn
+@onready var _icon: TextureRect    = $DialogBox/Content/Layout/Header/Icon
+@onready var _name_label: Label    = $DialogBox/Content/Layout/Header/InfoVBox/NameLabel
+@onready var _level_label: Label   = $DialogBox/Content/Layout/Header/InfoVBox/LevelLabel
+@onready var _xp_bar: ProgressBar  = $DialogBox/Content/Layout/XPBar
+@onready var _xp_label: Label      = $DialogBox/Content/Layout/XPLabel
+@onready var _desc_label: Label    = $DialogBox/Content/Layout/DescLabel
+@onready var _action_btn: Button   = $DialogBox/Content/Layout/ActionBtn
 
 var _current_plot_id: String = ""
 
@@ -29,8 +29,10 @@ func show_flower(plot_id: String, plant: PlantedFlower, template: FlowerTemplate
 	_desc_label.text = _get_description(plant.flower_template_id)
 	visible = true
 	_card.modulate.a = 0.0
-	var tween := create_tween()
-	tween.tween_property(_card, "modulate:a", 1.0, 0.20).set_ease(Tween.EASE_OUT)
+	_card.scale = Vector2(0.92, 0.92)
+	var tween := create_tween().set_parallel(true).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_card, "modulate:a", 1.0, 0.18)
+	tween.tween_property(_card, "scale", Vector2.ONE, 0.22)
 
 func close_card() -> void:
 	visible = false

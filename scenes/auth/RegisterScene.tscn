@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://c3c1x12w7jfe1"]
+[gd_scene load_steps=6 format=3 uid="uid://c3c1x12w7jfe1"]
 
 [ext_resource type="Script" uid="uid://fkay4cl08qt8" path="res://scenes/auth/RegisterScene.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://i77c84g73osi" path="res://assets/background/login/login_bg.png" id="2_loginbg"]
@@ -6,9 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://b8r4phuv5f66p" path="res://scenes/auth/components/AuthInput.tscn" id="7_auth_input"]
 [ext_resource type="Theme" uid="uid://va43502fvf6a" path="res://themes/GlobalTheme.tres" id="8_global_theme"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="9_primary_button"]
-[ext_resource type="Texture2D" uid="uid://0e1wfr8uvyys" path="res://assets/frame/login_frame_1.png" id="10_frame_top"]
-[ext_resource type="Texture2D" uid="uid://pwgfu0nf2qsx" path="res://assets/frame/login_frame_2.png" id="11_frame_mid"]
-[ext_resource type="Texture2D" uid="uid://8iokubu80tqc" path="res://assets/frame/login_frame_3.png" id="12_frame_bot"]
 
 [node name="RegisterScene" type="Control" unique_id=821908537]
 layout_mode = 3
@@ -33,81 +30,50 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Logo" type="Sprite2D" parent="." unique_id=2094896205]
-position = Vector2(361, 188)
-scale = Vector2(0.165, 0.165)
+position = Vector2(360, 150)
+scale = Vector2(0.22, 0.22)
 texture = ExtResource("3_hgf62")
 region_enabled = true
 region_rect = Rect2(0, 388.16245, 1920, 1119.212)
 
-[node name="RegisterFrame" type="Control" parent="." unique_id=225435754]
+[node name="RegisterFrame" type="PanelContainer" parent="." unique_id=225435754]
+custom_minimum_size = Vector2(560, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -275.0
-offset_right = 240.0
-offset_bottom = 275.0
+offset_left = -280.0
+offset_top = -210.0
+offset_right = 280.0
+offset_bottom = 235.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="FrameBg" type="VBoxContainer" parent="RegisterFrame" unique_id=1050153088]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -3.0
-offset_top = 60.0
-offset_right = -1.0
-offset_bottom = 63.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme_override_constants/separation = 0
-
-[node name="FrameTop" type="TextureRect" parent="RegisterFrame/FrameBg" unique_id=887392367]
-custom_minimum_size = Vector2(0, 172)
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("10_frame_top")
-expand_mode = 1
-
-[node name="FrameMid" type="TextureRect" parent="RegisterFrame/FrameBg" unique_id=1514046959]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-texture = ExtResource("11_frame_mid")
-expand_mode = 1
-
-[node name="FrameBot" type="TextureRect" parent="RegisterFrame/FrameBg" unique_id=673884248]
-custom_minimum_size = Vector2(0, 90)
-layout_mode = 2
-mouse_filter = 2
-texture = ExtResource("12_frame_bot")
-expand_mode = 1
 
 [node name="FormArea" type="MarginContainer" parent="RegisterFrame" unique_id=1270315840]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 60.0
-offset_bottom = 60.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 90
-theme_override_constants/margin_top = 100
-theme_override_constants/margin_right = 90
-theme_override_constants/margin_bottom = 30
+layout_mode = 2
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 36
+theme_override_constants/margin_bottom = 28
 
 [node name="FormContent" type="VBoxContainer" parent="RegisterFrame/FormArea" unique_id=733718747]
-custom_minimum_size = Vector2(270, 0)
+custom_minimum_size = Vector2(488, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="RegisterFrame/FormArea/FormContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.27, 0.10, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.96, 0.82, 0.85)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 30
+text = "Đăng ký"
+horizontal_alignment = 1
 
 [node name="NameRow" type="HBoxContainer" parent="RegisterFrame/FormArea/FormContent" unique_id=435836913]
 layout_mode = 2

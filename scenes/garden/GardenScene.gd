@@ -215,18 +215,7 @@ func _on_banner_dismissed() -> void:
 	_flush_notification_queue()
 
 func _show_recovery_toast() -> void:
-	var layer := CanvasLayer.new()
-	layer.layer = 120
-	var lbl := Label.new()
-	lbl.text = "⚠ Session học bị gián đoạn\n-20 XP đã bị trừ"
-	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lbl.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	lbl.position.y = 80.0
-	layer.add_child(lbl)
-	add_child(layer)
-	var tw := create_tween()
-	tw.tween_interval(3.0)
-	tw.tween_callback(layer.queue_free)
+	Toast.show_message(self, "Session học bị gián đoạn -20 XP đã bị trừ", 3.0)
 
 func _on_zone_unlocked(zone_id: String) -> void:
 	if _active_banner != null and is_instance_valid(_active_banner) and zone_id == _active_banner_zone_id:

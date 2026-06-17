@@ -1,8 +1,9 @@
 class_name UserProfileCard
 extends CanvasLayer
 
-const _CARD_H_SMALL: float  = 660.0
-const _CARD_H_LARGE: float  = 660.0
+const _CARD_H_SMALL: float  = 1050.0
+const _CARD_H_LARGE: float  = 1050.0
+const _CARD_W: float = 700.0
 
 @onready var _dimmer: ColorRect             = $Dimmer
 @onready var _card: Panel                   = $Card
@@ -59,6 +60,8 @@ func _exit_tree() -> void:
 
 func open() -> void:
 	_is_closing = false
+	_card.offset_left = -(_CARD_W * 0.5)
+	_card.offset_right = _CARD_W * 0.5
 	_card.offset_top    = -(_CARD_H_SMALL * 0.5) + 20.0
 	_card.offset_bottom =   _CARD_H_SMALL * 0.5  + 20.0
 	_refresh_data()

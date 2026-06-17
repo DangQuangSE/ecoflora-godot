@@ -66,5 +66,5 @@ func _apply_password_padding() -> void:
 			continue
 		var style := _field.get_theme_stylebox(style_name, "LineEdit").duplicate()
 		if style is StyleBoxFlat:
-			(style as StyleBoxFlat).content_margin_right = 48
+			(style as StyleBoxFlat).content_margin_right = 56
 		_field.add_theme_stylebox_override(style_name, style)
