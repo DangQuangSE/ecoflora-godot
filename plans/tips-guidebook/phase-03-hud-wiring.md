@@ -25,7 +25,7 @@ testing: default
 
 ## Steps
 
-1. Sửa `VitalityBar.tscn`: trong `VBoxContainer`, thứ tự `HeartIcon` → `TipsButton` (**Button** 48×48, `mouse_filter = STOP`, child `Icon` TextureRect `tip_icon.png`) → `CountdownLabel`. Tăng `custom_minimum_size` (~52×120). Heart claim vẫn qua `_gui_input` trên parent Control — `TipsButton` phải là Button riêng để không lẫn với claim.
+1. Sửa `VitalityBar.tscn`: trong `VBoxContainer`, thứ tự `HeartIcon` → `CountdownLabel` → `TipsButton` (**Button** 72×72, `flat = true`, child `Icon` TextureRect `tip_icon_v2.png`). Tăng `custom_minimum_size` (~72×148). Heart claim vẫn qua `_gui_input` trên parent Control — `TipsButton` phải là Button riêng để không lẫn với claim.
 
 2. Sửa `VitalityBar.gd`: thêm `signal tips_pressed`, wire `TipsButton.pressed` → emit signal. Load texture `res://assets/icon/tip_icon.png` trong `_ready()`. **Không** gắn logic mở panel vào VitalityBar — chỉ signal.
 
@@ -44,7 +44,7 @@ testing: default
 
 ## Success Criteria
 
-- Trong game, icon sách hiển thị dưới tim, trên countdown
+- Trong game, countdown hiển thị dưới tim; icon sách ở dưới cùng
 - Tap icon sách → TipsPanel mở; **tap lại icon sách**, ✕, hoặc chạm dimmer → đóng
 - Tap tim khi vitality ready → claim vẫn hoạt động; tap icon sách không trigger claim
 - Mở kho đồ / shop rồi mở tips → panel kia đóng trước (và ngược lại)
