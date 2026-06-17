@@ -34,18 +34,21 @@ func _ready() -> void:
 
 func _build_tab_styles() -> void:
 	for s in [_style_tab_normal, _style_tab_active, _style_tab_hover]:
-		s.corner_radius_top_left  = 8
-		s.corner_radius_top_right = 8
-		s.border_width_left  = 1
-		s.border_width_top   = 1
-		s.border_width_right = 1
-	_style_tab_normal.bg_color     = Color(0.40, 0.24, 0.10, 1)
-	_style_tab_normal.border_color = Color(0.62, 0.44, 0.24, 1)
-	_style_tab_active.bg_color     = Color(0.76, 0.55, 0.30, 1)
-	_style_tab_active.border_color = Color(0.95, 0.78, 0.50, 1)
-	_style_tab_active.border_width_top = 2
-	_style_tab_hover.bg_color      = Color(0.52, 0.34, 0.16, 1)
-	_style_tab_hover.border_color  = Color(0.72, 0.52, 0.30, 1)
+		s.corner_radius_top_left = 12
+		s.corner_radius_top_right = 12
+		s.border_width_left = 2
+		s.border_width_top = 2
+		s.border_width_right = 2
+		s.border_width_bottom = 3
+		s.border_color = Color(0.45, 0.27, 0.09, 1)
+		s.content_margin_left = 8
+		s.content_margin_right = 8
+		s.content_margin_top = 7
+		s.content_margin_bottom = 9
+	_style_tab_normal.bg_color = Color(0.55, 0.32, 0.12, 1)
+	_style_tab_hover.bg_color = Color(0.68, 0.43, 0.18, 1)
+	_style_tab_active.bg_color = Color(1.0, 0.93, 0.74, 1)
+	_style_tab_active.border_color = Color(0.78, 0.49, 0.16, 1)
 
 func show_panel() -> void:
 	_refresh(InventoryManager.get_inventory())
@@ -67,8 +70,12 @@ func _update_tab_styles() -> void:
 		btn.add_theme_stylebox_override("pressed", _style_tab_active)
 		btn.add_theme_stylebox_override("hover",   _style_tab_active if is_active else _style_tab_hover)
 		btn.add_theme_color_override("font_color",
-			Color(0.18, 0.09, 0.02, 1) if is_active else Color(1.0, 0.92, 0.72, 1))
-		btn.add_theme_constant_override("outline_size", 2)
+			Color(0.61, 0.31, 0.07, 1) if is_active else Color(0.97, 0.86, 0.60, 1))
+		btn.add_theme_color_override("font_hover_color",
+			Color(0.61, 0.31, 0.07, 1) if is_active else Color(0.97, 0.86, 0.60, 1))
+		btn.add_theme_color_override("font_pressed_color",
+			Color(0.61, 0.31, 0.07, 1))
+		btn.add_theme_constant_override("outline_size", 2 if is_active else 1)
 		btn.add_theme_color_override("font_outline_color", Color(0.08, 0.04, 0.01, 0.95))
 
 func _on_inventory_updated(inventory: UserInventory) -> void:

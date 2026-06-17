@@ -11,39 +11,23 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\session_init.py\""
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\session_init.py\""
           },
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\subagent_init.py\""
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\subagent_init.py\""
           }
         ]
       }
     ],
-    "UserPromptSubmit": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\dev_rules_reminder.py\"",
-            "timeout": 5
-          },
-          {
-            "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\caveman_watch.py\"",
-            "timeout": 5
-          }
-        ]
-      }
-    ],
+    "UserPromptSubmit": [],
     "PreToolUse": [
       {
         "matcher": "Read|Write|Edit|Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\privacy_block.py\"",
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\privacy_block.py\"",
             "timeout": 5
           }
         ]
@@ -53,7 +37,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\suggest_compact.py\"",
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\suggest_compact.py\"",
             "timeout": 5
           }
         ]
@@ -65,12 +49,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\build_check.py\"",
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\build_check.py\"",
             "timeout": 30
           },
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\simplify_gate.py\"",
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\simplify_gate.py\"",
             "timeout": 5
           }
         ]
@@ -80,7 +64,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\artifact_fold.py\"",
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\artifact_fold.py\"",
             "timeout": 5
           }
         ]
@@ -92,7 +76,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\pre_compact.py\"",
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\pre_compact.py\"",
             "timeout": 5
           }
         ]
@@ -104,7 +88,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\session_end.py\"",
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\session_end.py\"",
             "async": true,
             "timeout": 10
           }
@@ -117,7 +101,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"d:\\DOCUMENTFPT\\SEMESTER_8\\EXE2\\flow-flora-godot\\.claude\\hooks\\session_end.py\"",
+            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\session_end.py\"",
             "async": true,
             "timeout": 10
           }

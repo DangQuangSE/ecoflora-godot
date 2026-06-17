@@ -207,12 +207,12 @@ variation_opentype = {
 
 [resource]
 default_font = SubResource("FontVariation_body")
-default_font_size = 16
+default_font_size = 18
 Button/colors/font_color = Color(1, 0.98, 0.82, 1)
 Button/colors/font_disabled_color = Color(0.42, 0.38, 0.28, 0.75)
 Button/colors/font_hover_color = Color(1, 1, 0.9, 1)
 Button/colors/font_pressed_color = Color(0.88, 0.95, 0.68, 1)
-Button/font_sizes/font_size = 16
+Button/font_sizes/font_size = 18
 Button/fonts/font = SubResource("FontVariation_strong")
 Button/styles/disabled = SubResource("StyleBoxFlat_button_disabled")
 Button/styles/focus = SubResource("StyleBoxFlat_button_hover")
@@ -223,6 +223,7 @@ Label/colors/font_color = Color(0.33, 0.2, 0.09, 1)
 LineEdit/colors/caret_color = Color(0.68, 0.4, 0.08, 1)
 LineEdit/colors/font_color = Color(0.24, 0.14, 0.06, 1)
 LineEdit/colors/font_placeholder_color = Color(0.58, 0.43, 0.25, 0.72)
+LineEdit/font_sizes/font_size = 18
 LineEdit/styles/focus = SubResource("StyleBoxFlat_line_edit_focus")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_line_edit")
 LineEdit/styles/read_only = SubResource("StyleBoxFlat_line_edit_read_only")
