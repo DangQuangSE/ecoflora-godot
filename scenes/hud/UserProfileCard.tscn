@@ -115,10 +115,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -220.0
-offset_top = -330.0
-offset_right = 220.0
-offset_bottom = 330.0
+offset_left = -350.0
+offset_top = -525.0
+offset_right = 350.0
+offset_bottom = 525.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_card")
@@ -138,10 +138,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -62.0
-offset_top = 32.0
-offset_right = -26.0
-offset_bottom = 68.0
+offset_left = -72.0
+offset_top = 42.0
+offset_right = -24.0
+offset_bottom = 90.0
 flat = true
 
 [node name="Icon" type="TextureRect" parent="Card/CloseBtn"]
@@ -149,10 +149,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = -2.0
-offset_bottom = -2.0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = -3.0
+offset_bottom = -3.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -166,10 +166,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 65.0
-offset_top = 75.0
-offset_right = -65.0
-offset_bottom = -130.0
+offset_left = 112.0
+offset_top = 135.0
+offset_right = -112.0
+offset_bottom = -220.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 12
@@ -177,7 +177,7 @@ theme_override_constants/separation = 12
 [node name="TitleLabel" type="Label" parent="Card/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 text = "HỒ SƠ"
 horizontal_alignment = 1
 
@@ -216,11 +216,11 @@ theme_override_constants/separation = 6
 [node name="UsernameLabel" type="Label" parent="Card/Content/AvatarRow/InfoCol/UsernameRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 22
 text = "tuanvu"
 
 [node name="EditBtn" type="Button" parent="Card/Content/AvatarRow/InfoCol/UsernameRow"]
-custom_minimum_size = Vector2(22, 22)
+custom_minimum_size = Vector2(28, 28)
 layout_mode = 2
 icon = ExtResource("2_edit")
 flat = true
@@ -233,32 +233,33 @@ alignment = 1
 theme_override_constants/separation = 6
 
 [node name="RenameEdit" type="LineEdit" parent="Card/Content/AvatarRow/InfoCol/RenameRow"]
-custom_minimum_size = Vector2(140, 32)
+custom_minimum_size = Vector2(220, 40)
 layout_mode = 2
+theme_override_font_sizes/font_size = 18
 placeholder_text = "Tên mới..."
 max_length = 50
 
 [node name="RenameSaveBtn" type="Button" parent="Card/Content/AvatarRow/InfoCol/RenameRow"]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 text = "✓"
 
 [node name="RenameCancelBtn" type="Button" parent="Card/Content/AvatarRow/InfoCol/RenameRow"]
-custom_minimum_size = Vector2(32, 32)
+custom_minimum_size = Vector2(40, 40)
 layout_mode = 2
 text = "✗"
 
 [node name="LevelBadge" type="Label" parent="Card/Content/AvatarRow/InfoCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.239216, 0.560784, 0.160784, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 17
 text = "Lv. 1"
 horizontal_alignment = 1
 
 [node name="JoinDateLabel" type="Label" parent="Card/Content/AvatarRow/InfoCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.45098, 0.278431, 0.0980392, 0.8)
-theme_override_font_sizes/font_size = 11
+theme_override_font_sizes/font_size = 14
 horizontal_alignment = 1
 
 [node name="Divider" type="HSeparator" parent="Card/Content"]
@@ -272,13 +273,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "🌱 Cấp độ"
 
 [node name="LevelValue" type="Label" parent="Card/Content/RowLevel"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.180392, 0.439216, 0.121569, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "1"
 horizontal_alignment = 2
 
@@ -289,13 +290,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "⭐ Tổng XP"
 
 [node name="XPValue" type="Label" parent="Card/Content/RowXP"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.180392, 0.439216, 0.121569, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "0"
 horizontal_alignment = 2
 
@@ -306,13 +307,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "🌾 Thu hoạch"
 
 [node name="HarvestValue" type="Label" parent="Card/Content/RowHarvest"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.180392, 0.439216, 0.121569, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "0"
 horizontal_alignment = 2
 
@@ -323,13 +324,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "🔥 Chuỗi đăng nhập"
 
 [node name="StreakValue" type="Label" parent="Card/Content/RowStreak"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.180392, 0.439216, 0.121569, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "0"
 horizontal_alignment = 2
 
@@ -340,13 +341,13 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "🌸 Hoa & Hạt giống"
 
 [node name="FlowersValue" type="Label" parent="Card/Content/RowFlowers"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.180392, 0.439216, 0.121569, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 20
 text = "0"
 horizontal_alignment = 2
 
@@ -357,19 +358,20 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -140.0
-offset_top = -104.0
-offset_right = 140.0
-offset_bottom = -60.0
+offset_left = -210.0
+offset_top = -160.0
+offset_right = 210.0
+offset_bottom = -108.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/separation = 16
 alignment = 1
 
 [node name="LogoutBtn" parent="Card/BottomRow" instance=ExtResource("3_primary_button")]
-custom_minimum_size = Vector2(120, 44)
+custom_minimum_size = Vector2(350, 52)
 layout_mode = 2
 theme = ExtResource("4_global_theme")
+theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_cancel_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_cancel_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_cancel_pressed")
@@ -382,10 +384,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 65.0
-offset_top = 75.0
-offset_right = -65.0
-offset_bottom = -130.0
+offset_left = 112.0
+offset_top = 135.0
+offset_right = -112.0
+offset_bottom = -220.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 12
@@ -393,7 +395,7 @@ theme_override_constants/separation = 12
 [node name="Title" type="Label" parent="Card/AvatarPicker"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 text = "ẢNH ĐẠI DIỆN"
 horizontal_alignment = 1
 
@@ -401,12 +403,12 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
-theme_override_constants/h_separation = 16
-theme_override_constants/v_separation = 16
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 24
 columns = 3
 
 [node name="AvatarOpt0" type="Button" parent="Card/AvatarPicker/Grid"]
-custom_minimum_size = Vector2(76, 76)
+custom_minimum_size = Vector2(104, 104)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
@@ -420,10 +422,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 mouse_filter = 2
 
 [node name="Tex" type="TextureRect" parent="Card/AvatarPicker/Grid/AvatarOpt0/Margin"]
@@ -444,7 +446,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_opt_selected")
 
 [node name="AvatarOpt1" type="Button" parent="Card/AvatarPicker/Grid"]
-custom_minimum_size = Vector2(76, 76)
+custom_minimum_size = Vector2(104, 104)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
@@ -458,10 +460,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 mouse_filter = 2
 
 [node name="Tex" type="TextureRect" parent="Card/AvatarPicker/Grid/AvatarOpt1/Margin"]
@@ -482,7 +484,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_opt_selected")
 
 [node name="AvatarOpt2" type="Button" parent="Card/AvatarPicker/Grid"]
-custom_minimum_size = Vector2(76, 76)
+custom_minimum_size = Vector2(104, 104)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
@@ -496,10 +498,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 mouse_filter = 2
 
 [node name="Tex" type="TextureRect" parent="Card/AvatarPicker/Grid/AvatarOpt2/Margin"]
@@ -520,7 +522,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_opt_selected")
 
 [node name="AvatarOpt3" type="Button" parent="Card/AvatarPicker/Grid"]
-custom_minimum_size = Vector2(76, 76)
+custom_minimum_size = Vector2(104, 104)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
@@ -534,10 +536,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 mouse_filter = 2
 
 [node name="Tex" type="TextureRect" parent="Card/AvatarPicker/Grid/AvatarOpt3/Margin"]
@@ -558,7 +560,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_opt_selected")
 
 [node name="AvatarOpt4" type="Button" parent="Card/AvatarPicker/Grid"]
-custom_minimum_size = Vector2(76, 76)
+custom_minimum_size = Vector2(104, 104)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
@@ -572,10 +574,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 mouse_filter = 2
 
 [node name="Tex" type="TextureRect" parent="Card/AvatarPicker/Grid/AvatarOpt4/Margin"]
@@ -596,7 +598,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_opt_selected")
 
 [node name="AvatarOpt5" type="Button" parent="Card/AvatarPicker/Grid"]
-custom_minimum_size = Vector2(76, 76)
+custom_minimum_size = Vector2(104, 104)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
@@ -610,10 +612,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 mouse_filter = 2
 
 [node name="Tex" type="TextureRect" parent="Card/AvatarPicker/Grid/AvatarOpt5/Margin"]
@@ -634,7 +636,7 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_opt_selected")
 
 [node name="AvatarOpt6" type="Button" parent="Card/AvatarPicker/Grid"]
-custom_minimum_size = Vector2(76, 76)
+custom_minimum_size = Vector2(104, 104)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
@@ -648,10 +650,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
 mouse_filter = 2
 
 [node name="Tex" type="TextureRect" parent="Card/AvatarPicker/Grid/AvatarOpt6/Margin"]
@@ -673,13 +675,14 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_opt_selected")
 
 [node name="ButtonRow" type="HBoxContainer" parent="Card/AvatarPicker"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 24
 alignment = 1
 
 [node name="CancelBtn" parent="Card/AvatarPicker/ButtonRow" instance=ExtResource("3_primary_button")]
-custom_minimum_size = Vector2(120, 36)
+custom_minimum_size = Vector2(170, 52)
 layout_mode = 2
 theme = ExtResource("4_global_theme")
+theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_cancel_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_btn_cancel_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_cancel_pressed")
@@ -687,7 +690,8 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_btn_cancel_hover")
 text = "Hủy"
 
 [node name="ConfirmBtn" parent="Card/AvatarPicker/ButtonRow" instance=ExtResource("3_primary_button")]
-custom_minimum_size = Vector2(120, 36)
+custom_minimum_size = Vector2(170, 52)
 layout_mode = 2
 theme = ExtResource("4_global_theme")
+theme_override_font_sizes/font_size = 20
 text = "Xác nhận"

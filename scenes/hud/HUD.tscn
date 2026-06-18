@@ -240,10 +240,10 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="VitalityBar" parent="." unique_id=1979910139 instance=ExtResource("5_vbar")]
-offset_left = 8.0
-offset_top = 158.0
-offset_right = 60.0
-offset_bottom = 230.0
+offset_left = 17.0
+offset_top = 168.0
+offset_right = 73.0
+offset_bottom = 244.0
 
 [node name="ShopScene" parent="." unique_id=500000100 instance=ExtResource("7_shopscene")]
 layout_mode = 3
