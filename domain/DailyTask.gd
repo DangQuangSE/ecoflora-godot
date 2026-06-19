@@ -43,7 +43,7 @@ static func from_dict(d: Dictionary) -> DailyTask:
 	t.reward_currency = int(d.get("rewardCurrency", 0))
 	t.reward_item_id  = str(d.get("rewardItemId", ""))
 	t.reward_item_qty = int(d.get("rewardItemQty", 0))
-	t.reward_xp       = int(d.get("rewardXp", 0))
+	t.reward_xp       = int(d.get("rewardXP", 0))
 
 	var raw_type: Variant = d.get("type", 0)
 	if raw_type is String:
