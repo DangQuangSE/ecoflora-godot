@@ -12,18 +12,20 @@ const BGM_VOLUMES := {
 const DAY_BGM := "res://sounds/sunny_sound.mp3"
 const NIGHT_BGM := "res://sounds/night-sound.mp3"
 const RAIN_BGM := "res://sounds/raining.mp3"
+const FOOTSTEP_PATH := "res://sounds/foot_step_v2.mp3"
 
 const SFX_VOLUMES := {
 	"res://sounds/item_bag_click.wav": -15.0,
 	"res://sounds/plant.wav": -15.0,
 	"res://sounds/click.wav": -15.0,
-	"res://sounds/harvest.wav": -15.0
+	"res://sounds/harvest.wav": -15.0,
+	FOOTSTEP_PATH: -10.0
 }
 
 var _bgm_player: AudioStreamPlayer
 var _current_bgm_path: String = ""
 var _fade_tween: Tween
-var footstep_stream: AudioStreamWAV
+var footstep_stream: AudioStream
 
 var _click_detected: bool = false
 var _last_other_sfx_time: int = -1000
@@ -36,58 +38,24 @@ func _ready() -> void:
 	_connect_weather_manager.call_deferred()
 
 func _init_footstep_stream() -> void:
-	var custom_path := "res://sounds/footstep.wav"
-	if FileAccess.file_exists(custom_path):
-		var loaded = load(custom_path)
-		if loaded is AudioStreamWAV:
-			footstep_stream = loaded
-			return
-			
-	_generate_procedural_footstep()
+	var loaded := load(FOOTSTEP_PATH) as AudioStream
+	if loaded == null:
+		push_error("AudioManager: Failed to load footstep from path: %s" % FOOTSTEP_PATH)
+		return
+	if loaded is AudioStreamMP3:
+		(loaded as AudioStreamMP3).loop = true
+	footstep_stream = loaded
 
-func _generate_procedural_footstep() -> void:
-	footstep_stream = AudioStreamWAV.new()
-	footstep_stream.format = AudioStreamWAV.FORMAT_16_BITS
-	footstep_stream.mix_rate = 11025
-	footstep_stream.stereo = false
-	footstep_stream.loop_mode = AudioStreamWAV.LOOP_DISABLED
-	
-	var duration := 0.12 # 120 ms
-	var num_samples := int(footstep_stream.mix_rate * duration)
-	
-	var byte_data := PackedByteArray()
-	byte_data.resize(num_samples * 2) # 16-bit = 2 bytes per sample
-	
-	var lp_state := 0.0
-	var alpha := 0.94 # Strong low-pass filter (only low frequencies pass)
-	
-	for i in range(num_samples):
-		var t := float(i) / num_samples
-		var envelope := exp(-t * 14.0) * (1.0 - t) # Faster decay for a softer touch
-		
-		var white_noise := randf() * 2.0 - 1.0
-		# Muffle the sound by low-passing the white noise
-		lp_state = (lp_state * alpha) + (white_noise * (1.0 - alpha))
-		
-		# Lower amplitude scale (15000.0 instead of 32767.0) for a quieter, gentler sound
-		var sample_val := lp_state * envelope
-		var sample := int(sample_val * 15000.0)
-		
-		# Clip sample to 16-bit range
-		sample = clamp(sample, -32768, 32767)
-		
-		# Store 16-bit signed integer in little-endian format
-		var byte_idx := i * 2
-		byte_data[byte_idx] = sample & 0xFF
-		byte_data[byte_idx + 1] = (sample >> 8) & 0xFF
-		
-	footstep_stream.data = byte_data
 
-func get_footstep_stream() -> AudioStreamWAV:
+func get_footstep_stream() -> AudioStream:
 	return footstep_stream
 
+
+func get_footstep_volume_db() -> float:
+	return SFX_VOLUMES.get(FOOTSTEP_PATH, -10.0)
+
 func play_sfx(stream_path: String, volume_db: float = 0.0) -> void:
-	if stream_path != "res://sounds/click.wav" and stream_path != "res://sounds/footstep.wav":
+	if stream_path != "res://sounds/click.wav" and stream_path != FOOTSTEP_PATH:
 		_last_other_sfx_time = Time.get_ticks_msec()
 
 	var stream := load(stream_path) as AudioStream

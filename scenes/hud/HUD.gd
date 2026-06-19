@@ -6,15 +6,17 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _joystick: DynamicJoystick = $DynamicJoystick
 @onready var _inv_btn: Button           = $InventoryButton
 @onready var _inv_icon: TextureRect     = $InventoryButton/Icon
-@onready var _inv_panel: Node           = $InventoryPanel
-@onready var _tips_panel: Node          = $TipsPanel
-@onready var _shop_panel: Node          = $ShopScene
-@onready var _vitality_bar: VitalityBar = $VitalityBar
+@onready var _inv_panel: InventoryPanelNode = $InventoryPanel
+@onready var _tips_panel: TipsPanelNode     = $TipsPanel
+@onready var _shop_panel: ShopScene         = $ShopScene
+@onready var _task_panel: DailyTaskPanel    = $DailyTaskPanel
+@onready var _vitality_bar: VitalityBar     = $VitalityBar
 @onready var _selected_slot: Panel      = $SelectedItemSlot
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
 @onready var _harvest_btn: Button       = $HarvestButton
 @onready var _shop_btn: Button          = $ShopButton
+@onready var _task_btn: Button          = $TaskButton
 @onready var _edit_btn: Button          = $EditModeButton
 @onready var _save_btn: Button          = $SaveButton
 @onready var _recall_btn: Button        = $RecallDecoButton
@@ -43,6 +45,8 @@ func _ready() -> void:
 			var shop_node := _shop_btn.get_node_or_null("ShopIcon") as TextureRect
 			if shop_node:
 				shop_node.texture = load(shop_icon_path)
+	if _task_btn:
+		_task_btn.pressed.connect(_open_tasks)
 	_edit_btn.visible = false
 	_save_btn.visible = false
 	_recall_btn.visible = false
@@ -68,7 +72,7 @@ func _toggle_inventory() -> void:
 	else:
 		_hide_tips_if_visible()
 		_hide_shop_if_visible()
-		_inv_panel.call("show_panel")
+		_inv_panel.show_panel()
 
 
 func _toggle_tips() -> void:
@@ -82,7 +86,7 @@ func _toggle_tips() -> void:
 	else:
 		_hide_inventory_if_visible()
 		_hide_shop_if_visible()
-		_tips_panel.call("show_panel")
+		_tips_panel.show_panel()
 
 
 func _hide_tips_if_visible() -> void:
@@ -127,10 +131,15 @@ func open_shop(tab_idx: int = 0) -> void:
 		return
 	_hide_tips_if_visible()
 	_hide_inventory_if_visible()
-	_shop_panel.call("show_panel", tab_idx)
+	_shop_panel.show_panel(tab_idx)
 
 func _open_shop() -> void:
 	open_shop(0)
+
+func _open_tasks() -> void:
+	if _task_panel == null:
+		return
+	_task_panel.show_panel(0)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _recall_btn.visible:
