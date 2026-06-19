@@ -1,6 +1,6 @@
 # Plan: Coin Top-up via PayOS (web checkout)
 
-Status: 🟡 In Progress
+Status: 🟢 Complete (all 3 phases implemented, tested, reviewed — approved, commit deferred by user)
 Date: 2026-06-19
 Mode: Hard
 
@@ -11,8 +11,8 @@ Add a real-money coin top-up flow consumed by a **login-gated web page** (built 
 
 ## Phases
 - [x] Phase 1: BE domain + infra — `CoinPackage` + `PaymentOrder` entities, migration, seed data, repository/UoW wiring
-- [ ] Phase 2: BE application service — PayOS SDK integration, order creation/status/webhook business logic, backup reconciliation
-- [ ] Phase 3: BE API layer — 4 endpoints, validators, DTOs, Swagger annotations, PayOS config section
+- [x] Phase 2: BE application service — PayOS SDK integration, order creation/status/webhook business logic, backup reconciliation
+- [x] Phase 3: BE API layer — 4 endpoints, validators, DTOs, Swagger annotations, PayOS config section
 
 ## Research Summary
 Resolved architecture decisions (from prior research pass, not re-debated here):
@@ -46,15 +46,16 @@ Resolved architecture decisions (from prior research pass, not re-debated here):
 ## Session Notes
 <!-- Updated by cook automatically — do not edit manually -->
 
-**Last active:** 2026-06-20 (continuing 2026-06-19 work)
-**Phase in progress:** phase-01-be-domain-infra (complete, awaiting review gate)
-**Status:** Phase 1 implemented, migrated, and seeded successfully. Build green.
+**Last active:** 2026-06-20
+**Phase in progress:** phase-03-be-api-layer (complete, awaiting review gate)
+**Status:** Phase 3 implemented, build green (0 warnings/errors), code-reviewer verdict APPROVED (0 CRITICAL/HIGH/MEDIUM, 2 LOW notes, 1 applied), 16/16 tests passing (5 Phase 2 + 11 new Phase 3).
 
 ### Decisions made this session
-- `PaymentOrder`/`CoinPackage` extend `BaseEntity` like `DailyTaskDefinition` — inherited `CreatedAt` covers FR-02, no separate field needed.
-- `ExecuteUpdateAsync` calls live inside `PaymentOrderRepository` (`TryTransitionToPaidAsync`, `TryTransitionToCancelledAsync`, `MarkExpiredPastDueAsync`) rather than exposing raw `DbContext` to the Application layer — keeps the EF-specific atomic-update mechanism encapsulated behind the repository interface, consistent with how every other repository hides `DbSet`/`DbContext` from callers. Phase 2 will call these methods directly instead of touching `AppDbContext`.
-- `PaymentOrder.User`/`CoinPackage` FKs use `DeleteBehavior.Restrict` (no cascade) — financial records should never silently disappear if a user/package row is deleted.
-- Migration `20260619170533_AddCoinTopUp` applied to local dev DB; `CoinPackages` seeded with the 4 tiers (verified via EF's `AnyAsync` existence-check log showing rows already present on second run, no re-insert).
+- **`[AllowAnonymous]` vs. no-attribute decision (resolved)**: the public `POST /api/payments/webhook` endpoint has **no `[Authorize]` at all**, not a `[AllowAnonymous]` override. Confirmed via reading `AuthController.cs` that this codebase has zero existing `[AllowAnonymous]` usages — its public `login`/`register` endpoints simply have no `[Authorize]` because the controller itself has no class-level `[Authorize]`. `PaymentsController` follows the same shape: no class-level `[Authorize]`, method-level `[Authorize(Roles = Constant.Roles.Player)]` on the 3 player-facing actions, nothing on the webhook action. Authenticity for the webhook is enforced entirely by `PaymentService.HandleWebhookAsync`'s HMAC signature check (via `IPayOsGateway.VerifyWebhookAsync`), confirmed local-only/no-network in Phase 2.
+- **PayOS config section in `appsettings.json` — skipped, not added**. This codebase exclusively configures all external services (OpenWeather, JWT, Redis, and PayOS itself) via `.env`/`Environment.GetEnvironmentVariable`, already wired in `Program.cs` since Phase 2. Adding a parallel `appsettings.json` section would introduce a second, inconsistent config mechanism for the same settings — reconciled by keeping the existing env-var-only approach.
+- Route shape: `[Route("api")]` on `PaymentsController` with literal full paths per action (`coin-packages`, `payments/orders`, `payments/orders/{orderCode}/status`, `payments/webhook`) rather than `[Route("api/[controller]")]`, since the controller spans two resource concepts (`coin-packages` and `payments`) that don't share one `[controller]` token — code-reviewer confirmed this is a reasonable variant of the codebase's existing literal-route convention.
+- Extended `Application.Tests` (rather than creating a new test project) with controller-level tests — added a `ProjectReference` to `API.csproj` so test code can reach `PaymentsController`/`CreateOrderRequestValidator`. Added a hand-written `FakePaymentService` stub (no mocking library exists anywhere in the solution, confirmed via grep before deciding not to introduce one).
+- code-reviewer raised 2 LOW notes, no CRITICAL/HIGH/MEDIUM: (1) controller unit tests bypass the ASP.NET auth pipeline entirely so they can't prove `[Authorize(Roles=...)]` is enforced end-to-end — accepted as a known gap, no `WebApplicationFactory` integration tests exist anywhere in this codebase yet to extend; (2) webhook action was missing a documented 400 `[ProducesResponseType]` for malformed-body model-binding failures — **fixed** (added the attribute).
 
 ### Next immediate action
-Awaiting user review-gate approval for Phase 1 before starting Phase 2 (BE application service — PayOS SDK, order/status/webhook logic, idempotent credit, background sweep).
+Awaiting user review-gate approval for Phase 3 (final phase) before Finalize step (project-manager/docs-manager/git-manager). The FE-facing API documentation (`docs/api-coin-topup.md` or similar) is explicitly deferred until after this approval, per the user's own earlier choice to implement first then document against the real, verified field names/types.
