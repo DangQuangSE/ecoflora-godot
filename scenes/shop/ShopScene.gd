@@ -5,6 +5,8 @@ const ShopItemCardScene := preload("res://scenes/shop/ShopItemCard.tscn")
 var _style_tab_normal  := StyleBoxFlat.new()
 var _style_tab_active  := StyleBoxFlat.new()
 var _style_tab_hover   := StyleBoxFlat.new()
+var _style_skeleton_card := StyleBoxFlat.new()
+var _style_skeleton_band := StyleBoxFlat.new()
 
 # Tab index → API category string ("" = no API call)
 const _TAB_CATEGORIES := ["Seed", "Consumable", "Decoration", ""]
@@ -28,8 +30,6 @@ const _TAB_CATEGORIES := ["Seed", "Consumable", "Decoration", ""]
 @onready var _total_label: Label         = $ConfirmDialog/VBox/TotalRow/TotalLabel
 @onready var _confirm_btn: Button        = $ConfirmDialog/VBox/ButtonRow/ConfirmButton
 @onready var _cancel_btn: Button         = $ConfirmDialog/CancelButton
-@onready var _toast: Panel               = $ToastNotification
-@onready var _toast_label: Label         = $ToastNotification/ToastLabel
 @onready var _loading: Label             = $LoadingSpinner
 
 const _ITEMS_PER_PAGE := 6
@@ -56,14 +56,10 @@ var _current_page: int = 0
 var _current_tab: int = 0
 var _pending_item: ShopItem = null
 var _pending_qty: int = 1
-var _toast_tween: Tween = null
-
-var _style_toast_ok  := StyleBoxFlat.new()
-var _style_toast_err := StyleBoxFlat.new()
 
 func _ready() -> void:
 	_build_tab_styles()
-	_build_toast_styles()
+	_build_skeleton_styles()
 	_tab_btns = [
 		$ShopPanel/ShopBg/TabGroup/HatGiongBtn,
 		$ShopPanel/ShopBg/TabGroup/CongCuBtn,
@@ -87,31 +83,48 @@ func _ready() -> void:
 	_qty_plus.pressed.connect(_on_qty_plus)
 	_confirm_dialog.hide()
 	_confirm_overlay.hide()
-	_toast.hide()
 	_loading.hide()
 
 func _build_tab_styles() -> void:
 	for s in [_style_tab_normal, _style_tab_active, _style_tab_hover]:
-		s.corner_radius_top_left  = 16
-		s.corner_radius_top_right = 16
+		s.corner_radius_top_left  = 14
+		s.corner_radius_top_right = 14
 		s.border_width_left  = 2
 		s.border_width_top   = 2
 		s.border_width_right = 2
-		s.border_width_bottom = 0
-		s.border_color = Color(0.35, 0.22, 0.11, 1)
+		s.border_width_bottom = 3
+		s.border_color = Color(0.45, 0.27, 0.09, 1)
+		s.content_margin_left = 8
+		s.content_margin_right = 8
+		s.content_margin_top = 8
+		s.content_margin_bottom = 10
 	
-	_style_tab_normal.bg_color = Color(0.46, 0.28, 0.12, 1)
-	_style_tab_hover.bg_color  = Color(0.58, 0.38, 0.20, 1)
-	_style_tab_active.bg_color = Color(0.96, 0.90, 0.78, 1)
+	_style_tab_normal.bg_color = Color(0.55, 0.32, 0.12, 1)
+	_style_tab_hover.bg_color  = Color(0.68, 0.43, 0.18, 1)
+	_style_tab_active.bg_color = Color(1.0, 0.93, 0.74, 1)
+	_style_tab_active.border_color = Color(0.78, 0.49, 0.16, 1)
 
-func _build_toast_styles() -> void:
-	for style in [_style_toast_ok, _style_toast_err]:
-		style.corner_radius_top_left    = 12
-		style.corner_radius_top_right   = 12
-		style.corner_radius_bottom_right = 12
-		style.corner_radius_bottom_left  = 12
-	_style_toast_ok.bg_color  = Color(0.15, 0.45, 0.1, 0.95)
-	_style_toast_err.bg_color = Color(0.5, 0.1, 0.08, 0.95)
+func _build_skeleton_styles() -> void:
+	_style_skeleton_card.content_margin_left = 10
+	_style_skeleton_card.content_margin_top = 10
+	_style_skeleton_card.content_margin_right = 10
+	_style_skeleton_card.content_margin_bottom = 10
+	_style_skeleton_card.bg_color = Color(0.93, 0.88, 0.76, 0.92)
+	_style_skeleton_card.border_width_left = 2
+	_style_skeleton_card.border_width_top = 2
+	_style_skeleton_card.border_width_right = 2
+	_style_skeleton_card.border_width_bottom = 4
+	_style_skeleton_card.border_color = Color(0.68, 0.56, 0.38, 0.65)
+	_style_skeleton_card.corner_radius_top_left = 12
+	_style_skeleton_card.corner_radius_top_right = 12
+	_style_skeleton_card.corner_radius_bottom_right = 12
+	_style_skeleton_card.corner_radius_bottom_left = 12
+
+	_style_skeleton_band.bg_color = Color(1.0, 0.96, 0.84, 0.70)
+	_style_skeleton_band.corner_radius_top_left = 12
+	_style_skeleton_band.corner_radius_top_right = 12
+	_style_skeleton_band.corner_radius_bottom_right = 12
+	_style_skeleton_band.corner_radius_bottom_left = 12
 
 func _on_tab_pressed(idx: int) -> void:
 	_set_active_tab(idx)
@@ -134,13 +147,48 @@ func _on_tab_pressed(idx: int) -> void:
 	_render_page()
 
 func _set_loading(on: bool) -> void:
-	_loading.visible = on
-	for btn: Variant in _tab_btns:
-		(btn as Button).disabled = on
+	_loading.visible = false
 	if on:
 		for child in _grid.get_children():
 			child.queue_free()
+		_render_loading_skeleton()
 		_pagination_bar.visible = false
+
+func _render_loading_skeleton() -> void:
+	for i in _ITEMS_PER_PAGE:
+		var card := PanelContainer.new()
+		card.custom_minimum_size = Vector2(195, 230)
+		card.add_theme_stylebox_override("panel", _style_skeleton_card)
+
+		var box := VBoxContainer.new()
+		box.add_theme_constant_override("separation", 12)
+		card.add_child(box)
+
+		var icon := Panel.new()
+		icon.custom_minimum_size = Vector2(0, 104)
+		icon.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		icon.add_theme_stylebox_override("panel", _style_skeleton_band)
+		box.add_child(icon)
+
+		var name := Panel.new()
+		name.custom_minimum_size = Vector2(118, 16)
+		name.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		name.add_theme_stylebox_override("panel", _style_skeleton_band)
+		box.add_child(name)
+
+		var price := Panel.new()
+		price.custom_minimum_size = Vector2(58, 14)
+		price.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		price.add_theme_stylebox_override("panel", _style_skeleton_band)
+		box.add_child(price)
+
+		var button := Panel.new()
+		button.custom_minimum_size = Vector2(0, 42)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.add_theme_stylebox_override("panel", _style_skeleton_band)
+		box.add_child(button)
+
+		_grid.add_child(card)
 
 func _render_page() -> void:
 	var total: int = _current_items.size()
@@ -171,10 +219,11 @@ func _set_active_tab(idx: int) -> void:
 		btn.add_theme_stylebox_override("pressed",  _style_tab_active)
 		btn.add_theme_stylebox_override("hover",    _style_tab_active if is_active else _style_tab_hover)
 		
-		var font_color := Color(0.35, 0.22, 0.11, 1) if is_active else Color(0.96, 0.90, 0.78, 1)
+		var font_color := Color(0.61, 0.31, 0.07, 1) if is_active else Color(0.97, 0.86, 0.60, 1)
 		btn.add_theme_color_override("font_color", font_color)
 		btn.add_theme_color_override("font_hover_color", font_color)
 		btn.add_theme_color_override("font_pressed_color", font_color)
+		btn.add_theme_constant_override("outline_size", 2 if is_active else 1)
 
 func _render_items(items: Array[ShopItem]) -> void:
 	for child in _grid.get_children():
@@ -257,16 +306,7 @@ func _on_confirm_purchase() -> void:
 		_refresh_card_affordability()
 
 func _show_toast(message: String, success: bool) -> void:
-	_toast_label.text = message
-	_toast.add_theme_stylebox_override("panel", _style_toast_ok if success else _style_toast_err)
-	_toast.modulate.a = 1.0
-	_toast.show()
-	if _toast_tween:
-		_toast_tween.kill()
-	_toast_tween = create_tween()
-	_toast_tween.tween_interval(1.8)
-	_toast_tween.tween_property(_toast, "modulate:a", 0.0, 0.4)
-	_toast_tween.tween_callback(_toast.hide)
+	Toast.show_message(self, message, 2.0 if success else 2.4)
 
 func show_panel(tab_idx: int = 0) -> void:
 	show()

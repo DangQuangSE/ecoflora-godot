@@ -50,7 +50,9 @@ func _apply_theme() -> void:
 	_error_label.add_theme_font_size_override("font_size", 13)
 	_error_label.add_theme_color_override("font_color", Color(0.75, 0.15, 0.1))
 
-	_register_link.add_theme_font_size_override("font_size", 13)
+	_login_btn.add_theme_font_size_override("font_size", 22)
+
+	_register_link.add_theme_font_size_override("font_size", 17)
 	_register_link.add_theme_color_override("font_color", Color(0.2, 0.45, 0.75))
 	_register_link.add_theme_color_override("font_hover_color", Color(0.3, 0.55, 0.85))
 	_register_link.add_theme_color_override("font_pressed_color", Color(0.15, 0.35, 0.65))

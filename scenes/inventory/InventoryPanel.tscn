@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="4_primary_button_script"]
 [ext_resource type="Texture2D" uid="uid://dotxp8r8cl8h0" path="res://assets/inventory/invenotry_bg.png" id="2_invbg"]
 [ext_resource type="Texture2D" uid="uid://cwb5wei1qbvse" path="res://assets/inventory/inventory_frame.png" id="3_b3pjt"]
+[ext_resource type="Texture2D" path="res://assets/icon/close.png" id="5_close_icon"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_invbg"]
 atlas = ExtResource("2_invbg")
@@ -47,9 +48,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -263.0
+offset_left = -320.0
 offset_top = -258.0
-offset_right = 263.0
+offset_right = 320.0
 offset_bottom = 258.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -64,9 +65,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -263.0
+offset_left = -320.0
 offset_top = -258.0
-offset_right = 263.0
+offset_right = 320.0
 offset_bottom = 258.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -77,16 +78,16 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = -10.0
-offset_bottom = -10.0
+offset_left = 16.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = -14.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 8
 
 [node name="TitleBar" type="HBoxContainer" parent="PanelRoot/VBox" unique_id=691575334]
-custom_minimum_size = Vector2(0, 44)
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 theme_override_constants/separation = 6
 
@@ -96,55 +97,71 @@ size_flags_horizontal = 3
 
 [node name="CloseBtn" type="Button" parent="PanelRoot/VBox/TitleBar" unique_id=942168245]
 script = ExtResource("4_primary_button_script")
-custom_minimum_size = Vector2(38, 38)
+custom_minimum_size = Vector2(46, 46)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_close")
-text = "✕"
+flat = true
+
+[node name="Icon" type="TextureRect" parent="PanelRoot/VBox/TitleBar/CloseBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_close_icon")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Divider" type="HSeparator" parent="PanelRoot/VBox" unique_id=1493410151]
 modulate = Color(0.38, 0.52, 0.28, 0.5)
 layout_mode = 2
 
 [node name="Tabs" type="HBoxContainer" parent="PanelRoot/VBox" unique_id=1370835639]
-custom_minimum_size = Vector2(0, 36)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 0
 
 [node name="BtnAll" type="Button" parent="PanelRoot/VBox/Tabs" unique_id=913871881]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 16
 text = "Tất Cả"
 
 [node name="BtnSeed" type="Button" parent="PanelRoot/VBox/Tabs" unique_id=864241441]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 16
 text = "Hạt Giống"
 
 [node name="BtnItem" type="Button" parent="PanelRoot/VBox/Tabs" unique_id=1685209967]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 16
 text = "Vật Phẩm"
 
 [node name="BtnDecor" type="Button" parent="PanelRoot/VBox/Tabs" unique_id=1685209968]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 16
 text = "Trang Trí"
 
 [node name="Scroll" type="ScrollContainer" parent="PanelRoot/VBox" unique_id=470132555]
 layout_mode = 2
 size_flags_vertical = 3
+horizontal_scroll_mode = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_scroll")
 
 [node name="SlotGrid" type="GridContainer" parent="PanelRoot/VBox/Scroll" unique_id=707987330]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/h_separation = 6
-theme_override_constants/v_separation = 6
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 14
 columns = 4
 
 [node name="EmptyLabel" type="Label" parent="PanelRoot/VBox/Scroll" unique_id=1727356047]
@@ -157,23 +174,27 @@ text = "Trống"
 horizontal_alignment = 1
 
 [node name="InventoryFrame" type="Sprite2D" parent="InvBg" unique_id=263159353]
-position = Vector2(263, 308)
-scale = Vector2(1, 0.7609398)
+position = Vector2(320, 308)
+scale = Vector2(1.22, 0.7609398)
 texture = ExtResource("3_b3pjt")
 region_enabled = true
 region_rect = Rect2(256.50854, 268.4707, 513.2384, 521.45996)
 
-[node name="InventoryTitleLabel" type="Label" parent="." unique_id=600000001]
-layout_mode = 0
-offset_left = 211.0
-offset_top = 208.0
-offset_right = 511.0
-offset_bottom = 248.0
+[node name="InventoryTitleLabel" type="Label" parent="InvBg" unique_id=600000001]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 12.0
+offset_right = 150.0
+offset_bottom = 60.0
+grow_horizontal = 2
 theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
 theme_override_colors/font_shadow_color = Color(0.18, 0.08, 0.02, 0.7)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 28
 text = "Kho Đồ"
 horizontal_alignment = 1
 vertical_alignment = 1
