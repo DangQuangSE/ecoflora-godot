@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cg1jfhacjporg" path="res://assets/icon/bag.png" id="3_oxkr6"]
 [ext_resource type="PackedScene" uid="uid://buserhud001" path="res://scenes/hud/UserHUD.tscn" id="4_userhud"]
 [ext_resource type="Texture2D" uid="uid://den0btskh8bn3" path="res://assets/icon/shop.png" id="5_dui1j"]
+[ext_resource type="Texture2D" path="res://assets/icon/task.png" id="5_task"]
 [ext_resource type="PackedScene" uid="uid://dxepsc0f7572s" path="res://scenes/hud/VitalityBar.tscn" id="5_vbar"]
 [ext_resource type="Texture2D" uid="uid://db55ccf5x01by" path="res://assets/icon/sickle.png" id="6_yixhj"]
 [ext_resource type="PackedScene" uid="uid://shopscene001" path="res://scenes/shop/ShopScene.tscn" id="7_shopscene"]
@@ -103,9 +104,9 @@ script = ExtResource("1_hud")
 
 [node name="VitalityBar" parent="." unique_id=1979910139 instance=ExtResource("5_vbar")]
 offset_left = 8.0
-offset_top = 158.0
+offset_top = 186.0
 offset_right = 80.0
-offset_bottom = 306.0
+offset_bottom = 356.0
 
 [node name="InventoryButton" type="Button" parent="." unique_id=581721140]
 script = ExtResource("9_primary_button_script")
@@ -207,26 +208,13 @@ script = ExtResource("9_primary_button_script")
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -94.0
+offset_left = -78.0
 offset_top = 124.0
-offset_right = -14.0
-offset_bottom = 204.0
-flat = true
-text = "Task"
-theme_override_font_sizes/font_size = 12
-
-[node name="ShopButton" type="Button" parent="." unique_id=270074715]
-script = ExtResource("9_primary_button_script")
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -94.0
-offset_top = 216.0
-offset_right = -14.0
-offset_bottom = 296.0
+offset_right = -22.0
+offset_bottom = 180.0
 flat = true
 
-[node name="ShopIcon" type="TextureRect" parent="ShopButton" unique_id=830214295]
+[node name="TaskIcon" type="TextureRect" parent="TaskButton" unique_id=800000003]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -235,6 +223,33 @@ offset_left = 4.0
 offset_top = 4.0
 offset_right = -4.0
 offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("5_task")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ShopButton" type="Button" parent="." unique_id=270074715]
+script = ExtResource("9_primary_button_script")
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -78.0
+offset_top = 196.0
+offset_right = -22.0
+offset_bottom = 252.0
+flat = true
+
+[node name="ShopIcon" type="TextureRect" parent="ShopButton" unique_id=830214295]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = -7.0
+offset_bottom = -7.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -268,18 +283,18 @@ text = "Save"
 [node name="RecallDecoButton" type="Button" parent="." unique_id=700000001]
 script = ExtResource("9_primary_button_script")
 visible = false
-offset_left = 8.0
-offset_top = 236.0
-offset_right = 60.0
-offset_bottom = 288.0
+offset_left = 16.0
+offset_top = 366.0
+offset_right = 72.0
+offset_bottom = 422.0
 flat = true
 
 [node name="RecallIcon" type="TextureRect" parent="RecallDecoButton" unique_id=700000002]
 layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 50.0
-offset_bottom = 50.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 56.0
+offset_bottom = 56.0
 mouse_filter = 2
 texture = ExtResource("8_recall")
 expand_mode = 1

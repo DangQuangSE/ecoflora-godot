@@ -47,6 +47,11 @@ func _ready() -> void:
 				shop_node.texture = load(shop_icon_path)
 	if _task_btn:
 		_task_btn.pressed.connect(_open_tasks)
+		var task_icon_path := "res://assets/icon/task.png"
+		if ResourceLoader.exists(task_icon_path):
+			var task_node := _task_btn.get_node_or_null("TaskIcon") as TextureRect
+			if task_node:
+				task_node.texture = load(task_icon_path)
 	_edit_btn.visible = false
 	_save_btn.visible = false
 	_recall_btn.visible = false
