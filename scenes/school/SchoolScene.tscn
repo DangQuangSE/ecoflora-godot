@@ -32,7 +32,6 @@ region_rect = Rect2(0, 182.6, 500, 151.25)
 
 [node name="Player" parent="." unique_id=1058296739 instance=ExtResource("2_player")]
 position = Vector2(160, 280)
-scale = Vector2(3, 3)
 
 [node name="HUD" parent="." unique_id=629154414 instance=ExtResource("3_hud")]
 visible = false
