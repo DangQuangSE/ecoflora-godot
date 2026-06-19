@@ -14,17 +14,18 @@ Add two admin-only endpoints (`GET /api/admin/daily-tasks`, `PATCH /api/admin/da
 ## Session Notes
 <!-- Updated by cook automatically — do not edit manually -->
 
-**Last active:** 2026-06-19 21:35
+**Last active:** 2026-06-19 22:05
 **Phase in progress:** done
-**Status:** All 3 phases complete. `dotnet build` succeeded for both `Application` and `API` projects (0 errors, 0 warnings). Server startup verified live (port 5285): no duplicate-route exceptions, controller discovered correctly, DB connects and seeds normally. Live curl smoke test (login + GET/PATCH against the new endpoints) was skipped per user choice — privacy hook flagged the login curl command, user opted to rely on build + startup verification instead of allowlisting it.
+**Status:** All 3 phases complete + post-cook amendment. `dotnet build` succeeded for both `Application` and `API` projects (0 errors, 0 warnings). Server startup verified live (port 5285): no duplicate-route exceptions, controller discovered correctly, DB connects and seeds normally. Live curl smoke test (login + GET/PATCH) was skipped per user choice (privacy hook flagged login curl). First commit (reward-only) made locally, not pushed. Then user requested scope amendment: also allow editing `Target` — see spec.md "Amendment (2026-06-19)". Implemented: route renamed `/reward` → `/config`, DTO/validator/service method renamed accordingly, `Target > 0` validation added. Build re-verified green. **User said not to commit this round** — changes are implemented but left uncommitted.
 
 ### Decisions made this session
-- Verified `IGenericRepository.GetByIdAsync(Guid)` signature matches the `_unitOfWork.Items.GetByIdAsync(request.RewardItemId.Value)` call used for item-existence validation in `UpdateTaskRewardAsync`.
+- Verified `IGenericRepository.GetByIdAsync(Guid)` signature matches the `_unitOfWork.Items.GetByIdAsync(request.RewardItemId.Value)` call used for item-existence validation.
 - `AdminDailyTasksController` mirrors `AdminRewardTierController` exactly: `[Authorize(Roles = $"{Constant.Roles.Admin},{Constant.Roles.SuperAdmin}")]`, single-service constructor injection, `StatusCode(error.Code ?? 400, error)` pattern.
-- Skipped live HTTP smoke test (login JWT + curl against GET/PATCH) at user's request after a privacy hook blocked the login command; build success + clean server startup log stand in as verification instead.
+- Skipped live HTTP smoke test (login JWT + curl) after a privacy hook blocked the login command; build success + clean server startup log stand in as verification.
+- Target moved from immutable "content" to editable "config" per explicit user request after reviewing the live daily-task UI — renamed endpoint to `/config` (recommended option, since no FE is built against `/reward` yet) rather than bolting Target onto the old route name or adding a second endpoint.
 
 ### Next immediate action
-Run deferred `simplify` skill on session diff, then Step 5 Finalize (git-manager).
+Awaiting user's go-ahead to commit the `/config` amendment (currently uncommitted in `D:\GitHub\eco-backend`). First commit (reward-only) is already made locally on `feat/maintain-v1`, not yet pushed.
 
 ## Research Summary
 N/A (Fast mode). Pattern mirrored directly from `AdminRewardTierController.cs` + `RewardTierConfigService.cs` (read in full before writing phases): controller takes one `_service` interface, GET returns `ApiResponse<List<T>>` directly via `Ok(...)`, PATCH returns `(ApiResponse<T>? Success, ApiError? Error)` tuple with `StatusCode(error.Code ?? 400, error)` on failure. `IDailyTaskRepository` currently only exposes `GetActiveTaskDefinitionsAsync` (filters `IsActive && !IsDeleted`) and `GetDefinitionByIdAsync` (same filter) — both wrong for admin use since they hide inactive rows by design, confirming the need for a new unfiltered method rather than reusing existing ones. `IUnitOfWork.Items` (`IItemRepository : IGenericRepository<Item>`) already exposes `GetByIdAsync(Guid id)` — sufficient for the existence check, no new repository method needed there. `ClaimTaskAsync` in `DailyTaskService.cs:54-110` reads `taskDef.RewardCurrency`/`RewardXP`/`RewardItemId`/`RewardItemQty` live from the definition at claim time (not a snapshot), which satisfies FR-05/Success Criteria #4 automatically — no code change needed for that requirement.

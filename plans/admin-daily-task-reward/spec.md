@@ -60,10 +60,21 @@ Daily/weekly task rewards (`RewardCurrency`, `RewardXP`, `RewardItemId`, `Reward
 
 ## Out of Scope
 
-- Editing title, description, type, actionSubtype, target, or cycle — these are owned by the Godot client contract (`domain/DailyTask.gd`, `TASK_IDS`).
+- Editing title, description, type, actionSubtype, or cycle — these are owned by the Godot client contract (`domain/DailyTask.gd`, `TASK_IDS`).
 - Admin FE UI — built by another partner; this spec covers backend API only.
 - Audit/history of reward changes.
 - Creating or deleting task definitions via API.
+
+---
+
+## Amendment (2026-06-19)
+
+`Target` (e.g. "water N times", "online N minutes") moved from Out of Scope to editable: admin can now tune it via the same endpoint as the 4 reward fields, since the task's *quantity* is a tunable parameter like reward, not Godot-client-owned content like title/description/type/cycle.
+
+- Endpoint renamed: `PATCH /api/admin/daily-tasks/{id}/reward` → `PATCH /api/admin/daily-tasks/{id}/config` (no FE built against the old route yet, so renaming is free).
+- `UpdateDailyTaskRewardRequest` renamed to `UpdateDailyTaskConfigRequest`, now also carries `Target`.
+- Validation: `Target > 0` (new `UpdateDailyTaskConfigValidator` rule), enforced via the same FluentValidation auto-validation pipeline as `RewardCurrency`/`RewardXP`.
+- No behavior change needed for in-flight progress: `IncrementProgressAsync` and `ClaimTaskAsync` already read `task.Target` live from `DailyTaskDefinition` (never a snapshot), so a Target edit takes effect immediately for any unclaimed `UserTaskProgress`, same as reward edits (FR-05).
 
 ---
 
