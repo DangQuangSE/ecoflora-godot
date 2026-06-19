@@ -7,15 +7,16 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _inv_btn: Button           = $InventoryButton
 @onready var _inv_icon: TextureRect     = $InventoryButton/Icon
 @onready var _inv_panel: InventoryPanelNode = $InventoryPanel
+@onready var _tips_panel: TipsPanelNode     = $TipsPanel
 @onready var _shop_panel: ShopScene         = $ShopScene
-@onready var _task_panel: Control           = $DailyTaskPanel
+@onready var _task_panel: DailyTaskPanel    = $DailyTaskPanel
+@onready var _vitality_bar: VitalityBar     = $VitalityBar
 @onready var _selected_slot: Panel      = $SelectedItemSlot
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
 @onready var _harvest_btn: Button       = $HarvestButton
 @onready var _shop_btn: Button          = $ShopButton
 @onready var _task_btn: Button          = $TaskButton
-@onready var _vitality_bar: Control     = $VitalityBar
 @onready var _edit_btn: Button          = $EditModeButton
 @onready var _save_btn: Button          = $SaveButton
 @onready var _recall_btn: Button        = $RecallDecoButton
@@ -51,6 +52,8 @@ func _ready() -> void:
 	_recall_btn.visible = false
 	_recall_btn.pressed.connect(_on_recall_pressed)
 	DecoManager.deco_recalled.connect(func(_id: String) -> void: hide_recall_btn())
+	if _vitality_bar:
+		_vitality_bar.tips_pressed.connect(_toggle_tips)
 	_inv_panel.visibility_changed.connect(_sync_modal_chrome)
 	_shop_panel.visibility_changed.connect(_sync_modal_chrome)
 	_sync_modal_chrome()
@@ -67,9 +70,46 @@ func _toggle_inventory() -> void:
 		else:
 			_inv_panel.hide()
 	else:
-		if _shop_panel != null and _shop_panel.visible:
-			_shop_panel.hide()
+		_hide_tips_if_visible()
+		_hide_shop_if_visible()
 		_inv_panel.show_panel()
+
+
+func _toggle_tips() -> void:
+	if _tips_panel == null:
+		return
+	if _tips_panel.visible:
+		if _tips_panel.has_method("hide_panel"):
+			_tips_panel.call("hide_panel")
+		else:
+			_tips_panel.hide()
+	else:
+		_hide_inventory_if_visible()
+		_hide_shop_if_visible()
+		_tips_panel.show_panel()
+
+
+func _hide_tips_if_visible() -> void:
+	if _tips_panel == null or not _tips_panel.visible:
+		return
+	if _tips_panel.has_method("hide_panel"):
+		_tips_panel.call("hide_panel")
+	else:
+		_tips_panel.hide()
+
+
+func _hide_inventory_if_visible() -> void:
+	if _inv_panel == null or not _inv_panel.visible:
+		return
+	if _inv_panel.has_method("hide_panel"):
+		_inv_panel.call("hide_panel")
+	else:
+		_inv_panel.hide()
+
+
+func _hide_shop_if_visible() -> void:
+	if _shop_panel != null and _shop_panel.visible:
+		_shop_panel.hide()
 
 func _on_item_selected(item: InventoryItem) -> void:
 	if item != null:
@@ -89,8 +129,8 @@ func _on_harvest_mode_changed(active: bool) -> void:
 func open_shop(tab_idx: int = 0) -> void:
 	if _shop_panel == null:
 		return
-	if _inv_panel != null and _inv_panel.visible:
-		_inv_panel.hide()
+	_hide_tips_if_visible()
+	_hide_inventory_if_visible()
 	_shop_panel.show_panel(tab_idx)
 
 func _open_shop() -> void:
@@ -99,7 +139,7 @@ func _open_shop() -> void:
 func _open_tasks() -> void:
 	if _task_panel == null:
 		return
-	_task_panel.call("show_panel", 0)
+	_task_panel.show_panel(0)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _recall_btn.visible:
