@@ -39,8 +39,8 @@ TipsPanel (Control)
     └── VBox
         ├── TitleBar → TitleLabel "Mẹo Chơi" + CloseBtn
         ├── Divider
-        ├── Tabs (HBoxContainer)    ← tab tạo động từ TipCatalog
-        └── Scroll → TipsList (VBoxContainer)
+        ├── Tabs (HBoxContainer)    ← mỗi tip.title = một tab
+        └── Scroll → TipsList       ← title + một đoạn content
 ```
 
 ---
@@ -49,13 +49,15 @@ TipsPanel (Control)
 
 | File | Ghi chú |
 |------|---------|
-| `domain/GameTip.gd` | Model mỗi mẹo — **đã gán class_name** |
-| `domain/TipCatalog.gd` | Danh sách tips theo chủ đề — **không cần Inspector** |
-| `scenes/tips/TipsPanel.gd` | Đã gán trên TipsPanel root |
-| `scenes/hud/VitalityBar.gd` | Đã gán — có signal `tips_pressed` |
-| `scenes/hud/HUD.gd` | Đã wire `_toggle_tips()` |
+| `domain/GameTip.gd` | Model mỗi tip — `title` + `content` |
+| `domain/TipCatalog.gd` | Offline fallback khi BE lỗi |
+| `services/TipService.gd` | Parse `GET /api/gametips` |
+| `autoloads/TipManager.gd` | Fetch + cache tips |
+| `scenes/tips/TipsPanel.gd` | Đọc từ `TipManager` |
+| `scenes/hud/VitalityBar.gd` | Signal `tips_pressed` |
+| `scenes/hud/HUD.gd` | Wire `_toggle_tips()` |
 
-**Không cần** tạo Resource `.tres` mới — nội dung tips nằm trong `TipCatalog.gd`.
+**Nội dung tips** lấy từ backend — admin sửa qua Swagger (`docs/tips-from-db/admin-api.md` trên eco-backend).
 
 ---
 
@@ -94,20 +96,19 @@ TipsPanel (Control)
 
 - [ ] Chạy game → icon sách hiển thị **dưới tim**, trên countdown
 - [ ] Bấm icon sách → panel **"Mẹo Chơi"** mở, tab **"Hệ Sinh Thái"** active
-- [ ] Cuộn xem ≥5 mẹo về synergy zone
+- [ ] Nội dung tab là **một đoạn văn** (không còn nhiều tiểu mục)
 - [ ] Bấm ✕ hoặc chạm vùng tối → panel đóng
 - [ ] Bấm lại icon sách khi panel mở → panel đóng (toggle)
 - [ ] Mở kho đồ → mở mẹo chơi → kho đồ tự đóng
 - [ ] Mở cửa hàng → mở mẹo chơi → shop tự đóng
 - [ ] Bấm tim khi vitality sẵn sàng → vẫn claim được; bấm icon sách không claim
 
-### Test tự động (domain)
+### Test tự động
 
 ```bash
 godot --headless --script res://tools/test_tip_catalog.gd
+godot --headless --script res://tools/test_tip_service.gd
 ```
-
-Kết quả mong đợi: `TipCatalog tests: all passed`
 
 ---
 
@@ -123,10 +124,8 @@ Kết quả mong đợi: `TipCatalog tests: all passed`
 
 ---
 
-## 7. Thêm chủ đề / mẹo mới sau này
+## 7. Thêm tip mới (admin)
 
-1. Mở `domain/TipCatalog.gd`
-2. Thêm entry vào `get_categories()` (vd. `{"id": "harvest", "label": "Thu Hoạch"}`)
-3. Thêm case trong `get_tips_for_category()` hoặc hàm riêng
-4. Thêm `GameTip.new(...)` với `id`, `category_id`, `title`, `body`
-5. Chạy lại game — tab mới xuất hiện tự động
+1. Swagger → `POST /api/gametips` (xem `eco-backend/docs/tips-from-db/admin-api.md`)
+2. Body: `title`, `content`, `sortOrder`
+3. Restart game hoặc đăng nhập lại → tab mới xuất hiện

@@ -28,18 +28,8 @@ func _assert_true(condition: bool, label: String) -> void:
 
 
 func _test_tip_catalog() -> void:
-	var categories := TipCatalogScript.get_categories()
-	_assert_eq(categories.size(), 1, "category count")
-	_assert_eq(str(categories[0].get("id", "")), TipCatalogScript.CATEGORY_SYNERGY, "category id")
-
-	var tips := TipCatalogScript.get_tips_for_category(TipCatalogScript.CATEGORY_SYNERGY)
-	_assert_true(tips.size() >= 4, "synergy tip count")
-
-	for tip in tips:
-		_assert_true(not tip.id.is_empty(), "tip id")
-		_assert_true(not tip.title.is_empty(), "tip title")
-		_assert_true(not tip.body.is_empty(), "tip body")
-		_assert_eq(tip.category_id, TipCatalogScript.CATEGORY_SYNERGY, "tip category")
-
-	var empty := TipCatalogScript.get_tips_for_category("unknown")
-	_assert_eq(empty.size(), 0, "unknown category empty")
+	var tips := TipCatalogScript.build_offline_fallback()
+	_assert_eq(tips.size(), 1, "fallback tip count")
+	_assert_true(not tips[0].title.is_empty(), "tip title")
+	_assert_true(not tips[0].content.is_empty(), "tip content")
+	_assert_eq(tips[0].title, "Hệ Sinh Thái", "synergy title")
