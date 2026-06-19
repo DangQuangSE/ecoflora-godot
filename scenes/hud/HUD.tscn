@@ -98,6 +98,14 @@ script = ExtResource("1_hud")
 
 [node name="DynamicJoystick" parent="." unique_id=1996316913 instance=ExtResource("2_joystick")]
 
+[node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]
+
+[node name="VitalityBar" parent="." unique_id=1979910139 instance=ExtResource("5_vbar")]
+offset_left = 17.0
+offset_top = 168.0
+offset_right = 73.0
+offset_bottom = 244.0
+
 [node name="InventoryButton" type="Button" parent="." unique_id=581721140]
 script = ExtResource("9_primary_button_script")
 anchors_preset = 1
@@ -166,12 +174,6 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_deselect")
 theme_override_styles/hover = SubResource("StyleBoxFlat_deselect")
 text = "✕"
 
-[node name="InventoryPanel" parent="." unique_id=1692340523 instance=ExtResource("3_invpanel")]
-layout_mode = 3
-anchors_preset = 15
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="HarvestButton" type="Button" parent="." unique_id=407304471]
 script = ExtResource("9_primary_button_script")
 anchors_preset = 1
@@ -239,20 +241,6 @@ texture = ExtResource("5_dui1j")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="VitalityBar" parent="." unique_id=1979910139 instance=ExtResource("5_vbar")]
-offset_left = 17.0
-offset_top = 168.0
-offset_right = 73.0
-offset_bottom = 244.0
-
-[node name="ShopScene" parent="." unique_id=500000100 instance=ExtResource("7_shopscene")]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="EditModeButton" type="Button" parent="." unique_id=600000001]
 visible = false
 offset_left = 10.0
@@ -296,7 +284,13 @@ texture = ExtResource("8_recall")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DailyTaskPanel" parent="." unique_id=800000002 instance=ExtResource("10_taskpanel")]
+[node name="InventoryPanel" parent="." unique_id=1692340523 instance=ExtResource("3_invpanel")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ShopScene" parent="." unique_id=500000100 instance=ExtResource("7_shopscene")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -304,4 +298,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]
+[node name="DailyTaskPanel" parent="." unique_id=800000002 instance=ExtResource("10_taskpanel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

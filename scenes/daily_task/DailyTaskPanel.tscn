@@ -3,12 +3,12 @@
 [ext_resource type="Script" path="res://scenes/daily_task/DailyTaskPanel.gd" id="1_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.97, 0.95, 0.88, 1)
+bg_color = Color(0.98, 0.96, 0.91, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 3
-border_color = Color(0.60, 0.46, 0.22, 1)
+border_color = Color(0.65, 0.48, 0.25, 1)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
@@ -91,7 +91,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.50)
+color = Color(0, 0, 0, 0.65)
 mouse_filter = 0
 
 [node name="Panel" type="PanelContainer" parent="."]
@@ -100,10 +100,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -340.0
-offset_top = -445.0
-offset_right = 340.0
-offset_bottom = 445.0
+offset_left = -280.0
+offset_top = -340.0
+offset_right = 280.0
+offset_bottom = 340.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
@@ -135,35 +135,61 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_close_btn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_close_btn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_close_hover")
 
-[node name="TabRow" type="HBoxContainer" parent="Panel/VBox"]
+[node name="TabMargin" type="MarginContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 6
+
+[node name="TabRow" type="HBoxContainer" parent="Panel/VBox/TabMargin"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="DailyBtn" type="Button" parent="Panel/VBox/TabRow"]
+[node name="DailyBtn" type="Button" parent="Panel/VBox/TabMargin/TabRow"]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
 text = "Hằng ngày"
-theme_override_font_sizes/font_size = 14
-theme_override_styles/normal = SubResource("StyleBoxFlat_tab_active")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
-theme_override_styles/hover = SubResource("StyleBoxFlat_tab_active")
-theme_override_styles/focus = SubResource("StyleBoxFlat_tab_active")
-
-[node name="WeeklyBtn" type="Button" parent="Panel/VBox/TabRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Hằng tuần"
+theme_override_colors/font_color = Color(0.35, 0.25, 0.15, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.25, 0.15, 0.05, 1)
+theme_override_colors/font_focus_color = Color(0.35, 0.25, 0.15, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
 theme_override_styles/hover = SubResource("StyleBoxFlat_tab_normal")
 theme_override_styles/focus = SubResource("StyleBoxFlat_tab_normal")
 
-[node name="Scroll" type="ScrollContainer" parent="Panel/VBox"]
+[node name="WeeklyBtn" type="Button" parent="Panel/VBox/TabMargin/TabRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Hằng tuần"
+theme_override_colors/font_color = Color(0.35, 0.25, 0.15, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.25, 0.15, 0.05, 1)
+theme_override_colors/font_focus_color = Color(0.35, 0.25, 0.15, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_tab_normal")
+
+[node name="ScrollMargin" type="MarginContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Scroll" type="ScrollContainer" parent="Panel/VBox/ScrollMargin"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="CardList" type="VBoxContainer" parent="Panel/VBox/Scroll"]
+[node name="CardList" type="VBoxContainer" parent="Panel/VBox/ScrollMargin/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6

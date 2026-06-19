@@ -3,9 +3,9 @@ extends Control
 
 const _TaskCardScene := preload("res://scenes/daily_task/TaskCard.tscn")
 
-@onready var _card_list:  VBoxContainer = $Panel/VBox/Scroll/CardList
-@onready var _daily_btn:  Button        = $Panel/VBox/TabRow/DailyBtn
-@onready var _weekly_btn: Button        = $Panel/VBox/TabRow/WeeklyBtn
+@onready var _card_list:  VBoxContainer = $Panel/VBox/ScrollMargin/Scroll/CardList
+@onready var _daily_btn:  Button        = $Panel/VBox/TabMargin/TabRow/DailyBtn
+@onready var _weekly_btn: Button        = $Panel/VBox/TabMargin/TabRow/WeeklyBtn
 @onready var _close_btn:  Button        = $Panel/VBox/Header/HeaderRow/CloseBtn
 
 var _current_tab: int       = DailyTask.DAILY
@@ -29,6 +29,8 @@ func _on_tasks_updated(_tasks: Array, _progress: Array) -> void:
 
 func _rebuild_list(cycle: int) -> void:
 	_current_tab = cycle
+	_daily_btn.button_pressed = (cycle == DailyTask.DAILY)
+	_weekly_btn.button_pressed = (cycle == DailyTask.WEEKLY)
 	_card_map    = {}
 	for child in _card_list.get_children():
 		child.queue_free()
