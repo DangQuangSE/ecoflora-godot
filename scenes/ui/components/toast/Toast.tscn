@@ -1,7 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene format=3 uid="uid://du0i1n6jxyix1"]
 
-[ext_resource type="Script" path="res://scenes/ui/components/toast/Toast.gd" id="1_script"]
-[ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="2_global_theme"]
+[ext_resource type="Script" uid="uid://cyyvjjk5yh22m" path="res://scenes/ui/components/toast/Toast.gd" id="1_script"]
+[ext_resource type="Theme" uid="uid://va43502fvf6a" path="res://themes/GlobalTheme.tres" id="2_global_theme"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_toast"]
 content_margin_left = 22.0
@@ -19,7 +19,7 @@ corner_radius_top_right = 12
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
 
-[node name="Toast" type="Control"]
+[node name="Toast" type="Control" unique_id=757832521]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,7 +30,7 @@ mouse_filter = 2
 theme = ExtResource("2_global_theme")
 script = ExtResource("1_script")
 
-[node name="ToastBox" type="PanelContainer" parent="."]
+[node name="ToastBox" type="PanelContainer" parent="." unique_id=1323938776]
 custom_minimum_size = Vector2(460, 52)
 layout_mode = 1
 anchors_preset = 5
@@ -43,10 +43,10 @@ offset_bottom = 160.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_toast")
 
-[node name="Content" type="MarginContainer" parent="ToastBox"]
+[node name="Content" type="MarginContainer" parent="ToastBox" unique_id=1822573685]
 layout_mode = 2
 
-[node name="MessageLabel" type="Label" parent="ToastBox/Content"]
+[node name="MessageLabel" type="Label" parent="ToastBox/Content" unique_id=143104657]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.31, 0.19, 0.03, 1)
