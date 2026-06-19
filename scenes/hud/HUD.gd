@@ -20,6 +20,9 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _recall_btn: Button        = $RecallDecoButton
 
 var _recall_placement_id: String = ""
+var _modal_open := false
+var _edit_was_visible := false
+var _save_was_visible := false
 
 func _ready() -> void:
 	_joystick.direction_changed.connect(_on_joystick_direction)
@@ -47,6 +50,9 @@ func _ready() -> void:
 	DecoManager.deco_recalled.connect(func(_id: String) -> void: hide_recall_btn())
 	if _vitality_bar:
 		_vitality_bar.tips_pressed.connect(_toggle_tips)
+	_inv_panel.visibility_changed.connect(_sync_modal_chrome)
+	_shop_panel.visibility_changed.connect(_sync_modal_chrome)
+	_sync_modal_chrome()
 
 func _on_joystick_direction(dir: Vector2) -> void:
 	joystick_direction_changed.emit(dir)
@@ -61,6 +67,7 @@ func _toggle_inventory() -> void:
 			_inv_panel.hide()
 	else:
 		_hide_tips_if_visible()
+		_hide_shop_if_visible()
 		_inv_panel.call("show_panel")
 
 
@@ -119,6 +126,7 @@ func open_shop(tab_idx: int = 0) -> void:
 	if _shop_panel == null:
 		return
 	_hide_tips_if_visible()
+	_hide_inventory_if_visible()
 	_shop_panel.call("show_panel", tab_idx)
 
 func _open_shop() -> void:
@@ -140,7 +148,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func show_recall_btn(placement_id: String) -> void:
 	_recall_placement_id = placement_id
-	_recall_btn.visible = true
+	_recall_btn.visible = not _modal_open
 
 func hide_recall_btn() -> void:
 	_recall_placement_id = ""
@@ -152,3 +160,29 @@ func _on_recall_pressed() -> void:
 	var pid := _recall_placement_id
 	hide_recall_btn()
 	DecoManager.recall_deco_async(pid)
+
+func _sync_modal_chrome() -> void:
+	var next_modal_open := (_inv_panel != null and _inv_panel.visible) or (_shop_panel != null and _shop_panel.visible)
+	if next_modal_open and not _modal_open:
+		_edit_was_visible = _edit_btn.visible
+		_save_was_visible = _save_btn.visible
+	_modal_open = next_modal_open
+
+	_joystick.visible = not _modal_open
+	_inv_btn.visible = not _modal_open
+	_harvest_btn.visible = not _modal_open
+	if _shop_btn:
+		_shop_btn.visible = not _modal_open
+	if _vitality_bar:
+		_vitality_bar.visible = not _modal_open
+
+	if _modal_open:
+		_edit_btn.visible = false
+		_save_btn.visible = false
+		_selected_slot.visible = false
+		_recall_btn.visible = false
+	else:
+		_edit_btn.visible = _edit_was_visible
+		_save_btn.visible = _save_was_visible
+		_selected_slot.visible = InventoryManager.get_selected_item() != null
+		_recall_btn.visible = not _recall_placement_id.is_empty()

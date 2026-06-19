@@ -1,9 +1,8 @@
-[gd_scene format=3 uid="uid://dxmrhohvi0aii"]
+[gd_scene load_steps=6 format=3 uid="uid://dxmrhohvi0aii"]
 
 [ext_resource type="Script" uid="uid://ca6rdl1vyffjq" path="res://scenes/auth/LoginScene.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://i77c84g73osi" path="res://assets/background/login/login_bg.png" id="2_loginbg"]
 [ext_resource type="Texture2D" uid="uid://bep46xeiy8wdd" path="res://assets/logo/logo.png" id="3_hgf62"]
-[ext_resource type="Texture2D" uid="uid://ccsrm1ycfhdof" path="res://assets/frame/login_frame.png" id="5_login_frame"]
 [ext_resource type="PackedScene" path="res://scenes/auth/components/AuthInput.tscn" id="7_auth_input"]
 [ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="8_global_theme"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="9_primary_button"]
@@ -31,54 +30,48 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Logo" type="Sprite2D" parent="." unique_id=1382780961]
-position = Vector2(361, 188)
-scale = Vector2(0.165, 0.165)
+position = Vector2(360, 170)
+scale = Vector2(0.23, 0.23)
 texture = ExtResource("3_hgf62")
 region_enabled = true
 region_rect = Rect2(0, 388.16245, 1920, 1119.212)
 
-[node name="LoginFrame" type="Control" parent="." unique_id=2114785155]
+[node name="LoginFrame" type="PanelContainer" parent="." unique_id=2114785155]
+custom_minimum_size = Vector2(520, 0)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -220.0
-offset_right = 240.0
-offset_bottom = 220.0
+offset_left = -260.0
+offset_top = -135.0
+offset_right = 260.0
+offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-
-[node name="FrameBg" type="TextureRect" parent="LoginFrame" unique_id=788663391]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("5_login_frame")
-expand_mode = 1
-stretch_mode = 5
 
 [node name="FormArea" type="MarginContainer" parent="LoginFrame" unique_id=690929776]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 90
-theme_override_constants/margin_top = 120
-theme_override_constants/margin_right = 90
-theme_override_constants/margin_bottom = 30
+layout_mode = 2
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 36
+theme_override_constants/margin_bottom = 28
 
 [node name="FormContent" type="VBoxContainer" parent="LoginFrame/FormArea" unique_id=1270553234]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="LoginFrame/FormArea/FormContent"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.27, 0.10, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.96, 0.82, 0.85)
+theme_override_constants/shadow_offset_x = 0
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 30
+text = "Đăng nhập"
+horizontal_alignment = 1
 
 [node name="UsernameInput" parent="LoginFrame/FormArea/FormContent" instance=ExtResource("7_auth_input")]
 placeholder_text = "Tài khoản hoặc Email"

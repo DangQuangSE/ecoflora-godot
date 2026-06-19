@@ -295,60 +295,45 @@ func _get_synergy_bonus(plot_id: String) -> int:
 
 func water(plot_id: String, ref_id: String = "") -> void:
 	if use_mock:
-		const WATER_XP := 20
-		var plot: Plot = _find_plot(plot_id)
-		if plot == null or not plot.is_occupied or plot.is_pending_sync:
-			return
-		var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
-		if template == null:
-			return
-		plot.is_pending_sync = true
-		var bonus := _get_synergy_bonus(plot_id)
-		var total := WATER_XP + bonus
-		plot.current_plant.current_xp += total
-		plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
-		plant_xp_gained.emit(plot_id, total, bonus)
-		plots_updated.emit(_plots)
-		await get_tree().process_frame
-		plot.is_pending_sync = false
-		plots_updated.emit(_plots)
+		await _mock_care(plot_id, 20)
 		return
 	await _care_action(plot_id, 0, ref_id)
 
 func fertilize(plot_id: String, ref_id: String = "") -> void:
 	if use_mock:
-		const FERTILIZE_XP := 50
-		var plot: Plot = _find_plot(plot_id)
-		if plot == null or not plot.is_occupied or plot.is_pending_sync:
-			return
-		var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
-		if template == null:
-			return
-		plot.is_pending_sync = true
-		var bonus := _get_synergy_bonus(plot_id)
-		var total := FERTILIZE_XP + bonus
-		plot.current_plant.current_xp += total
-		plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
-		plant_xp_gained.emit(plot_id, total, bonus)
-		plots_updated.emit(_plots)
-		await get_tree().process_frame
-		plot.is_pending_sync = false
-		plots_updated.emit(_plots)
+		await _mock_care(plot_id, 50)
 		return
 	await _care_action(plot_id, 1, ref_id)
 
 func pesticide(plot_id: String, ref_id: String = "") -> void:
 	if use_mock:
-		await fertilize(plot_id, ref_id)  # mock: same XP as fertilize
+		await _mock_care(plot_id, 50)
 		return
 	await _care_action(plot_id, 2, ref_id)
 
-func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
+func _mock_care(plot_id: String, base_xp: int) -> void:
 	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
 		return
 	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
 	if template == null:
+		return
+	plot.is_pending_sync = true
+	var bonus := _get_synergy_bonus(plot_id)
+	var total := base_xp + bonus
+	plot.current_plant.current_xp += total
+	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
+	plant_xp_gained.emit(plot_id, total, bonus)
+	plots_updated.emit(_plots)
+	await get_tree().process_frame
+	plot.is_pending_sync = false
+	plots_updated.emit(_plots)
+
+func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
+	var plot: Plot = _find_plot(plot_id)
+	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+		return
+	if _templates.get(plot.current_plant.flower_template_id) == null:
 		return
 	if ref_id.is_empty() or not InventoryManager.has_item(ref_id):
 		return
@@ -367,68 +352,74 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 			0: base_xp = 20
 			1: base_xp = 50
 			2: base_xp = 50
-
 	var bonus := _get_synergy_bonus(plot_id)
-	var xp_delta: int = base_xp + bonus
 
-	plot.is_pending_sync = true
-	InventoryManager.consume_item(ref_id)
-	plot.current_plant.current_xp += xp_delta
-	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
-	if action_value == 0:
-		plot.current_plant.last_watered_at = int(Time.get_unix_time_from_system())
-	plant_xp_gained.emit(plot_id, xp_delta, bonus)
-	plots_updated.emit(_plots)
+	_care_apply_optimistic(plot, ref_id, base_xp, bonus, action_value)
 
 	var url := UserManager.base_url + "/api/garden/plots/%s/care" % plot_id
 	var headers := PackedStringArray(["Content-Type: application/json", UserManager.get_auth_header()])
-	var body := JSON.stringify({ "action": action_value })
 	var http := HTTPRequest.new()
 	http.timeout = 15.0
 	add_child(http)
-	var err := http.request(url, headers, HTTPClient.METHOD_POST, body)
+	var err := http.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify({"action": action_value}))
 	if err != OK:
 		http.queue_free()
 		_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
 		return
 	var raw: Variant = await http.request_completed
 	http.queue_free()
-	var status: int       = raw[1]
-	var bytes: PackedByteArray = raw[3]
 
-	if status == 200:
-		var json := JSON.new()
-		var parse_ok := json.parse(bytes.get_string_from_utf8()) == OK
-		var data: Variant = HttpHelper.unwrap_envelope(json.get_data()) if parse_ok else null
-		if data is Dictionary:
-			var updated_plot_dict: Variant = data.get("updatedPlot", null)
-			if updated_plot_dict is Dictionary:
-				var pf_dict: Variant = (updated_plot_dict as Dictionary).get("plantedFlower", null)
-				if pf_dict is Dictionary:
-					var svc := GardenService.new()
-					var auth_flower: PlantedFlower = svc.parse_planted_flower(pf_dict, _templates)
-					if auth_flower != null:
-						plot.current_plant.current_xp    = auth_flower.current_xp
-						plot.current_plant.current_stage = auth_flower.current_stage
-						if action_value == 0 and auth_flower.last_watered_at > 0:
-							plot.current_plant.last_watered_at = auth_flower.last_watered_at
-			var remaining: Variant = data.get("remainingQuantity", null)
-			if remaining != null:
-				InventoryManager.restore_item(snapshot_item_id, int(remaining))
-			var care_user_xp: Variant = data.get("newUserXP", null)
-			var care_user_level: Variant = data.get("newUserLevel", null)
-			if care_user_xp != null and care_user_level != null:
-				UserManager.apply_server_xp(int(care_user_xp), int(care_user_level))
-		else:
-			push_warning("GardenManager._care_action: 200 but envelope malformed  -  rolling back")
-			_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
-	else:
-		if status == 401:
-			UserManager.handle_401()
+	if not _care_apply_server_response(plot, raw, action_value, snapshot_item_id):
 		_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
-
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
+
+func _care_apply_optimistic(plot: Plot, ref_id: String, base_xp: int, bonus: int, action_value: int) -> void:
+	var xp_delta := base_xp + bonus
+	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
+	plot.is_pending_sync = true
+	InventoryManager.consume_item(ref_id)
+	plot.current_plant.current_xp += xp_delta
+	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
+	if action_value == 0:
+		plot.current_plant.last_watered_at = int(Time.get_unix_time_from_system())
+	plant_xp_gained.emit(plot.id, xp_delta, bonus)
+	plots_updated.emit(_plots)
+
+func _care_apply_server_response(plot: Plot, raw: Variant, action_value: int, snapshot_item_id: String) -> bool:
+	var status: int            = raw[1]
+	var bytes: PackedByteArray = raw[3]
+	if status != 200:
+		if status == 401:
+			UserManager.handle_401()
+		return false
+	var json := JSON.new()
+	if json.parse(bytes.get_string_from_utf8()) != OK:
+		push_warning("GardenManager._care_apply_server_response: JSON parse error")
+		return false
+	var data: Variant = HttpHelper.unwrap_envelope(json.get_data())
+	if not data is Dictionary:
+		push_warning("GardenManager._care_apply_server_response: envelope malformed")
+		return false
+	var updated_plot_dict: Variant = (data as Dictionary).get("updatedPlot", null)
+	if updated_plot_dict is Dictionary:
+		var pf_dict: Variant = (updated_plot_dict as Dictionary).get("plantedFlower", null)
+		if pf_dict is Dictionary:
+			var svc := GardenService.new()
+			var auth_flower: PlantedFlower = svc.parse_planted_flower(pf_dict, _templates)
+			if auth_flower != null:
+				plot.current_plant.current_xp    = auth_flower.current_xp
+				plot.current_plant.current_stage = auth_flower.current_stage
+				if action_value == 0 and auth_flower.last_watered_at > 0:
+					plot.current_plant.last_watered_at = auth_flower.last_watered_at
+	var remaining: Variant = (data as Dictionary).get("remainingQuantity", null)
+	if remaining != null:
+		InventoryManager.restore_item(snapshot_item_id, int(remaining))
+	var care_user_xp: Variant    = (data as Dictionary).get("newUserXP", null)
+	var care_user_level: Variant = (data as Dictionary).get("newUserLevel", null)
+	if care_user_xp != null and care_user_level != null:
+		UserManager.apply_server_xp(int(care_user_xp), int(care_user_level))
+	return true
 
 func _care_rollback(plot: Plot, snapshot: Plot, item_id: String, item_qty: int) -> void:
 	plot.current_plant.current_xp    = snapshot.current_plant.current_xp

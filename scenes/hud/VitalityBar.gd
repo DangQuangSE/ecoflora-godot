@@ -94,7 +94,7 @@ func _on_vitality_claimed(reward_type: String, reward_amount: int) -> void:
 
 func _show_reward_popup(reward_type: String, reward_amount: int) -> void:
 	var msg := "Bạn nhận được: %s x%d" % [reward_type, reward_amount]
-	BaseDialog.show_alert(self, "🎉 Chúc mừng!", msg, "Đồng ý")
+	Toast.show_message(self, msg, 2.4)
 
 func _tick() -> void:
 	_refresh_display()

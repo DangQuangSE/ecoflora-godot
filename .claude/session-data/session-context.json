@@ -1,6 +1,6 @@
 {
-  "project": "flow-flora-godot",
-  "branch": "feat/improve-ui",
+  "project": "ecoflora-godot",
+  "branch": "refactor-UI",
   "rules": "YAGNI \u00b7 KISS \u00b7 DRY \u00b7 Brutal honesty \u00b7 Challenge assumptions",
-  "updated_at": "2026-06-10T01:46:10.133198"
+  "updated_at": "2026-06-17T20:40:32.840913"
 }
