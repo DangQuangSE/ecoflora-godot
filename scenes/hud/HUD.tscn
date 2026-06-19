@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://dxepsc0f7572s" path="res://scenes/hud/VitalityBar.tscn" id="5_vbar"]
 [ext_resource type="Texture2D" uid="uid://db55ccf5x01by" path="res://assets/icon/sickle.png" id="6_yixhj"]
 [ext_resource type="PackedScene" uid="uid://shopscene001" path="res://scenes/shop/ShopScene.tscn" id="7_shopscene"]
+[ext_resource type="PackedScene" uid="uid://dailytaskpnl01" path="res://scenes/daily_task/DailyTaskPanel.tscn" id="10_taskpanel"]
 [ext_resource type="Texture2D" uid="uid://bjci1pjvrftfs" path="res://assets/icon/recall_deco.png" id="8_recall"]
 [ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="9_primary_button_script"]
 
@@ -97,6 +98,14 @@ script = ExtResource("1_hud")
 
 [node name="DynamicJoystick" parent="." unique_id=1996316913 instance=ExtResource("2_joystick")]
 
+[node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]
+
+[node name="VitalityBar" parent="." unique_id=1979910139 instance=ExtResource("5_vbar")]
+offset_left = 17.0
+offset_top = 168.0
+offset_right = 73.0
+offset_bottom = 244.0
+
 [node name="InventoryButton" type="Button" parent="." unique_id=581721140]
 script = ExtResource("9_primary_button_script")
 anchors_preset = 1
@@ -165,12 +174,6 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_deselect")
 theme_override_styles/hover = SubResource("StyleBoxFlat_deselect")
 text = "✕"
 
-[node name="InventoryPanel" parent="." unique_id=1692340523 instance=ExtResource("3_invpanel")]
-layout_mode = 3
-anchors_preset = 15
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="HarvestButton" type="Button" parent="." unique_id=407304471]
 script = ExtResource("9_primary_button_script")
 anchors_preset = 1
@@ -198,6 +201,19 @@ texture = ExtResource("6_yixhj")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="TaskButton" type="Button" parent="." unique_id=800000001]
+script = ExtResource("9_primary_button_script")
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -94.0
+offset_top = 124.0
+offset_right = -14.0
+offset_bottom = 204.0
+flat = true
+text = "Task"
+theme_override_font_sizes/font_size = 12
+
 [node name="ShopButton" type="Button" parent="." unique_id=270074715]
 script = ExtResource("9_primary_button_script")
 anchors_preset = 1
@@ -224,20 +240,6 @@ mouse_filter = 2
 texture = ExtResource("5_dui1j")
 expand_mode = 1
 stretch_mode = 5
-
-[node name="VitalityBar" parent="." unique_id=1979910139 instance=ExtResource("5_vbar")]
-offset_left = 17.0
-offset_top = 168.0
-offset_right = 73.0
-offset_bottom = 244.0
-
-[node name="ShopScene" parent="." unique_id=500000100 instance=ExtResource("7_shopscene")]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="EditModeButton" type="Button" parent="." unique_id=600000001]
 visible = false
@@ -282,4 +284,24 @@ texture = ExtResource("8_recall")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="UserHUD" parent="." unique_id=1771307379 instance=ExtResource("4_userhud")]
+[node name="InventoryPanel" parent="." unique_id=1692340523 instance=ExtResource("3_invpanel")]
+layout_mode = 3
+anchors_preset = 15
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ShopScene" parent="." unique_id=500000100 instance=ExtResource("7_shopscene")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DailyTaskPanel" parent="." unique_id=800000002 instance=ExtResource("10_taskpanel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

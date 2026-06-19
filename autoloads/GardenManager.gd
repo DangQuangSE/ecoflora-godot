@@ -3,6 +3,7 @@ extends Node
 signal plots_updated(plots: Array[Plot])
 signal plant_failed(plot_id: String, reason: String)
 signal harvest_completed(plot_id: String, product_id: String)
+signal care_completed(plot_id: String, action_type: int)
 signal plant_xp_gained(plot_id: String, xp_amount: int, synergy_bonus: int)
 signal icons_registered
 
@@ -295,23 +296,23 @@ func _get_synergy_bonus(plot_id: String) -> int:
 
 func water(plot_id: String, ref_id: String = "") -> void:
 	if use_mock:
-		await _mock_care(plot_id, 20)
+		await _mock_care(plot_id, 20, 0)
 		return
 	await _care_action(plot_id, 0, ref_id)
 
 func fertilize(plot_id: String, ref_id: String = "") -> void:
 	if use_mock:
-		await _mock_care(plot_id, 50)
+		await _mock_care(plot_id, 50, 1)
 		return
 	await _care_action(plot_id, 1, ref_id)
 
 func pesticide(plot_id: String, ref_id: String = "") -> void:
 	if use_mock:
-		await _mock_care(plot_id, 50)
+		await _mock_care(plot_id, 50, 2)
 		return
 	await _care_action(plot_id, 2, ref_id)
 
-func _mock_care(plot_id: String, base_xp: int) -> void:
+func _mock_care(plot_id: String, base_xp: int, action_type: int) -> void:
 	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
 		return
@@ -328,6 +329,7 @@ func _mock_care(plot_id: String, base_xp: int) -> void:
 	await get_tree().process_frame
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
+	care_completed.emit(plot_id, action_type)
 
 func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	var plot: Plot = _find_plot(plot_id)
@@ -369,7 +371,9 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	var raw: Variant = await http.request_completed
 	http.queue_free()
 
-	if not _care_apply_server_response(plot, raw, action_value, snapshot_item_id):
+	if _care_apply_server_response(plot, raw, action_value, snapshot_item_id):
+		care_completed.emit(plot_id, action_value)
+	else:
 		_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
@@ -456,6 +460,7 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 	flower.current_xp    = 0
 	flower.current_stage = template.compute_stage_for_xp(0)
 	plot.plant(flower)
+	AudioManager.play_sfx("res://sounds/plant.wav")
 	plots_updated.emit(_plots)
 
 	if use_mock:
@@ -537,6 +542,7 @@ func harvest(plot_id: String) -> void:
 
 	plot.is_pending_sync = true
 	plot.clear()
+	AudioManager.play_sfx("res://sounds/harvest.wav")
 	plots_updated.emit(_plots)
 
 	if use_mock:
