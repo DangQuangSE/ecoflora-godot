@@ -49,6 +49,7 @@ func _try_start(pos: Vector2, index: int) -> void:
 	_active      = true
 	_background.global_position = _origin - _background.size / 2.0
 	_background.visible = true
+	AudioManager.suppress_click_sfx()
 
 func _move_knob(pos: Vector2) -> void:
 	var offset  := pos - _origin
@@ -62,3 +63,4 @@ func _reset() -> void:
 	_background.visible = false
 	_knob.position      = _background.size / 2.0 - _knob.size / 2.0
 	direction_changed.emit(Vector2.ZERO)
+	AudioManager.suppress_click_sfx()

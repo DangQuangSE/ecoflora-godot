@@ -456,6 +456,7 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 	flower.current_xp    = 0
 	flower.current_stage = template.compute_stage_for_xp(0)
 	plot.plant(flower)
+	AudioManager.play_sfx("res://sounds/plant.wav")
 	plots_updated.emit(_plots)
 
 	if use_mock:
@@ -537,6 +538,7 @@ func harvest(plot_id: String) -> void:
 
 	plot.is_pending_sync = true
 	plot.clear()
+	AudioManager.play_sfx("res://sounds/harvest.wav")
 	plots_updated.emit(_plots)
 
 	if use_mock:

@@ -58,7 +58,10 @@ func _toggle_inventory() -> void:
 	if _inv_panel == null:
 		return
 	if _inv_panel.visible:
-		_inv_panel.hide()
+		if _inv_panel.has_method("hide_panel"):
+			_inv_panel.call("hide_panel")
+		else:
+			_inv_panel.hide()
 	else:
 		if _shop_panel != null and _shop_panel.visible:
 			_shop_panel.hide()
@@ -71,7 +74,10 @@ func _on_item_selected(item: InventoryItem) -> void:
 	else:
 		_selected_slot.visible = false
 	if _inv_panel != null and _inv_panel.visible:
-		_inv_panel.hide()
+		if _inv_panel.has_method("hide_panel"):
+			_inv_panel.call("hide_panel")
+		else:
+			_inv_panel.hide()
 
 func _on_harvest_mode_changed(active: bool) -> void:
 	_harvest_btn.modulate = Color(1.0, 0.75, 0.2, 1.0) if active else Color.WHITE

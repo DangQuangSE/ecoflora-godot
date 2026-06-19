@@ -8,6 +8,8 @@ extends CharacterBody2D
 var move_direction: Vector2 = Vector2.ZERO
 var _last_facing: String = "down"
 
+var _footstep_player: AudioStreamPlayer2D
+
 @onready var _sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var _camera: Camera2D = $Camera2D
 
@@ -15,6 +17,14 @@ func _ready() -> void:
 	motion_mode = MOTION_MODE_FLOATING
 	_camera.zoom = Vector2(camera_zoom, camera_zoom)
 	_sprite.scale = Vector2(sprite_scale, sprite_scale)
+
+	_footstep_player = AudioStreamPlayer2D.new()
+	_footstep_player.bus = "Master"
+	add_child(_footstep_player)
+	var stream := AudioManager.get_footstep_stream()
+	if stream:
+		_footstep_player.stream = stream
+		_footstep_player.volume_db = AudioManager.get_footstep_volume_db()
 
 func set_move_direction(dir: Vector2) -> void:
 	move_direction = dir
@@ -32,10 +42,11 @@ func setup_camera_limits(used_rect: Rect2i, tile_size: Vector2i) -> void:
 	_camera.limit_right  = used_rect.end.x * tile_size.x
 	_camera.limit_bottom = used_rect.end.y * tile_size.y
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	velocity = move_direction.normalized() * speed if move_direction.length() > 0.1 else Vector2.ZERO
 	move_and_slide()
 	_update_animation()
+	_handle_footsteps()
 
 func _update_animation() -> void:
 	if move_direction.length() < 0.1:
@@ -56,3 +67,14 @@ func _update_animation() -> void:
 	else:
 		_last_facing = "up"
 		_sprite.play("walk_up")
+
+func _handle_footsteps() -> void:
+	if _footstep_player == null or _footstep_player.stream == null:
+		return
+
+	var is_moving := velocity.length() > 10.0
+	if is_moving:
+		if not _footstep_player.playing:
+			_footstep_player.play()
+	elif _footstep_player.playing:
+		_footstep_player.stop()

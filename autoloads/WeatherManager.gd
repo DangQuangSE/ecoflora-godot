@@ -48,6 +48,7 @@ var _weather_service: WeatherService
 var _overlay: WeatherOverlay
 
 func _ready() -> void:
+	use_mock = UserManager.use_mock
 	_mock_service = MockWeatherService.new()
 	_weather_service = WeatherService.new()
 	_weather_service.endpoint = _resolve_weather_endpoint()
@@ -74,6 +75,11 @@ func _ready() -> void:
 	_on_timer_timeout()
 	_timer.start()
 	weather_changed.emit(_current_state)
+
+	UserManager.login_succeeded.connect(_on_login_succeeded)
+
+func _on_login_succeeded() -> void:
+	_on_timer_timeout()
 
 func _on_mock_settings_changed() -> void:
 	if not _initialized:
@@ -115,7 +121,11 @@ func _on_timer_timeout() -> void:
 		if _weather_service.endpoint.is_empty():
 			push_warning("WeatherManager: weather_endpoint not configured — skipping HTTP request")
 			return
-		var error := _http.request(_weather_service.endpoint)
+		var headers := PackedStringArray([])
+		var auth := UserManager.get_auth_header()
+		if not auth.is_empty():
+			headers.append(auth)
+		var error := _http.request(_weather_service.endpoint, headers)
 		if error != OK:
 			push_warning("WeatherManager: HTTPRequest.request() failed with error %d" % error)
 			return
