@@ -22,7 +22,7 @@ func _ready() -> void:
 	var tip_path := "res://assets/icon/tip_icon_v2.png"
 	if ResourceLoader.exists(tip_path):
 		_tips_icon.texture = load(tip_path)
-	_tips_btn.pressed.connect(func() -> void: tips_pressed.emit())
+	_tips_btn.pressed.connect(_on_tips_pressed)
 
 	UserManager.vitality_ready.connect(_on_vitality_ready)
 	UserManager.vitality_claimed.connect(_on_vitality_claimed)
@@ -37,6 +37,11 @@ func _ready() -> void:
 	visibility_changed.connect(_on_visibility_changed)
 	UserManager.request_vitality_status_async()
 	_refresh_display()
+
+func _on_tips_pressed() -> void:
+	AudioManager.play_sfx("res://sounds/click.wav")
+	AudioManager.suppress_click_sfx()
+	tips_pressed.emit()
 
 func _exit_tree() -> void:
 	if UserManager.vitality_ready.is_connected(_on_vitality_ready):

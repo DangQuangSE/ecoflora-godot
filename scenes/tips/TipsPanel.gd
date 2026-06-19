@@ -84,12 +84,10 @@ func show_panel() -> void:
 		_refresh_content()
 		_update_tab_styles()
 	visible = true
-	AudioManager.play_sfx("res://sounds/item_bag_click.wav")
 
 
 func hide_panel() -> void:
 	if visible:
-		AudioManager.play_sfx("res://sounds/item_bag_click.wav")
 		hide()
 
 
