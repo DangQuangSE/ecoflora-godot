@@ -1,14 +1,15 @@
-[gd_scene format=3 uid="uid://dxepsc0f7572s"]
+[gd_scene load_steps=4 format=3 uid="uid://dxepsc0f7572s"]
 
 [ext_resource type="Script" uid="uid://dtngr00jgi2rq" path="res://scenes/hud/VitalityBar.gd" id="1_vbar"]
 [ext_resource type="Texture2D" uid="uid://ch5yhv8ifp00w" path="res://assets/icon/heart.png" id="2_r3mc7"]
+[ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="3_primary_button"]
 
 [node name="VitalityBar" type="Control" unique_id=1981617108]
-custom_minimum_size = Vector2(56, 76)
+custom_minimum_size = Vector2(72, 148)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 56.0
-offset_bottom = 76.0
+offset_right = 72.0
+offset_bottom = 148.0
 mouse_filter = 2
 script = ExtResource("1_vbar")
 
@@ -37,3 +38,25 @@ theme_override_colors/font_color = Color(0.85, 0.7, 0.7, 1)
 theme_override_font_sizes/font_size = 14
 text = "--:--"
 horizontal_alignment = 1
+
+[node name="TipsButton" type="Button" parent="VBoxContainer"]
+custom_minimum_size = Vector2(72, 72)
+layout_mode = 2
+size_flags_horizontal = 4
+flat = true
+script = ExtResource("3_primary_button")
+
+[node name="Icon" type="TextureRect" parent="VBoxContainer/TipsButton"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
