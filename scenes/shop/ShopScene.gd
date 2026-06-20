@@ -211,11 +211,11 @@ func _render_loading_skeleton() -> void:
 		icon.add_theme_stylebox_override("panel", _style_skeleton_band)
 		box.add_child(icon)
 
-		var name := Panel.new()
-		name.custom_minimum_size = Vector2(118, 16)
-		name.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		name.add_theme_stylebox_override("panel", _style_skeleton_band)
-		box.add_child(name)
+		var name_placeholder := Panel.new()
+		name_placeholder.custom_minimum_size = Vector2(118, 16)
+		name_placeholder.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		name_placeholder.add_theme_stylebox_override("panel", _style_skeleton_band)
+		box.add_child(name_placeholder)
 
 		var price := Panel.new()
 		price.custom_minimum_size = Vector2(58, 14)
@@ -348,6 +348,7 @@ func _on_confirm_purchase() -> void:
 	if result.is_empty():
 		_show_toast("Mua thất bại!", false)
 	else:
+		AudioManager.play_sfx("res://sounds/buy-successfully.wav")
 		_show_toast("Đã mua %s ×%d!" % [item.name, qty], true)
 		await InventoryManager.refresh_async()
 		_refresh_card_affordability()

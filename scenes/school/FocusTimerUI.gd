@@ -98,7 +98,7 @@ func _on_cancel_pressed() -> void:
 	FocusManager.cancel_session()
 
 func _on_tick(remaining_seconds: int) -> void:
-	var mins := remaining_seconds / 60
+	var mins := floori(float(remaining_seconds) / 60.0)
 	var secs := remaining_seconds % 60
 	_countdown_label.text = "%02d:%02d" % [mins, secs]
 
@@ -112,7 +112,8 @@ func _on_session_completed(_minutes: int) -> void:
 
 func _on_reward_received(items: Array) -> void:
 	if items.is_empty():
-		_result_label.text = "Không có phần thưởng\n(cần ít nhất %d phút)" % reward_threshold_minutes
+		_result_label.text = "Hoàn thành"
+		Toast.show_message(self, "Không có phần thưởng. Cần ít nhất %d phút." % reward_threshold_minutes, 2.8)
 		return
 	var lines: PackedStringArray = []
 	for entry: Variant in items:
@@ -121,7 +122,8 @@ func _on_reward_received(items: Array) -> void:
 		var raw_name: String = str((entry as Dictionary).get("itemName", "?"))
 		var display_name: String = _ITEM_NAME_VI.get(raw_name.to_lower(), raw_name)
 		lines.append("%s x%d" % [display_name, int(entry.get("quantity", 0))])
-	_result_label.text = "Phần thưởng:\n" + "\n".join(lines)
+	_result_label.text = "Hoàn thành"
+	Toast.show_message(self, "Phần thưởng: " + ", ".join(lines), 3.0)
 
 func _on_session_paused(pauses_used: int) -> void:
 	_pause_btn.text = "Tiếp tục"
@@ -138,7 +140,8 @@ func _refresh_pause_ui(pauses_used: int) -> void:
 func _on_session_failed() -> void:
 	_running_panel.visible = false
 	_result_panel.visible = true
-	_result_label.text = "-20 XP cho tất cả cây"
+	_result_label.text = "Thất bại"
+	Toast.show_message(self, "-20 XP cho tất cả cây", 3.0)
 
 func _on_return_pressed() -> void:
 	SceneTransition.fade_to("res://scenes/school/SchoolScene.tscn")

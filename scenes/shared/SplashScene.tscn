@@ -1,12 +1,25 @@
 [gd_scene format=3 uid="uid://cb5f3gd7f8w2e"]
 
-[ext_resource type="Script" path="res://scenes/shared/SplashScene.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://eu011sckcrf0" path="res://scenes/shared/SplashScene.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dclo62o517w5t" path="res://assets/background/demo_school.png" id="2_e3s5f"]
 
-[node name="SplashScene" type="Control"]
+[node name="SplashScene" type="Control" unique_id=898588789]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 161.0
+offset_top = 14.0
+offset_right = 161.0
+offset_bottom = 14.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_script")
+
+[node name="DemoSchool" type="Sprite2D" parent="." unique_id=691600550]
+position = Vector2(374, -605)
+texture = ExtResource("2_e3s5f")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=30230911]
+position = Vector2(1395.9971, -510.77435)
+polygon = PackedVector2Array(0.0029296875, -0.22564697, -70.99707, 68.77435, -138.99707, 192.77435, -173.99707, 325.77435, -164.99707, 441.77435, -226.99707, 533.77435, -458.99707, 692.77435, -576.9971, 790.77435, -728.9971, 872.77435, -822.9971, 930.77435, -5.9970703, 927.77435)

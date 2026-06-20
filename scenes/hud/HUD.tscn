@@ -7,12 +7,15 @@
 [ext_resource type="Texture2D" uid="uid://cg1jfhacjporg" path="res://assets/icon/bag.png" id="3_oxkr6"]
 [ext_resource type="PackedScene" uid="uid://buserhud001" path="res://scenes/hud/UserHUD.tscn" id="4_userhud"]
 [ext_resource type="Texture2D" uid="uid://den0btskh8bn3" path="res://assets/icon/shop.png" id="5_dui1j"]
+[ext_resource type="Texture2D" path="res://assets/icon/task.png" id="5_task"]
 [ext_resource type="PackedScene" uid="uid://dxepsc0f7572s" path="res://scenes/hud/VitalityBar.tscn" id="5_vbar"]
 [ext_resource type="Texture2D" uid="uid://db55ccf5x01by" path="res://assets/icon/sickle.png" id="6_yixhj"]
 [ext_resource type="PackedScene" uid="uid://shopscene001" path="res://scenes/shop/ShopScene.tscn" id="7_shopscene"]
 [ext_resource type="PackedScene" uid="uid://dailytaskpnl01" path="res://scenes/daily_task/DailyTaskPanel.tscn" id="10_taskpanel"]
 [ext_resource type="Texture2D" uid="uid://bjci1pjvrftfs" path="res://assets/icon/recall_deco.png" id="8_recall"]
 [ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="9_primary_button_script"]
+[ext_resource type="Texture2D" path="res://assets/icon/setting.png" id="11_setting"]
+[ext_resource type="PackedScene" path="res://scenes/hud/SettingsPanel.tscn" id="12_settingspanel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_invbtn"]
 bg_color = Color(0.1, 0.14, 0.08, 0.88)
@@ -103,19 +106,19 @@ script = ExtResource("1_hud")
 
 [node name="VitalityBar" parent="." unique_id=1979910139 instance=ExtResource("5_vbar")]
 offset_left = 8.0
-offset_top = 158.0
-offset_right = 80.0
-offset_bottom = 306.0
+offset_top = 186.0
+offset_right = 92.0
+offset_bottom = 382.0
 
 [node name="InventoryButton" type="Button" parent="." unique_id=581721140]
 script = ExtResource("9_primary_button_script")
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -92.0
+offset_left = -104.0
 offset_top = 496.0
 offset_right = -16.0
-offset_bottom = 572.0
+offset_bottom = 584.0
 flat = true
 
 [node name="Icon" type="TextureRect" parent="InventoryButton" unique_id=2086235613]
@@ -138,10 +141,10 @@ stretch_mode = 5
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -92.0
+offset_left = -104.0
 offset_top = 404.0
 offset_right = -16.0
-offset_bottom = 480.0
+offset_bottom = 492.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_selected")
 
 [node name="SelectedIcon" type="TextureRect" parent="SelectedItemSlot" unique_id=298424826]
@@ -169,7 +172,7 @@ offset_top = -8.0
 offset_right = 8.0
 offset_bottom = 14.0
 grow_horizontal = 0
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 11
 theme_override_styles/normal = SubResource("StyleBoxFlat_deselect")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_deselect")
 theme_override_styles/hover = SubResource("StyleBoxFlat_deselect")
@@ -180,10 +183,10 @@ script = ExtResource("9_primary_button_script")
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -92.0
+offset_left = -104.0
 offset_top = 312.0
 offset_right = -16.0
-offset_bottom = 388.0
+offset_bottom = 400.0
 flat = true
 
 [node name="Icon" type="TextureRect" parent="HarvestButton" unique_id=2020280548]
@@ -207,26 +210,13 @@ script = ExtResource("9_primary_button_script")
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -94.0
+offset_left = -90.0
 offset_top = 124.0
-offset_right = -14.0
-offset_bottom = 204.0
-flat = true
-text = "Task"
-theme_override_font_sizes/font_size = 12
-
-[node name="ShopButton" type="Button" parent="." unique_id=270074715]
-script = ExtResource("9_primary_button_script")
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -94.0
-offset_top = 216.0
-offset_right = -14.0
-offset_bottom = 296.0
+offset_right = -22.0
+offset_bottom = 192.0
 flat = true
 
-[node name="ShopIcon" type="TextureRect" parent="ShopButton" unique_id=830214295]
+[node name="TaskIcon" type="TextureRect" parent="TaskButton" unique_id=800000003]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -238,6 +228,60 @@ offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+texture = ExtResource("5_task")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SettingsButton" type="Button" parent="." unique_id=810000001]
+script = ExtResource("9_primary_button_script")
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -90.0
+offset_top = 52.0
+offset_right = -22.0
+offset_bottom = 120.0
+flat = true
+
+[node name="SettingsIcon" type="TextureRect" parent="SettingsButton" unique_id=810000002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("11_setting")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ShopButton" type="Button" parent="." unique_id=270074715]
+script = ExtResource("9_primary_button_script")
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -90.0
+offset_top = 196.0
+offset_right = -22.0
+offset_bottom = 264.0
+flat = true
+
+[node name="ShopIcon" type="TextureRect" parent="ShopButton" unique_id=830214295]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = -7.0
+offset_bottom = -7.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 texture = ExtResource("5_dui1j")
 expand_mode = 1
 stretch_mode = 5
@@ -246,8 +290,8 @@ stretch_mode = 5
 visible = false
 offset_left = 10.0
 offset_top = 220.0
-offset_right = 94.0
-offset_bottom = 292.0
+offset_right = 106.0
+offset_bottom = 304.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_editbtn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_editbtn_on")
 theme_override_styles/hover = SubResource("StyleBoxFlat_editbtn")
@@ -258,8 +302,8 @@ text = "Edit"
 visible = false
 offset_left = 10.0
 offset_top = 300.0
-offset_right = 94.0
-offset_bottom = 362.0
+offset_right = 106.0
+offset_bottom = 374.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_savebtn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_savebtn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_savebtn")
@@ -268,18 +312,18 @@ text = "Save"
 [node name="RecallDecoButton" type="Button" parent="." unique_id=700000001]
 script = ExtResource("9_primary_button_script")
 visible = false
-offset_left = 8.0
-offset_top = 236.0
-offset_right = 60.0
-offset_bottom = 288.0
+offset_left = 16.0
+offset_top = 366.0
+offset_right = 84.0
+offset_bottom = 434.0
 flat = true
 
 [node name="RecallIcon" type="TextureRect" parent="RecallDecoButton" unique_id=700000002]
 layout_mode = 0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = 50.0
-offset_bottom = 50.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 68.0
+offset_bottom = 68.0
 mouse_filter = 2
 texture = ExtResource("8_recall")
 expand_mode = 1
@@ -306,6 +350,14 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="DailyTaskPanel" parent="." unique_id=800000002 instance=ExtResource("10_taskpanel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SettingsPanel" parent="." instance=ExtResource("12_settingspanel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

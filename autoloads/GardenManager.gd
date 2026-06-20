@@ -315,10 +315,14 @@ func pesticide(plot_id: String, ref_id: String = "") -> void:
 func _mock_care(plot_id: String, base_xp: int, action_type: int) -> void:
 	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+		_show_toast(_care_action_name(action_type) + " thất bại.")
 		return
 	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
 	if template == null:
+		_show_toast("Không tìm thấy dữ liệu hoa.")
 		return
+	if action_type == 0:
+		AudioManager.play_sfx("res://sounds/watering.wav")
 	plot.is_pending_sync = true
 	var bonus := _get_synergy_bonus(plot_id)
 	var total := base_xp + bonus
@@ -330,19 +334,24 @@ func _mock_care(plot_id: String, base_xp: int, action_type: int) -> void:
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
 	care_completed.emit(plot_id, action_type)
+	_show_toast("%s thành công: +%d XP" % [_care_action_name(action_type), total])
 
 func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+		_show_toast(_care_action_name(action_value) + " thất bại.")
 		return
 	if _templates.get(plot.current_plant.flower_template_id) == null:
+		_show_toast("Không tìm thấy dữ liệu hoa.")
 		return
 	if ref_id.is_empty() or not InventoryManager.has_item(ref_id):
+		_show_toast("Bạn chưa có vật phẩm để %s." % _care_action_verb(action_value))
 		return
 
 	var snapshot_plot := plot.deep_copy()
 	var inv_item: InventoryItem = InventoryManager.get_inventory().find_by_reference_id(ref_id)
 	if inv_item == null:
+		_show_toast("Bạn chưa có vật phẩm để %s." % _care_action_verb(action_value))
 		return
 	var snapshot_item_id: String = inv_item.id
 	var snapshot_item_qty: int   = inv_item.quantity
@@ -367,14 +376,18 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	if err != OK:
 		http.queue_free()
 		_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
+		_show_toast(_care_action_name(action_value) + " thất bại. Vui lòng thử lại.")
 		return
 	var raw: Variant = await http.request_completed
 	http.queue_free()
 
 	if _care_apply_server_response(plot, raw, action_value, snapshot_item_id):
 		care_completed.emit(plot_id, action_value)
+		var xp_delta := base_xp + bonus
+		_show_toast("%s thành công: +%d XP" % [_care_action_name(action_value), xp_delta])
 	else:
 		_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
+		_show_toast(_care_action_name(action_value) + " thất bại. Vui lòng thử lại.")
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
 
@@ -387,6 +400,7 @@ func _care_apply_optimistic(plot: Plot, ref_id: String, base_xp: int, bonus: int
 	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
 	if action_value == 0:
 		plot.current_plant.last_watered_at = int(Time.get_unix_time_from_system())
+		AudioManager.play_sfx("res://sounds/watering.wav")
 	plant_xp_gained.emit(plot.id, xp_delta, bonus)
 	plots_updated.emit(_plots)
 
@@ -434,25 +448,30 @@ func _care_rollback(plot: Plot, snapshot: Plot, item_id: String, item_qty: int) 
 func plant(plot_id: String, flower_template_id: String) -> void:
 	if _plant_in_flight:
 		push_warning("GardenManager.plant: request already in flight, ignoring")
+		_show_toast("Đang trồng hoa, vui lòng chờ.")
 		return
 	var plot: Plot = _find_plot(plot_id)
 	if plot == null or plot.is_occupied or plot.is_pending_sync:
 		plant_failed.emit(plot_id, "not_available")
+		_show_toast("Ô đất này chưa thể trồng hoa.")
 		return
 	var template: FlowerTemplate = _templates.get(flower_template_id)
 	if template == null:
 		plant_failed.emit(plot_id, "unknown_template")
+		_show_toast("Không tìm thấy loại hoa này.")
 		return
 
 	var seed_item: InventoryItem = InventoryManager.get_inventory().find_by_reference_id(flower_template_id)
 	if seed_item == null or seed_item.quantity <= 0:
 		plant_failed.emit(plot_id, "no_seed")
+		_show_toast("Bạn không còn hạt giống này.")
 		return
 	var snapshot_seed_id: String = seed_item.id
 	var snapshot_seed_qty: int   = seed_item.quantity
 
 	if not InventoryManager.consume_seed(flower_template_id):
 		plant_failed.emit(plot_id, "no_seed")
+		_show_toast("Bạn không còn hạt giống này.")
 		return
 
 	plot.is_pending_sync = true
@@ -467,6 +486,7 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 		await get_tree().process_frame
 		plot.is_pending_sync = false
 		plots_updated.emit(_plots)
+		_show_toast("Đã trồng %s." % _flower_display_name(template))
 		return
 
 	var url := UserManager.base_url + "/api/garden/plots/%s/plant" % plot_id
@@ -481,6 +501,7 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 		plot.is_pending_sync = false
 		plant_failed.emit(plot_id, "request_error")
 		plots_updated.emit(_plots)
+		_show_toast("Trồng hoa thất bại. Vui lòng thử lại.")
 		return
 
 	var raw: Variant = await _http_plant.request_completed
@@ -497,12 +518,14 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 				var auth_plot: Plot = svc.parse_plot(data, _templates)
 				if auth_plot != null and auth_plot.is_occupied:
 					plot.plant(auth_plot.current_plant)
+		_show_toast("Đã trồng %s." % _flower_display_name(template))
 	else:
 		if status == 401:
 			UserManager.handle_401()
 		InventoryManager.restore_item(snapshot_seed_id, snapshot_seed_qty)
 		plot.clear()
 		plant_failed.emit(plot_id, "be_error_%d" % status)
+		_show_toast("Trồng hoa thất bại. Vui lòng thử lại.")
 
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
@@ -527,14 +550,18 @@ func debug_add_xp(plot_id: String, xp_amount: int) -> void:
 func harvest(plot_id: String) -> void:
 	if _harvest_in_flight:
 		push_warning("GardenManager.harvest: request already in flight, ignoring")
+		_show_toast("Đang thu hoạch, vui lòng chờ.")
 		return
 	var plot: Plot = _find_plot(plot_id)
 	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+		_show_toast("Chưa thể thu hoạch ô đất này.")
 		return
 	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
 	if template == null:
+		_show_toast("Không tìm thấy dữ liệu hoa.")
 		return
 	if plot.current_plant.current_stage < template.get_max_stage_level():
+		_show_toast("Hoa chưa đủ lớn để thu hoạch.")
 		return
 
 	var snapshot_flower: PlantedFlower = plot.current_plant.deep_copy()
@@ -551,6 +578,7 @@ func harvest(plot_id: String) -> void:
 		await get_tree().process_frame
 		plot.is_pending_sync = false
 		plots_updated.emit(_plots)
+		_show_toast("Thu hoạch thành công: %s." % _flower_display_name(template))
 		return
 
 	var url := UserManager.base_url + "/api/garden/plots/%s/harvest" % plot_id
@@ -562,6 +590,7 @@ func harvest(plot_id: String) -> void:
 		plot.plant(snapshot_flower)
 		plot.is_pending_sync = false
 		plots_updated.emit(_plots)
+		_show_toast("Thu hoạch thất bại. Vui lòng thử lại.")
 		return
 
 	var raw: Variant = await _http_harvest.request_completed
@@ -583,11 +612,13 @@ func harvest(plot_id: String) -> void:
 					UserManager.apply_server_xp(int(new_user_xp), int(new_user_level))
 		InventoryManager.add_harvest_product(product_id)
 		harvest_completed.emit(plot_id, product_id)
+		_show_toast("Thu hoạch thành công: %s." % _flower_display_name(template))
 	else:
 		if status == 401:
 			UserManager.handle_401()
 		plot.plant(snapshot_flower)
 		plots_updated.emit(_plots)
+		_show_toast("Thu hoạch thất bại. Vui lòng thử lại.")
 
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
@@ -620,6 +651,29 @@ func _find_plot(plot_id: String) -> Plot:
 		if p.id == plot_id:
 			return p
 	return null
+
+func _show_toast(message: String, duration: float = 2.2) -> void:
+	if is_inside_tree():
+		Toast.show_message(self, message, duration)
+
+func _care_action_name(action_type: int) -> String:
+	match action_type:
+		0: return "Tưới hoa"
+		1: return "Bón phân"
+		2: return "Diệt sâu"
+		_: return "Chăm sóc hoa"
+
+func _care_action_verb(action_type: int) -> String:
+	match action_type:
+		0: return "tưới hoa"
+		1: return "bón phân"
+		2: return "diệt sâu"
+		_: return "chăm sóc hoa"
+
+func _flower_display_name(template: FlowerTemplate) -> String:
+	if template == null or template.name.is_empty():
+		return "hoa"
+	return template.name.replace("_", " ")
 
 
 func _seed_mock_synergies() -> void:

@@ -1,0 +1,568 @@
+[gd_scene format=3 uid="uid://er6um3xcldsa"]
+
+[ext_resource type="Script" path="res://scenes/hud/SettingsPanel.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/frame/task/task-list.png" id="2_frame"]
+[ext_resource type="Texture2D" path="res://assets/icon/close.png" id="3_close"]
+[ext_resource type="Texture2D" path="res://assets/icon/mail.png" id="4_mail"]
+[ext_resource type="Texture2D" path="res://assets/icon/facebook.png" id="5_facebook"]
+[ext_resource type="Texture2D" path="res://assets/icon/tiktok.png" id="6_tiktok"]
+[ext_resource type="Texture2D" path="res://assets/icon/youtube.png" id="7_youtube"]
+[ext_resource type="Texture2D" path="res://assets/icon/slider_grabber.svg" id="8_grabber"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_active"]
+bg_color = Color(0.22, 0.62, 0.14, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.08, 0.34, 0.05, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.08, 0.18, 0.04, 0.35)
+shadow_size = 3
+shadow_offset = Vector2(0, 2)
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 7.0
+content_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tab_normal"]
+bg_color = Color(0.78, 0.70, 0.55, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.47, 0.36, 0.20, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.16, 0.10, 0.04, 0.25)
+shadow_size = 2
+shadow_offset = Vector2(0, 2)
+content_margin_left = 10.0
+content_margin_right = 10.0
+content_margin_top = 7.0
+content_margin_bottom = 9.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_bg"]
+bg_color = Color(0.38, 0.29, 0.17, 0.95)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_slider_fill"]
+bg_color = Color(0.17, 0.54, 0.11, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.08, 0.30, 0.06, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+content_margin_top = 6.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_support_row"]
+bg_color = Color(1, 0.95, 0.84, 0.72)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.67, 0.47, 0.23, 0.85)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 12.0
+content_margin_right = 12.0
+content_margin_top = 9.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_terms_btn"]
+bg_color = Color(0.80, 0.70, 0.54, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.48, 0.34, 0.17, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 14.0
+content_margin_right = 14.0
+content_margin_top = 8.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_terms_btn_hover"]
+bg_color = Color(0.88, 0.78, 0.58, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.55, 0.39, 0.18, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 14.0
+content_margin_right = 14.0
+content_margin_top = 8.0
+content_margin_bottom = 10.0
+
+[node name="SettingsPanel" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.55)
+mouse_filter = 0
+
+[node name="Panel" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -525.0
+offset_right = 350.0
+offset_bottom = 525.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_frame")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="CloseBtn" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -78.0
+offset_top = 42.0
+offset_right = -26.0
+offset_bottom = 94.0
+flat = true
+
+[node name="Icon" type="TextureRect" parent="Panel/CloseBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("3_close")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 56.0
+offset_top = 86.0
+offset_right = -56.0
+offset_bottom = -70.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 14
+
+[node name="TabMargin" type="MarginContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="TabRow" type="HBoxContainer" parent="Panel/VBox/TabMargin"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SettingsTab" type="Button" parent="Panel/VBox/TabMargin/TabRow"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+text = "Cài đặt"
+theme_override_colors/font_color = Color(0.34, 0.22, 0.10, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.20, 0.12, 0.04, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_tab_normal")
+
+[node name="SupportTab" type="Button" parent="Panel/VBox/TabMargin/TabRow"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Hỗ trợ"
+theme_override_colors/font_color = Color(0.34, 0.22, 0.10, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(0.20, 0.12, 0.04, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tab_normal")
+theme_override_styles/focus = SubResource("StyleBoxFlat_tab_normal")
+
+[node name="SettingsPage" type="MarginContainer" parent="Panel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 10
+
+[node name="Rows" type="VBoxContainer" parent="Panel/VBox/SettingsPage"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="BgmRow" type="HBoxContainer" parent="Panel/VBox/SettingsPage/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Name" type="Label" parent="Panel/VBox/SettingsPage/Rows/BgmRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
+theme_override_font_sizes/font_size = 20
+text = "Nhạc nền"
+vertical_alignment = 1
+
+[node name="Slider" type="HSlider" parent="Panel/VBox/SettingsPage/Rows/BgmRow"]
+custom_minimum_size = Vector2(260, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+step = 1.0
+value = 100.0
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/slider = SubResource("StyleBoxFlat_slider_bg")
+theme_override_icons/grabber = ExtResource("8_grabber")
+theme_override_icons/grabber_highlight = ExtResource("8_grabber")
+
+[node name="Value" type="Label" parent="Panel/VBox/SettingsPage/Rows/BgmRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
+theme_override_font_sizes/font_size = 19
+text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="SfxRow" type="HBoxContainer" parent="Panel/VBox/SettingsPage/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Name" type="Label" parent="Panel/VBox/SettingsPage/Rows/SfxRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
+theme_override_font_sizes/font_size = 20
+text = "Hiệu ứng"
+vertical_alignment = 1
+
+[node name="Slider" type="HSlider" parent="Panel/VBox/SettingsPage/Rows/SfxRow"]
+custom_minimum_size = Vector2(260, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+step = 1.0
+value = 100.0
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/slider = SubResource("StyleBoxFlat_slider_bg")
+theme_override_icons/grabber = ExtResource("8_grabber")
+theme_override_icons/grabber_highlight = ExtResource("8_grabber")
+
+[node name="Value" type="Label" parent="Panel/VBox/SettingsPage/Rows/SfxRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
+theme_override_font_sizes/font_size = 19
+text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="FootstepRow" type="HBoxContainer" parent="Panel/VBox/SettingsPage/Rows"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Name" type="Label" parent="Panel/VBox/SettingsPage/Rows/FootstepRow"]
+custom_minimum_size = Vector2(140, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
+theme_override_font_sizes/font_size = 20
+text = "Bước chân"
+vertical_alignment = 1
+
+[node name="Slider" type="HSlider" parent="Panel/VBox/SettingsPage/Rows/FootstepRow"]
+custom_minimum_size = Vector2(260, 34)
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+step = 1.0
+value = 100.0
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_slider_fill")
+theme_override_styles/slider = SubResource("StyleBoxFlat_slider_bg")
+theme_override_icons/grabber = ExtResource("8_grabber")
+theme_override_icons/grabber_highlight = ExtResource("8_grabber")
+
+[node name="Value" type="Label" parent="Panel/VBox/SettingsPage/Rows/FootstepRow"]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
+theme_override_font_sizes/font_size = 19
+text = "100%"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Spacer" type="Control" parent="Panel/VBox/SettingsPage/Rows"]
+custom_minimum_size = Vector2(0, 300)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TermsBtn" type="Button" parent="Panel/VBox/SettingsPage/Rows"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.34, 0.22, 0.10, 1)
+theme_override_colors/font_hover_color = Color(0.20, 0.12, 0.04, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_terms_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_terms_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_terms_btn")
+theme_override_styles/focus = SubResource("StyleBoxFlat_terms_btn_hover")
+text = "Điều khoản sử dụng"
+
+[node name="SupportPage" type="MarginContainer" parent="Panel/VBox"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+
+[node name="Rows" type="VBoxContainer" parent="Panel/VBox/SupportPage"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="EmailBtn" type="Button" parent="Panel/VBox/SupportPage/Rows"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_support_row")
+theme_override_styles/hover = SubResource("StyleBoxFlat_support_row")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_support_row")
+flat = true
+
+[node name="Row" type="HBoxContainer" parent="Panel/VBox/SupportPage/Rows/EmailBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = -12.0
+offset_bottom = -8.0
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Panel/VBox/SupportPage/Rows/EmailBtn/Row"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("4_mail")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextCol" type="VBoxContainer" parent="Panel/VBox/SupportPage/Rows/EmailBtn/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="Label" type="Label" parent="Panel/VBox/SupportPage/Rows/EmailBtn/Row/TextCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.28, 0.16, 0.06, 1)
+theme_override_font_sizes/font_size = 19
+text = "Email"
+
+[node name="Value" type="Label" parent="Panel/VBox/SupportPage/Rows/EmailBtn/Row/TextCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.31, 0.13, 1)
+theme_override_font_sizes/font_size = 16
+text = "treesforfuture.eco@gmail.com"
+text_overrun_behavior = 3
+
+[node name="FacebookBtn" type="Button" parent="Panel/VBox/SupportPage/Rows"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_support_row")
+theme_override_styles/hover = SubResource("StyleBoxFlat_support_row")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_support_row")
+flat = true
+
+[node name="Row" type="HBoxContainer" parent="Panel/VBox/SupportPage/Rows/FacebookBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = -12.0
+offset_bottom = -8.0
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Panel/VBox/SupportPage/Rows/FacebookBtn/Row"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_facebook")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextCol" type="VBoxContainer" parent="Panel/VBox/SupportPage/Rows/FacebookBtn/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="Label" type="Label" parent="Panel/VBox/SupportPage/Rows/FacebookBtn/Row/TextCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.28, 0.16, 0.06, 1)
+theme_override_font_sizes/font_size = 19
+text = "Facebook"
+
+[node name="Value" type="Label" parent="Panel/VBox/SupportPage/Rows/FacebookBtn/Row/TextCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.31, 0.13, 1)
+theme_override_font_sizes/font_size = 16
+text = "E.C.O - Green Tech Gamification"
+text_overrun_behavior = 3
+
+[node name="TiktokBtn" type="Button" parent="Panel/VBox/SupportPage/Rows"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_support_row")
+theme_override_styles/hover = SubResource("StyleBoxFlat_support_row")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_support_row")
+flat = true
+
+[node name="Row" type="HBoxContainer" parent="Panel/VBox/SupportPage/Rows/TiktokBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = -12.0
+offset_bottom = -8.0
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Panel/VBox/SupportPage/Rows/TiktokBtn/Row"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("6_tiktok")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextCol" type="VBoxContainer" parent="Panel/VBox/SupportPage/Rows/TiktokBtn/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="Label" type="Label" parent="Panel/VBox/SupportPage/Rows/TiktokBtn/Row/TextCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.28, 0.16, 0.06, 1)
+theme_override_font_sizes/font_size = 19
+text = "TikTok"
+
+[node name="Value" type="Label" parent="Panel/VBox/SupportPage/Rows/TiktokBtn/Row/TextCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.31, 0.13, 1)
+theme_override_font_sizes/font_size = 16
+text = "E.C.O Startup"
+text_overrun_behavior = 3
+
+[node name="YoutubeBtn" type="Button" parent="Panel/VBox/SupportPage/Rows"]
+custom_minimum_size = Vector2(0, 92)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_support_row")
+theme_override_styles/hover = SubResource("StyleBoxFlat_support_row")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_support_row")
+flat = true
+
+[node name="Row" type="HBoxContainer" parent="Panel/VBox/SupportPage/Rows/YoutubeBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = -12.0
+offset_bottom = -8.0
+theme_override_constants/separation = 12
+
+[node name="Icon" type="TextureRect" parent="Panel/VBox/SupportPage/Rows/YoutubeBtn/Row"]
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("7_youtube")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TextCol" type="VBoxContainer" parent="Panel/VBox/SupportPage/Rows/YoutubeBtn/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 2
+
+[node name="Label" type="Label" parent="Panel/VBox/SupportPage/Rows/YoutubeBtn/Row/TextCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.28, 0.16, 0.06, 1)
+theme_override_font_sizes/font_size = 19
+text = "YouTube"
+
+[node name="Value" type="Label" parent="Panel/VBox/SupportPage/Rows/YoutubeBtn/Row/TextCol"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.47, 0.31, 0.13, 1)
+theme_override_font_sizes/font_size = 16
+text = "E.C.O - Green Tech Gamification"
+text_overrun_behavior = 3

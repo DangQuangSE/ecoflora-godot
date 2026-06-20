@@ -62,15 +62,19 @@ func init_scene(scene_name: String) -> void:
 
 func place_deco_async(inventory_item_id: String, x: float, y: float) -> void:
 	if _pending_sync:
+		_show_toast("Đang đồng bộ trang trí, vui lòng chờ.")
 		return
 	_set_pending(true)
 
 	var inv_item: InventoryItem = InventoryManager.get_inventory().find_by_id(inventory_item_id)
 	var original_qty: int = inv_item.quantity if inv_item != null else 0
+	if inv_item == null or inv_item.quantity <= 0:
+		_set_pending(false)
+		_show_toast("Bạn không còn vật phẩm trang trí này.")
+		return
 
 	# 1. Local predict — decrement inventory immediately
-	if inv_item != null:
-		InventoryManager.consume_item(inv_item.decor_slug)
+	InventoryManager.consume_item(inv_item.decor_slug)
 
 	var temp := DecoPlacement.new()
 	temp.id               = "temp_%d" % Time.get_ticks_msec()
@@ -81,6 +85,7 @@ func place_deco_async(inventory_item_id: String, x: float, y: float) -> void:
 	temp.position_y       = y
 	_placements.append(temp)
 	deco_placed.emit(temp)
+	AudioManager.play_sfx("res://sounds/place-decor.wav")
 
 	# 2. Async sync
 	var confirmed: DecoPlacement
@@ -97,22 +102,28 @@ func place_deco_async(inventory_item_id: String, x: float, y: float) -> void:
 		# 3. Rollback
 		_placements.erase(temp)
 		deco_recalled.emit(temp.id)
-		if inv_item != null:
-			InventoryManager.restore_item(inventory_item_id, original_qty)
+		InventoryManager.restore_item(inventory_item_id, original_qty)
 		push_warning("DecoManager.place_deco_async: server rejected placement, rolled back")
+		_show_toast("Đặt trang trí thất bại. Vui lòng thử lại.")
 		return
 
 	var idx := _placements.find(temp)
 	if idx >= 0:
 		_placements[idx] = confirmed
 	deco_placed.emit(confirmed)
+	_show_toast("Đã đặt trang trí.")
 
 func recall_deco_async(placement_id: String) -> void:
 	if _pending_sync:
+		_show_toast("Đang đồng bộ trang trí, vui lòng chờ.")
 		return
 	_set_pending(true)
 
 	var snapshot: DecoPlacement = _find_placement(placement_id)
+	if snapshot == null:
+		_set_pending(false)
+		_show_toast("Không tìm thấy trang trí này.")
+		return
 	_remove_placement(placement_id)
 	deco_recalled.emit(placement_id)
 
@@ -126,18 +137,20 @@ func recall_deco_async(placement_id: String) -> void:
 	_set_pending(false)
 
 	if not ok:
-		if snapshot != null:
-			_placements.append(snapshot)
-			deco_placed.emit(snapshot)
+		_placements.append(snapshot)
+		deco_placed.emit(snapshot)
 		push_warning("DecoManager.recall_deco_async: server rejected recall, rolled back")
+		_show_toast("Thu hồi trang trí thất bại. Vui lòng thử lại.")
 		return
 
 	# BE confirmed recall → inventory quantity restored on server, sync locally
 	if snapshot != null and not snapshot.inventory_item_id.is_empty():
 		InventoryManager.increment_item(snapshot.inventory_item_id)
+	_show_toast("Đã thu hồi trang trí.")
 
 func batch_move_async(moves: Array) -> void:
 	if _pending_sync:
+		_show_toast("Đang đồng bộ trang trí, vui lòng chờ.")
 		return
 	_set_pending(true)
 
@@ -164,6 +177,7 @@ func batch_move_async(moves: Array) -> void:
 
 	if ok:
 		batch_saved.emit()
+		_show_toast("Đã lưu vị trí trang trí.")
 	else:
 		for p: Variant in _placements:
 			var dp := p as DecoPlacement
@@ -173,6 +187,7 @@ func batch_move_async(moves: Array) -> void:
 				dp.position_y = orig.y
 		batch_save_failed.emit()
 		push_warning("DecoManager.batch_move_async: server rejected batch move, positions restored")
+		_show_toast("Lưu vị trí trang trí thất bại.")
 
 func batch_move_current_async() -> void:
 	var moves: Array = []
@@ -209,6 +224,10 @@ func _remove_placement(placement_id: String) -> void:
 func _set_pending(value: bool) -> void:
 	_pending_sync = value
 	sync_state_changed.emit(value)
+
+func _show_toast(message: String, duration: float = 2.2) -> void:
+	if is_inside_tree():
+		Toast.show_message(self, message, duration)
 
 func _make_http(node_name: String) -> HTTPRequest:
 	var http := HTTPRequest.new()

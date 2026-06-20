@@ -16,5 +16,5 @@ variation_opentype = {
 
 [resource]
 default_font = SubResource("FontVariation_fredoka_semibold")
-default_font_size = 16
+default_font_size = 18
 Button/fonts/font = SubResource("FontVariation_fredoka_bold")
