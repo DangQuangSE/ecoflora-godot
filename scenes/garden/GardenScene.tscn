@@ -8,6 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://hhj3cw43jw3r" path="res://assets/deco/warter_tower.png" id="6_xftxm"]
 [ext_resource type="Texture2D" uid="uid://c5ckvjrnvc6bb" path="res://assets/deco/rock.png" id="7_34pd8"]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_34pd8"]
+radius = 268.9115
+
 [node name="GardenScene" type="Node2D" unique_id=927803031]
 script = ExtResource("6_gdscript")
 
@@ -37,12 +40,23 @@ texture = ExtResource("6_xftxm")
 region_enabled = true
 region_rect = Rect2(151.39282, 136.10352, 703.3301, 758.3732)
 
+[node name="StaticBody2D" type="StaticBody2D" parent="WarterTower" unique_id=2049890069]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WarterTower/StaticBody2D" unique_id=416612915]
+position = Vector2(0, -44.46976)
+shape = SubResource("CircleShape2D_34pd8")
+
 [node name="Rock" type="Sprite2D" parent="." unique_id=1602533771]
 position = Vector2(984.9999, 382.99994)
 scale = Vector2(0.19583419, 0.21584353)
 texture = ExtResource("7_34pd8")
 region_enabled = true
 region_rect = Rect2(71.88599, 111.63989, 928.114, 678.8663)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Rock" unique_id=1918923032]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Rock/StaticBody2D" unique_id=1159587891]
+polygon = PackedVector2Array(-393.18945, 231.64954, -275.74316, -83.39343, -86.80762, -157.52124, 122.55322, -291.8778, 301.27588, -185.31921, 337.02002, 18.532227, 326.80762, 138.98987, 245.10547, 264.08044, 153.1914, 291.8783, 127.65918, 185.3197, 5.1069336, 240.91553, -10.212402, 199.21863, -142.97754, 273.34644, -265.53027, 282.61243)
 
 [node name="DecoLayer" type="Node2D" parent="." unique_id=-1294967295]
 y_sort_enabled = true

@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://eck383ykd5g5"]
+
+[ext_resource type="Texture2D" uid="uid://b6ytk55nbwiiy" path="res://assets/shop/deco/warterfall.png" id="1_cmuos"]
+[ext_resource type="Script" uid="uid://chs7mg4jtdkum" path="res://scenes/shared/DecoNode.gd" id="2_d3eub"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(569, 538)
+
+[node name="DecoNode" type="Sprite2D" unique_id=1422637376]
+position = Vector2(-7.4999657, 11)
+scale = Vector2(0.423, 0.4)
+texture = ExtResource("1_cmuos")
+script = ExtResource("2_d3eub")
+auto_configure_shapes = false
+
+[node name="Area2D" type="Area2D" parent="." unique_id=834444160]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1557829915]
+position = Vector2(-89.5, -83)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=708981673]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=288303422]
+polygon = PackedVector2Array(-48.435192, -322.88403, 39.49328, -329.15363, 96.125175, -269.59253, 163.18927, -293.1035, 179.5827, -272.7273, 140.83456, -239.81195, 197.46646, -244.51414, 161.69894, -214.73358, 172.13113, -156.73985, 197.46646, -78.36995, 178.0924, -15.6740265, 192.99554, 20.37613, 146.7958, 15.673935, 130.40237, 40.752304, 160.20865, 54.858887, 111.02831, 72.100266, 2.2354507, 125.3918, -103.576775, 184.95293, -184.05368, 170.84633, -221.31151, 183.38551, -246.64682, 159.87456, -349.47842, 73.66766, -345.00748, -29.78061, -297.31747, -106.583115, -228.76306, -164.57684, -185.54399, -180.25082, -108.047714, -308.77747)

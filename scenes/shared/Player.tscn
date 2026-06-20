@@ -217,8 +217,8 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1"]
-radius = 5.0
-height = 16.0
+radius = 17.0
+height = 104.0
 
 [node name="Player" type="CharacterBody2D" unique_id=1744159588]
 motion_mode = 1
@@ -231,6 +231,7 @@ animation = &"walk_down"
 frame_progress = 0.43283778
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1641672062]
+position = Vector2(0, 6)
 shape = SubResource("CapsuleShape2D_1")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1238222557]

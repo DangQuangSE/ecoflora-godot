@@ -273,7 +273,7 @@ func _on_placements_loaded(placements: Array) -> void:
 			_spawn_deco_node(dp)
 
 func _spawn_deco_node(p: DecoPlacement) -> void:
-	var node: DecoNode = DecoNodeScene.instantiate()
+	var node: DecoNode = DecoManager.get_deco_scene(p.decor_slug).instantiate()
 	node.placement_data = p
 	node.boundary_rect = _boundary_rect
 	node.global_position = Vector2(p.position_x, p.position_y)

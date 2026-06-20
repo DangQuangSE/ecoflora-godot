@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://0px2epstf14f"]
+
+[ext_resource type="Script" uid="uid://chs7mg4jtdkum" path="res://scenes/shared/DecoNode.gd" id="1_h07hi"]
+[ext_resource type="Texture2D" uid="uid://dm6b81rc0f4m1" path="res://assets/shop/deco/grass_fence.png" id="1_mvfh7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(500, 480)
+
+[node name="DecoNode" type="Sprite2D" unique_id=294322662]
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("1_mvfh7")
+script = ExtResource("1_h07hi")
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1653018284]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1253513214]
+position = Vector2(29.999952, -4.768371e-05)
+scale = Vector2(0.99999976, 0.99999976)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1297778817]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=1385741377]
+polygon = PackedVector2Array(-219.99998, 99.99999, 139.99998, 259.99997, 279.99997, 199.99998, 259.99997, -39.999996, -99.99999, -219.99998, -219.99998, -159.99998, -199.99998, 79.99999)
