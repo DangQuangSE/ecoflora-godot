@@ -150,6 +150,7 @@ func claim_task_async(task_id: String) -> void:
 			mock_prog.claimed = true
 		_save_progress()
 		tasks_updated.emit(_tasks, _progress.values())
+		AudioManager.play_sfx("res://sounds/reward.wav")
 		claim_result_received.emit(task_id, true)
 		_claim_in_flight = false
 		return
@@ -179,6 +180,7 @@ func claim_task_async(task_id: String) -> void:
 		prog.claimed = true
 	_save_progress()
 	tasks_updated.emit(_tasks, _progress.values())
+	AudioManager.play_sfx("res://sounds/reward.wav")
 	claim_result_received.emit(task_id, true)
 	_claim_in_flight = false
 
