@@ -104,6 +104,25 @@ func claim_async(http: HTTPRequest, base_url: String, token: String, task_id: St
 		return {}
 	return data as Dictionary
 
+# POST /api/daily-tasks/online-heartbeat — reports elapsed online minutes so
+# ONLINE_TIME progress is tracked server-side instead of only in local cache.
+func record_online_time_async(http: HTTPRequest, base_url: String, token: String, minutes: int) -> bool:
+	var headers := PackedStringArray([
+		"Content-Type: application/json",
+		"Authorization: Bearer %s" % token,
+	])
+	var body := JSON.stringify({"minutes": minutes})
+	var err := http.request(base_url + "/api/daily-tasks/online-heartbeat", headers, HTTPClient.METHOD_POST, body)
+	if err != OK:
+		push_warning("DailyTaskService.record_online_time_async: request error %d" % err)
+		return false
+	var raw: Variant = await http.request_completed
+	var status: int = raw[1]
+	if status != 200:
+		push_warning("DailyTaskService.record_online_time_async: HTTP %d" % status)
+		return false
+	return true
+
 # Returns display-only placeholder tasks for offline mode.
 # Reward values are zero — tasks are non-claimable until a real GET succeeds.
 static func build_offline_fallback() -> Array[DailyTask]:

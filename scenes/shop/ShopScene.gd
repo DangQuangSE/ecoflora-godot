@@ -8,8 +8,20 @@ var _style_tab_hover   := StyleBoxFlat.new()
 var _style_skeleton_card := StyleBoxFlat.new()
 var _style_skeleton_band := StyleBoxFlat.new()
 
-# Tab index → API category string ("" = no API call)
-const _TAB_CATEGORIES := ["Seed", "Consumable", "Decoration", ""]
+# Tab index → API category string ("" = no API call, "Coin" = local top-up packages, no API call)
+const _TAB_CATEGORIES := ["Seed", "Consumable", "Decoration", "Coin"]
+
+# Coin top-up packages — matches eco-backend's seeded CoinPackage rows
+# (10 coin = 1.000đ, no admin CRUD for MVP). Real purchase happens on the
+# game's web top-up page, not in-app — see plans/coin-topup-payos/spec.md
+# Out of Scope (Google Play anti-steering policy). Tapping a card only
+# shows a note telling the player where to go; no link, no API call.
+const _COIN_PACKAGES := [
+	{"vnd": 20000,  "coin": 200},
+	{"vnd": 50000,  "coin": 500},
+	{"vnd": 100000, "coin": 1000},
+	{"vnd": 200000, "coin": 2000},
+]
 
 @onready var _grid: GridContainer        = $ShopPanel/ScrollContainer/GridContainer
 @onready var _bg_dimmer: ColorRect       = $BGDimmer
@@ -131,6 +143,10 @@ func _on_tab_pressed(idx: int) -> void:
 	_current_tab = idx
 	_current_page = 0
 	var category: String = _TAB_CATEGORIES[idx]
+	if category == "Coin":
+		_current_items = _build_coin_packages()
+		_render_page()
+		return
 	if category.is_empty():
 		_current_items = []
 		_render_page()
@@ -145,6 +161,31 @@ func _on_tab_pressed(idx: int) -> void:
 		_localize_item(item)
 	_current_items = filtered
 	_render_page()
+
+func _build_coin_packages() -> Array[ShopItem]:
+	var packages: Array[ShopItem] = []
+	for i in _COIN_PACKAGES.size():
+		var pkg: Dictionary = _COIN_PACKAGES[i]
+		var item := ShopItem.new()
+		item.id = "coin:%d" % i
+		item.name = "%s đ" % _format_vnd(pkg.vnd)
+		item.description = "Nạp coin qua trang web của game"
+		item.price = pkg.coin
+		item.category = "Coin"
+		item.image_url = "res://assets/icon/coin.png"
+		item.is_active = true
+		packages.append(item)
+	return packages
+
+func _format_vnd(amount: int) -> String:
+	var digits := str(amount)
+	var grouped := ""
+	for i in digits.length():
+		var pos_from_right := digits.length() - i
+		if i > 0 and pos_from_right % 3 == 0:
+			grouped += "."
+		grouped += digits[i]
+	return grouped
 
 func _set_loading(on: bool) -> void:
 	_loading.visible = false
@@ -236,7 +277,10 @@ func _render_items(items: Array[ShopItem]) -> void:
 		lbl.add_theme_color_override("font_color", Color(0.65, 0.75, 0.55, 1))
 		_grid.call_deferred("add_child", lbl)
 		return
-	var balance: int = UserManager.get_profile().currency
+	# Coin packages aren't bought with in-game currency, so skip the
+	# balance-affordability check that applies to every other tab.
+	var is_coin_tab: bool = _TAB_CATEGORIES[_current_tab] == "Coin"
+	var balance: int = -1 if is_coin_tab else UserManager.get_profile().currency
 	for item: ShopItem in items:
 		var card: ShopItemCard = ShopItemCardScene.instantiate()
 		_grid.add_child(card)
@@ -250,6 +294,9 @@ func _refresh_card_affordability() -> void:
 			(child as ShopItemCard).set_affordable(balance >= (child as ShopItemCard).item_price())
 
 func _on_item_tapped(item: ShopItem) -> void:
+	if item.category == "Coin":
+		_show_toast("Vui lòng truy cập trang web của game để nạp coin nhé!", true)
+		return
 	_pending_item = item
 	_pending_qty = 1
 	_confirm_name.text = item.name

@@ -9,6 +9,7 @@ extends Control
 var _style_tab_normal := StyleBoxFlat.new()
 var _style_tab_active := StyleBoxFlat.new()
 var _style_tab_hover := StyleBoxFlat.new()
+var _style_content := StyleBoxFlat.new()
 
 var _current_tip_id: String = ""
 var _tab_buttons: Array[Button] = []
@@ -17,6 +18,7 @@ var _tip_ids: Array[String] = []
 
 func _ready() -> void:
 	_build_tab_styles()
+	_build_content_style()
 	_close_btn.pressed.connect(hide_panel)
 	_bg_dimmer.gui_input.connect(_on_dimmer_input)
 	if TipManager:
@@ -48,6 +50,23 @@ func _build_tab_styles() -> void:
 	_style_tab_active.border_color = Color(0.78, 0.49, 0.16, 1)
 
 
+func _build_content_style() -> void:
+	_style_content.bg_color = Color(1.0, 0.93, 0.78, 0.96)
+	_style_content.border_width_left = 2
+	_style_content.border_width_top = 2
+	_style_content.border_width_right = 2
+	_style_content.border_width_bottom = 2
+	_style_content.border_color = Color(0.82, 0.52, 0.18, 1)
+	_style_content.corner_radius_top_left = 8
+	_style_content.corner_radius_top_right = 8
+	_style_content.corner_radius_bottom_right = 8
+	_style_content.corner_radius_bottom_left = 8
+	_style_content.content_margin_left = 18
+	_style_content.content_margin_top = 16
+	_style_content.content_margin_right = 18
+	_style_content.content_margin_bottom = 16
+
+
 func _build_tabs() -> void:
 	for child in _tabs_container.get_children():
 		child.queue_free()
@@ -60,12 +79,15 @@ func _build_tabs() -> void:
 			continue
 		var btn := Button.new()
 		btn.text = tip.title
+		btn.custom_minimum_size = Vector2(0.0, 48.0)
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		btn.add_theme_font_size_override("font_size", 16)
+		btn.add_theme_font_size_override("font_size", 17)
 		btn.pressed.connect(func() -> void: _set_tip(tip.id))
 		_tabs_container.add_child(btn)
 		_tab_buttons.append(btn)
 		_tip_ids.append(tip.id)
+
+	_tabs_container.visible = _tip_ids.size() > 1
 
 	if _tip_ids.size() > 0:
 		if _current_tip_id.is_empty() or _current_tip_id not in _tip_ids:
@@ -133,21 +155,35 @@ func _refresh_content() -> void:
 	if tip == null:
 		return
 
+	var card := PanelContainer.new()
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	card.add_theme_stylebox_override("panel", _style_content)
+	_tips_list.add_child(card)
+
+	var content := VBoxContainer.new()
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	content.add_theme_constant_override("separation", 12)
+	card.add_child(content)
+
 	var title := Label.new()
 	title.text = tip.title
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", Color(0.55, 0.28, 0.06, 1))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 21)
+	title.add_theme_color_override("font_color", Color(0.36, 0.18, 0.04, 1))
 	title.add_theme_constant_override("outline_size", 1)
 	title.add_theme_color_override("font_outline_color", Color(0.97, 0.86, 0.60, 0.35))
-	_tips_list.add_child(title)
+	content.add_child(title)
 
 	var body := Label.new()
 	body.text = tip.content
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	body.add_theme_font_size_override("font_size", 14)
-	body.add_theme_color_override("font_color", Color(0.38, 0.24, 0.10, 1))
-	_tips_list.add_child(body)
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body.add_theme_font_size_override("font_size", 16)
+	body.add_theme_constant_override("line_spacing", 6)
+	body.add_theme_color_override("font_color", Color(0.24, 0.15, 0.06, 1))
+	content.add_child(body)
 
 
 func _on_dimmer_input(event: InputEvent) -> void:

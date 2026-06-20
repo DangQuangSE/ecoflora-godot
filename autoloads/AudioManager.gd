@@ -2,6 +2,11 @@ extends Node
 
 # AudioManager singleton for handling background music (BGM) and sound effects (SFX)
 
+signal volume_settings_changed
+
+const _SETTINGS_PATH := "user://audio_settings.json"
+const _MIN_VOLUME_DB := -80.0
+
 const BGM_VOLUMES := {
 	"res://sounds/lobby_v2.mp3": -20.0,
 	"res://sounds/sunny_sound.mp3": -10.0,
@@ -28,10 +33,14 @@ var _current_bgm_path: String = ""
 var _fade_tween: Tween
 var footstep_stream: AudioStream
 
+var _bgm_volume: float = 1.0
+var _sfx_volume: float = 1.0
+var _footstep_volume: float = 1.0
 var _click_detected: bool = false
 var _last_other_sfx_time: int = -1000
 
 func _ready() -> void:
+	_load_volume_settings()
 	_bgm_player = AudioStreamPlayer.new()
 	_bgm_player.bus = "Master"
 	add_child(_bgm_player)
@@ -53,7 +62,37 @@ func get_footstep_stream() -> AudioStream:
 
 
 func get_footstep_volume_db() -> float:
-	return SFX_VOLUMES.get(FOOTSTEP_PATH, -10.0)
+	return _apply_volume_factor(SFX_VOLUMES.get(FOOTSTEP_PATH, -10.0), _footstep_volume)
+
+func get_bgm_volume_percent() -> int:
+	return int(round(_bgm_volume * 100.0))
+
+
+func get_sfx_volume_percent() -> int:
+	return int(round(_sfx_volume * 100.0))
+
+
+func get_footstep_volume_percent() -> int:
+	return int(round(_footstep_volume * 100.0))
+
+
+func set_bgm_volume_percent(value: int) -> void:
+	_bgm_volume = clampf(float(value) / 100.0, 0.0, 1.0)
+	_apply_current_bgm_volume()
+	_save_volume_settings()
+	volume_settings_changed.emit()
+
+
+func set_sfx_volume_percent(value: int) -> void:
+	_sfx_volume = clampf(float(value) / 100.0, 0.0, 1.0)
+	_save_volume_settings()
+	volume_settings_changed.emit()
+
+
+func set_footstep_volume_percent(value: int) -> void:
+	_footstep_volume = clampf(float(value) / 100.0, 0.0, 1.0)
+	_save_volume_settings()
+	volume_settings_changed.emit()
 
 func play_sfx(stream_path: String, volume_db: float = 0.0) -> void:
 	if stream_path != "res://sounds/click.wav" and stream_path != FOOTSTEP_PATH:
@@ -67,7 +106,7 @@ func play_sfx(stream_path: String, volume_db: float = 0.0) -> void:
 	var sfx_player := AudioStreamPlayer.new()
 	sfx_player.stream = stream
 	var target_volume: float = SFX_VOLUMES.get(stream_path, volume_db)
-	sfx_player.volume_db = target_volume
+	sfx_player.volume_db = _apply_volume_factor(target_volume, _sfx_volume)
 	sfx_player.bus = "Master"
 	add_child(sfx_player)
 	sfx_player.finished.connect(sfx_player.queue_free)
@@ -94,10 +133,10 @@ func play_bgm(stream_path: String, loop: bool = true, fade_in_duration: float = 
 	_bgm_player.stream = stream
 	_current_bgm_path = stream_path
 	
-	var target_volume: float = BGM_VOLUMES.get(stream_path, 0.0)
+	var target_volume: float = _get_current_bgm_volume_db()
 	
 	if fade_in_duration > 0.0:
-		_bgm_player.volume_db = -80.0
+		_bgm_player.volume_db = _MIN_VOLUME_DB
 		_bgm_player.play()
 		_fade_tween = create_tween()
 		_fade_tween.tween_property(_bgm_player, "volume_db", target_volume, fade_in_duration)
@@ -115,7 +154,7 @@ func stop_bgm(fade_out_duration: float = 0.0) -> void:
 		
 	if fade_out_duration > 0.0:
 		_fade_tween = create_tween()
-		_fade_tween.tween_property(_bgm_player, "volume_db", -80.0, fade_out_duration)
+		_fade_tween.tween_property(_bgm_player, "volume_db", _MIN_VOLUME_DB, fade_out_duration)
 		_fade_tween.tween_callback(func() -> void:
 			_bgm_player.stop()
 			_bgm_player.volume_db = 0.0
@@ -131,6 +170,52 @@ func is_bgm_playing() -> bool:
 
 func get_current_bgm_path() -> String:
 	return _current_bgm_path
+
+
+func _get_current_bgm_volume_db() -> float:
+	return _apply_volume_factor(BGM_VOLUMES.get(_current_bgm_path, 0.0), _bgm_volume)
+
+
+func _apply_current_bgm_volume() -> void:
+	if _bgm_player == null or _current_bgm_path.is_empty():
+		return
+	if _fade_tween and _fade_tween.is_valid():
+		_fade_tween.kill()
+	_bgm_player.volume_db = _get_current_bgm_volume_db()
+
+
+func _apply_volume_factor(base_db: float, factor: float) -> float:
+	if factor <= 0.0:
+		return _MIN_VOLUME_DB
+	return base_db + linear_to_db(factor)
+
+
+func _load_volume_settings() -> void:
+	var file := FileAccess.open(_SETTINGS_PATH, FileAccess.READ)
+	if file == null:
+		return
+	var json := JSON.new()
+	if json.parse(file.get_as_text()) != OK:
+		return
+	var data: Variant = json.get_data()
+	if not data is Dictionary:
+		return
+	var d := data as Dictionary
+	_bgm_volume = clampf(float(d.get("bgm", 1.0)), 0.0, 1.0)
+	_sfx_volume = clampf(float(d.get("sfx", 1.0)), 0.0, 1.0)
+	_footstep_volume = clampf(float(d.get("footstep", 1.0)), 0.0, 1.0)
+
+
+func _save_volume_settings() -> void:
+	var file := FileAccess.open(_SETTINGS_PATH, FileAccess.WRITE)
+	if file == null:
+		push_warning("AudioManager._save_volume_settings: cannot open %s" % _SETTINGS_PATH)
+		return
+	file.store_string(JSON.stringify({
+		"bgm": _bgm_volume,
+		"sfx": _sfx_volume,
+		"footstep": _footstep_volume,
+	}))
 
 func suppress_click_sfx() -> void:
 	_last_other_sfx_time = Time.get_ticks_msec()

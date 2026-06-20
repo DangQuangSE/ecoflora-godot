@@ -1,9 +1,4 @@
 {
-  "permissions": {
-    "additionalDirectories": [
-      "D:\\GitHub\\eco-backend"
-    ]
-  },
   "hooks": {
     "SessionStart": [
       {
@@ -11,23 +6,39 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\session_init.py\""
+            "command": "python .claude/hooks/session_init.py"
           },
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\subagent_init.py\""
+            "command": "python .claude/hooks/subagent_init.py"
           }
         ]
       }
     ],
-    "UserPromptSubmit": [],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/dev_rules_reminder.py",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "python .claude/hooks/caveman_watch.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "Read|Write|Edit|Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\privacy_block.py\"",
+            "command": "python .claude/hooks/privacy_block.py",
             "timeout": 5
           }
         ]
@@ -37,7 +48,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\suggest_compact.py\"",
+            "command": "python .claude/hooks/suggest_compact.py",
             "timeout": 5
           }
         ]
@@ -49,12 +60,12 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\build_check.py\"",
+            "command": "python .claude/hooks/build_check.py",
             "timeout": 30
           },
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\simplify_gate.py\"",
+            "command": "python .claude/hooks/simplify_gate.py",
             "timeout": 5
           }
         ]
@@ -64,7 +75,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\artifact_fold.py\"",
+            "command": "python .claude/hooks/artifact_fold.py",
             "timeout": 5
           }
         ]
@@ -76,7 +87,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\pre_compact.py\"",
+            "command": "python .claude/hooks/pre_compact.py",
             "timeout": 5
           }
         ]
@@ -88,7 +99,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\session_end.py\"",
+            "command": "python .claude/hooks/session_end.py",
             "async": true,
             "timeout": 10
           }
@@ -101,7 +112,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"e:\\TVu\\git-repo\\ecoflora-godot\\.claude\\hooks\\session_end.py\"",
+            "command": "python .claude/hooks/session_end.py",
             "async": true,
             "timeout": 10
           }
