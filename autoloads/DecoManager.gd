@@ -81,6 +81,7 @@ func place_deco_async(inventory_item_id: String, x: float, y: float) -> void:
 	temp.position_y       = y
 	_placements.append(temp)
 	deco_placed.emit(temp)
+	AudioManager.play_sfx("res://sounds/place-decor.wav")
 
 	# 2. Async sync
 	var confirmed: DecoPlacement
