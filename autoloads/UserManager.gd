@@ -501,6 +501,8 @@ func _notification(what: int) -> void:
 		if _vitality_poll_timer:
 			_vitality_poll_timer.start()
 			_poll_vitality_status()
+		if is_logged_in():
+			await fetch_profile_async()
 
 func save_avatar_index(idx: int) -> void:
 	var config := ConfigFile.new()
