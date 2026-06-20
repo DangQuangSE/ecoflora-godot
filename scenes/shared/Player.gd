@@ -61,7 +61,7 @@ func setup_camera_limits(used_rect: Rect2i, tile_size: Vector2i) -> void:
 	_camera.limit_right  = used_rect.end.x * tile_size.x
 	_camera.limit_bottom = used_rect.end.y * tile_size.y
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	velocity = move_direction.normalized() * speed if move_direction.length() > 0.1 else Vector2.ZERO
 	move_and_slide()
 	_clamp_to_movement_bounds()

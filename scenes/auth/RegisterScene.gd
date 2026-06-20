@@ -96,15 +96,15 @@ func _on_confirm_password_gui_input(event: InputEvent) -> void:
 
 func show_error(message: String) -> void:
 	_set_loading(false)
-	BaseDialog.show_alert(self, "Lỗi Đăng Ký", message)
+	_show_error(message)
 
 func on_register_success() -> void:
 	_set_loading(false)
 	SceneTransition.fade_to(LOGIN_SCENE)
 
 func _show_error(msg: String) -> void:
-	_error_label.text = msg
-	_error_label.visible = true
+	_error_label.visible = false
+	Toast.show_message(self, msg, 2.4)
 
 func _set_loading(active: bool) -> void:
 	_loading.visible = false

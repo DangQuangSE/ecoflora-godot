@@ -8,7 +8,7 @@ const DecoNodeScene       := preload("res://scenes/shared/DecoNode.tscn")
 const SynergyIndicatorScene := preload("res://scenes/garden/SynergyZoneIndicator.tscn")
 
 @onready var _player: Player           = $Player
-@onready var _hud: HUD                 = $HUD
+@onready var _hud                      = $HUD
 @onready var _plot_anchors: Node2D     = $PlotAnchors
 @onready var _deco_layer: Node2D       = $DecoLayer
 
@@ -24,7 +24,7 @@ var _plot_anchors_flat: Array[Node] = []
 
 func _ready() -> void:
 	WeatherManager.set_overlay_visible(true)
-	_hud.joystick_direction_changed.connect(_player.set_move_direction)
+	_connect_hud_joystick()
 	_boundary_rect = _compute_boundary()
 	_setup_camera()
 	_player.set_movement_bounds(_boundary_rect)
@@ -51,6 +51,14 @@ func _ready() -> void:
 
 func _setup_camera() -> void:
 	_player.setup_camera_world_limits(_boundary_rect)
+
+func _connect_hud_joystick() -> void:
+	if _hud.has_signal("joystick_direction_changed"):
+		_hud.connect("joystick_direction_changed", _player.set_move_direction)
+		return
+	var joystick := _hud.get_node_or_null("DynamicJoystick")
+	if joystick != null and joystick.has_signal("direction_changed"):
+		joystick.connect("direction_changed", _player.set_move_direction)
 
 func _spawn_plots() -> void:
 	var plots := GardenManager.get_plots()
@@ -298,7 +306,8 @@ func _on_deco_recalled(placement_id: String) -> void:
 			return
 
 func _on_deco_tapped(placement_id: String) -> void:
-	_hud.show_recall_btn(placement_id)
+	if _hud.has_method("show_recall_btn"):
+		_hud.call("show_recall_btn", placement_id)
 
 func _on_deco_drag_ended(placement_id: String, new_pos: Vector2) -> void:
 	for child in _deco_layer.get_children():

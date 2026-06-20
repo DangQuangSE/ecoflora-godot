@@ -4,6 +4,7 @@ extends CanvasLayer
 const _CARD_H_SMALL: float  = 1050.0
 const _CARD_H_LARGE: float  = 1050.0
 const _CARD_W: float = 700.0
+const _OPEN_SLIDE_OFFSET: float = 20.0
 
 @onready var _dimmer: ColorRect             = $Dimmer
 @onready var _card: Panel                   = $Card
@@ -60,17 +61,19 @@ func _exit_tree() -> void:
 
 func open() -> void:
 	_is_closing = false
+	_card.scale = Vector2.ONE
+	_card.pivot_offset = Vector2(_CARD_W * 0.5, _CARD_H_SMALL * 0.5)
 	_card.offset_left = -(_CARD_W * 0.5)
 	_card.offset_right = _CARD_W * 0.5
-	_card.offset_top    = -(_CARD_H_SMALL * 0.5) + 20.0
-	_card.offset_bottom =   _CARD_H_SMALL * 0.5  + 20.0
+	_card.offset_top = -(_CARD_H_SMALL * 0.5) + _OPEN_SLIDE_OFFSET
+	_card.offset_bottom = _CARD_H_SMALL * 0.5 + _OPEN_SLIDE_OFFSET
 	_refresh_data()
 	visible = true
 	_card.modulate.a = 0.0
 	var tween := create_tween().set_parallel(true)
 	tween.tween_property(_card, "modulate:a", 1.0, 0.16)
-	tween.tween_property(_card, "offset_top",    -(_CARD_H_SMALL * 0.5), 0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(_card, "offset_bottom",   _CARD_H_SMALL * 0.5,  0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_card, "offset_top", -(_CARD_H_SMALL * 0.5), 0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(_card, "offset_bottom", _CARD_H_SMALL * 0.5, 0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 func close() -> void:
 	if _is_closing:
@@ -78,8 +81,8 @@ func close() -> void:
 	_is_closing = true
 	var tween := create_tween().set_parallel(true)
 	tween.tween_property(_card, "modulate:a", 0.0, 0.14)
-	tween.tween_property(_card, "offset_top",    _card.offset_top    + 20.0, 0.14).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(_card, "offset_bottom", _card.offset_bottom + 20.0, 0.14).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(_card, "offset_top", _card.offset_top + _OPEN_SLIDE_OFFSET, 0.14).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(_card, "offset_bottom", _card.offset_bottom + _OPEN_SLIDE_OFFSET, 0.14).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	await tween.finished
 	if not is_instance_valid(self):
 		return
@@ -180,8 +183,8 @@ func _expand_card() -> void:
 	_bottom_row.visible = false
 	_avatar_picker.visible = true
 	var tween := create_tween().set_parallel(true)
-	tween.tween_property(_card, "offset_top",    -(_CARD_H_LARGE * 0.5), 0.1)
-	tween.tween_property(_card, "offset_bottom",   _CARD_H_LARGE * 0.5,  0.1)
+	tween.tween_property(_card, "offset_top", -(_CARD_H_LARGE * 0.5), 0.1)
+	tween.tween_property(_card, "offset_bottom", _CARD_H_LARGE * 0.5, 0.1)
 
 func _collapse_card() -> void:
 	_avatar_picker.visible = false
@@ -189,8 +192,8 @@ func _collapse_card() -> void:
 	_bottom_row.visible = true
 	_refresh_avatar(UserManager.get_profile().avatar_index)
 	var tween := create_tween().set_parallel(true)
-	tween.tween_property(_card, "offset_top",    -(_CARD_H_SMALL * 0.5), 0.1)
-	tween.tween_property(_card, "offset_bottom",   _CARD_H_SMALL * 0.5,  0.1)
+	tween.tween_property(_card, "offset_top", -(_CARD_H_SMALL * 0.5), 0.1)
+	tween.tween_property(_card, "offset_bottom", _CARD_H_SMALL * 0.5, 0.1)
 
 func _update_picker_highlight() -> void:
 	for i in 7:

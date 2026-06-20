@@ -113,8 +113,8 @@ func _spawn_levelup_label(new_level: int) -> void:
 		lbl.queue_free()
 
 func _on_coin_tapped() -> void:
-	var hud := get_parent() as HUD
-	if hud:
+	var hud := get_parent()
+	if hud and hud.has_method("open_shop"):
 		hud.open_shop(3)
 
 func _open_profile_card() -> void:

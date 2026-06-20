@@ -115,8 +115,8 @@ func _on_visibility_changed() -> void:
 		_tick_timer.stop()
 
 func _format_time(seconds: int) -> String:
-	var h := seconds / 3600
-	var m := (seconds % 3600) / 60
+	var h := floori(float(seconds) / 3600.0)
+	var m := floori(float(seconds % 3600) / 60.0)
 	var s := seconds % 60
 	if h > 0:
 		return "%d:%02d:%02d" % [h, m, s]
