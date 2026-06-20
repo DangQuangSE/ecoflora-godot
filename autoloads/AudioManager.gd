@@ -25,6 +25,7 @@ const SFX_VOLUMES := {
 	"res://sounds/click.wav": -15.0,
 	"res://sounds/harvest.wav": -15.0,
 	"res://sounds/watering.wav": -5.0,
+	"res://sounds/buy-successfully.wav": -10.0,
 	FOOTSTEP_PATH: -10.0
 }
 
