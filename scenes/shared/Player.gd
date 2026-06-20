@@ -4,9 +4,11 @@ extends CharacterBody2D
 @export var speed: float = 200.0
 @export var camera_zoom: float = 1.0
 @export var sprite_scale: float = 0.4
+@export var movement_bounds_margin: Vector2 = Vector2(8.0, 8.0)
 
 var move_direction: Vector2 = Vector2.ZERO
 var _last_facing: String = "down"
+var _movement_bounds: Rect2 = Rect2()
 
 var _footstep_player: AudioStreamPlayer2D
 
@@ -25,9 +27,26 @@ func _ready() -> void:
 	if stream:
 		_footstep_player.stream = stream
 		_footstep_player.volume_db = AudioManager.get_footstep_volume_db()
+	AudioManager.volume_settings_changed.connect(_on_audio_volume_changed)
 
 func set_move_direction(dir: Vector2) -> void:
 	move_direction = dir
+
+func set_movement_bounds(bounds: Rect2) -> void:
+	_movement_bounds = bounds
+
+func setup_camera_world_limits(bounds: Rect2) -> void:
+	if bounds == Rect2():
+		_camera.limit_left   = -100000
+		_camera.limit_top    = -100000
+		_camera.limit_right  = 100000
+		_camera.limit_bottom = 100000
+		push_warning("Player.setup_camera_world_limits: bounds is empty, using defaults")
+		return
+	_camera.limit_left   = int(bounds.position.x)
+	_camera.limit_top    = int(bounds.position.y)
+	_camera.limit_right  = int(bounds.end.x)
+	_camera.limit_bottom = int(bounds.end.y)
 
 func setup_camera_limits(used_rect: Rect2i, tile_size: Vector2i) -> void:
 	if used_rect == Rect2i():
@@ -45,8 +64,19 @@ func setup_camera_limits(used_rect: Rect2i, tile_size: Vector2i) -> void:
 func _physics_process(delta: float) -> void:
 	velocity = move_direction.normalized() * speed if move_direction.length() > 0.1 else Vector2.ZERO
 	move_and_slide()
+	_clamp_to_movement_bounds()
 	_update_animation()
 	_handle_footsteps()
+
+func _clamp_to_movement_bounds() -> void:
+	if _movement_bounds == Rect2():
+		return
+	var min_pos := _movement_bounds.position + movement_bounds_margin
+	var max_pos := _movement_bounds.end - movement_bounds_margin
+	global_position = Vector2(
+		clampf(global_position.x, min_pos.x, max_pos.x),
+		clampf(global_position.y, min_pos.y, max_pos.y)
+	)
 
 func _update_animation() -> void:
 	if move_direction.length() < 0.1:
@@ -78,3 +108,8 @@ func _handle_footsteps() -> void:
 			_footstep_player.play()
 	elif _footstep_player.playing:
 		_footstep_player.stop()
+
+
+func _on_audio_volume_changed() -> void:
+	if _footstep_player != null:
+		_footstep_player.volume_db = AudioManager.get_footstep_volume_db()

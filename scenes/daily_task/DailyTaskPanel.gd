@@ -7,6 +7,7 @@ const _TaskCardScene := preload("res://scenes/daily_task/TaskCard.tscn")
 @onready var _daily_btn:  Button        = $Panel/VBox/TabMargin/TabRow/DailyBtn
 @onready var _weekly_btn: Button        = $Panel/VBox/TabMargin/TabRow/WeeklyBtn
 @onready var _close_btn:  Button        = $Panel/VBox/Header/HeaderRow/CloseBtn
+@onready var _bg_dimmer:  ColorRect     = $BGDimmer
 
 var _current_tab: int       = DailyTask.DAILY
 var _card_map:    Dictionary = {}  # task_id -> Node (TaskCard)
@@ -17,6 +18,7 @@ func _ready() -> void:
 	_daily_btn.pressed.connect(func() -> void: _rebuild_list(DailyTask.DAILY))
 	_weekly_btn.pressed.connect(func() -> void: _rebuild_list(DailyTask.WEEKLY))
 	_close_btn.pressed.connect(func() -> void: visible = false)
+	_bg_dimmer.gui_input.connect(_on_backdrop_input)
 
 func show_panel(tab: int = DailyTask.DAILY) -> void:
 	_current_tab = tab
@@ -26,6 +28,14 @@ func show_panel(tab: int = DailyTask.DAILY) -> void:
 func _on_tasks_updated(_tasks: Array, _progress: Array) -> void:
 	if visible:
 		_rebuild_list(_current_tab)
+
+func _on_backdrop_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse_event := event as InputEventMouseButton
+		if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed:
+			visible = false
+	elif event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
+		visible = false
 
 func _rebuild_list(cycle: int) -> void:
 	_current_tab = cycle
