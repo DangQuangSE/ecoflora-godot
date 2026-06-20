@@ -40,11 +40,15 @@ func _rebuild_list(cycle: int) -> void:
 			continue
 		var prog: TaskProgress = TaskManager.get_progress(task.id)
 		var card = _TaskCardScene.instantiate()
-		card.task_id    = task.id
-		card.title_text = task.title
-		card.target     = task.target
-		card.progress   = prog.progress if prog != null else 0
-		card.is_claimed = prog.claimed  if prog != null else false
+		card.task_id         = task.id
+		card.title_text      = task.title
+		card.target          = task.target
+		card.progress        = prog.progress if prog != null else 0
+		card.is_claimed      = prog.claimed  if prog != null else false
+		card.reward_currency = task.reward_currency
+		card.reward_xp       = task.reward_xp
+		card.reward_item_id  = task.reward_item_id
+		card.reward_item_qty = task.reward_item_qty
 		var task_id := task.id
 		card.claim_pressed.connect(func() -> void: _on_claim_pressed(task_id))
 		_card_list.add_child(card)

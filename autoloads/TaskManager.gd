@@ -14,10 +14,12 @@ var _delta_acc:        float            = 0.0
 var _last_reset_epoch: int              = 0
 var _claim_in_flight:  bool             = false
 var _progress_dirty:   bool             = false
+var _heartbeat_in_flight: bool          = false
 
-var _svc:        DailyTaskService
-var _http_fetch: HTTPRequest
-var _http_claim: HTTPRequest
+var _svc:            DailyTaskService
+var _http_fetch:     HTTPRequest
+var _http_claim:     HTTPRequest
+var _http_heartbeat: HTTPRequest
 
 func _ready() -> void:
 	_svc = _DailyTaskServiceScript.new()
@@ -31,6 +33,9 @@ func _ready() -> void:
 		_http_claim = HTTPRequest.new()
 		_http_claim.timeout = 15.0
 		add_child(_http_claim)
+		_http_heartbeat = HTTPRequest.new()
+		_http_heartbeat.timeout = 15.0
+		add_child(_http_heartbeat)
 
 	GardenManager.care_completed.connect(_on_care_completed)
 	GardenManager.harvest_completed.connect(_on_harvest_completed)
@@ -43,6 +48,8 @@ func _process(delta: float) -> void:
 	if _delta_acc >= 60.0:
 		_delta_acc -= 60.0
 		_on_progress_increment(DailyTask.ONLINE_TIME, "", 1)
+		if not use_mock:
+			_send_online_heartbeat()
 	if _progress_dirty:
 		_progress_dirty = false
 		_save_progress()
@@ -83,11 +90,19 @@ func _on_login_succeeded() -> void:
 
 func _on_logout() -> void:
 	set_process(false)
+	_save_progress()
 	_tasks            = []
 	_progress         = {}
 	_delta_acc        = 0.0
 	_last_reset_epoch = 0
 	_claim_in_flight  = false
+
+func _send_online_heartbeat() -> void:
+	if _heartbeat_in_flight:
+		return
+	_heartbeat_in_flight = true
+	await _svc.record_online_time_async(_http_heartbeat, UserManager.base_url, UserManager.get_access_token(), 1)
+	_heartbeat_in_flight = false
 
 func _on_care_completed(_plot_id: String, action_type: int) -> void:
 	var subtype: String = ""
