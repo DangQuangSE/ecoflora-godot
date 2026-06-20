@@ -68,14 +68,25 @@ func _on_claim_pressed(task_id: String) -> void:
 	var card = _card_map.get(task_id, null)
 	if card != null:
 		card.disable_claim()
+	var task_title := _task_title(task_id)
 	TaskManager.claim_task_async(task_id)
-	TaskManager.claim_result_received.connect(
-		func(id: String, success: bool) -> void:
-			if id != task_id:
-				return
-			if not success:
-				var c = _card_map.get(task_id, null)
-				if c != null:
-					c.enable_claim(),
-		CONNECT_ONE_SHOT
-	)
+	var on_claim_result := func(id: String, success: bool) -> void:
+		if id != task_id:
+			return
+		var msg := "Nhận thưởng thất bại. Vui lòng thử lại."
+		var duration := 2.6
+		if success:
+			msg = "Đã nhận thưởng: %s" % task_title
+			duration = 2.2
+		Toast.show_message(self, msg, duration)
+		if not success:
+			var c = _card_map.get(task_id, null)
+			if c != null:
+				c.enable_claim()
+	TaskManager.claim_result_received.connect(on_claim_result, CONNECT_ONE_SHOT)
+
+func _task_title(task_id: String) -> String:
+	for task: DailyTask in TaskManager.get_tasks():
+		if task.id == task_id:
+			return task.title
+	return "nhiệm vụ"

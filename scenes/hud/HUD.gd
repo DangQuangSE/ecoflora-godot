@@ -221,7 +221,7 @@ func _on_recall_pressed() -> void:
 	DecoManager.recall_deco_async(pid)
 
 func _sync_modal_chrome() -> void:
-	var next_modal_open := (_inv_panel != null and _inv_panel.visible) \
+	var next_modal_open: bool = (_inv_panel != null and _inv_panel.visible) \
 		or (_shop_panel != null and _shop_panel.visible) \
 		or (_task_panel != null and _task_panel.visible) \
 		or (_settings_panel != null and _settings_panel.visible)

@@ -82,7 +82,7 @@ func _on_register_link_pressed() -> void:
 
 func show_error(message: String) -> void:
 	_set_loading(false)
-	BaseDialog.show_alert(self, "Lỗi Đăng Nhập", message)
+	_show_error(message)
 
 func on_login_success() -> void:
 	_loading_label.text = "Đang tải..."
@@ -90,13 +90,13 @@ func on_login_success() -> void:
 
 func _show_success(msg: String) -> void:
 	_error_label.visible = false
-	_success_label.text = msg
-	_success_label.visible = true
+	_success_label.visible = false
+	Toast.show_message(self, msg, 2.4)
 
 func _show_error(msg: String) -> void:
 	_success_label.visible = false
-	_error_label.text = msg
-	_error_label.visible = true
+	_error_label.visible = false
+	Toast.show_message(self, msg, 2.4)
 
 func _set_loading(active: bool) -> void:
 	_loading.visible = active

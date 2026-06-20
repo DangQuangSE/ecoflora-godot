@@ -210,10 +210,10 @@ func _maybe_reset_progress(server_time: int) -> void:
 				_progress.erase(task.id)
 
 func _get_daily_period_start(unix_time: int) -> int:
-	return (unix_time / 86400) * 86400
+	return floori(float(unix_time) / 86400.0) * 86400
 
 func _get_weekly_period_start(unix_time: int) -> int:
-	var days := unix_time / 86400
+	var days := floori(float(unix_time) / 86400.0)
 	# 1970-01-01 = Thursday; offset +3 to make Monday = 0
 	var days_since_monday := (days + 3) % 7
 	return (days - days_since_monday) * 86400
