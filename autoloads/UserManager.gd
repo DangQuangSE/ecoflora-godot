@@ -20,6 +20,7 @@ signal profile_updated
 
 @export var use_mock: bool = false
 @export var base_url: String = "https://ecocham.xyz"
+@export var profile_poll_interval_sec: float = 30.0
 
 const _XP_TABLE: Dictionary = {
 	"harvest_anthurium_bloom":         100,
@@ -45,6 +46,7 @@ var _vitality_claim_http: HTTPRequest
 var _shop_http: HTTPRequest
 var _shop_purchase_http: HTTPRequest
 var _vitality_poll_timer: Timer
+var _profile_poll_timer: Timer
 var _avatar_http: HTTPRequest
 var _rename_http: HTTPRequest
 var _refresh_http: HTTPRequest
@@ -117,6 +119,13 @@ func _ready() -> void:
 	_vitality_poll_timer.one_shot = false
 	_vitality_poll_timer.timeout.connect(_poll_vitality_status)
 	add_child(_vitality_poll_timer)
+
+	_profile_poll_timer = Timer.new()
+	_profile_poll_timer.wait_time = profile_poll_interval_sec
+	_profile_poll_timer.autostart = true
+	_profile_poll_timer.one_shot = false
+	_profile_poll_timer.timeout.connect(_poll_profile)
+	add_child(_profile_poll_timer)
 
 	if not use_mock and not base_url.begins_with("https://") \
 			and not base_url.begins_with("http://localhost") \
@@ -443,6 +452,11 @@ func _poll_vitality_status() -> void:
 	if _profile.is_vitality_ready():
 		vitality_ready.emit()
 
+func _poll_profile() -> void:
+	if use_mock or not is_logged_in():
+		return
+	await fetch_profile_async()
+
 func get_shop_catalog_async(category: String = "") -> Array[ShopItem]:
 	if use_mock:
 		return []
@@ -497,12 +511,15 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
 		if _vitality_poll_timer:
 			_vitality_poll_timer.stop()
+		if _profile_poll_timer:
+			_profile_poll_timer.stop()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN:
 		if _vitality_poll_timer:
 			_vitality_poll_timer.start()
 			_poll_vitality_status()
-		if is_logged_in():
-			await fetch_profile_async()
+		if _profile_poll_timer:
+			_profile_poll_timer.start()
+		await _poll_profile()
 
 func save_avatar_index(idx: int) -> void:
 	var config := ConfigFile.new()
