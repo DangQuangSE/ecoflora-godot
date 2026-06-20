@@ -108,10 +108,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -280.0
-offset_top = -360.0
-offset_right = 280.0
-offset_bottom = 360.0
+offset_left = -350.0
+offset_top = -525.0
+offset_right = 350.0
+offset_bottom = 525.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -132,13 +132,13 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 42.0
-offset_top = 38.0
-offset_right = -42.0
-offset_bottom = -44.0
+offset_left = 56.0
+offset_top = 56.0
+offset_right = -56.0
+offset_bottom = -70.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 12
 
 [node name="Header" type="MarginContainer" parent="Panel/VBox"]
 layout_mode = 2
@@ -155,13 +155,18 @@ theme_override_constants/separation = 8
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Nhiệm vụ hàng ngày"
-theme_override_colors/font_color = Color(0.43, 0.27, 0.11, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_colors/font_color = Color(0.30, 0.16, 0.05, 1)
+theme_override_colors/font_outline_color = Color(1, 0.93, 0.78, 0.95)
+theme_override_colors/font_shadow_color = Color(0.34, 0.19, 0.06, 0.28)
+theme_override_constants/outline_size = 4
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
 vertical_alignment = 1
 
 [node name="CloseBtn" type="Button" parent="Panel/VBox/Header/HeaderRow"]
 layout_mode = 2
-custom_minimum_size = Vector2(42, 42)
+custom_minimum_size = Vector2(52, 52)
 flat = true
 
 [node name="Icon" type="TextureRect" parent="Panel/VBox/Header/HeaderRow/CloseBtn"]
@@ -188,7 +193,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="DailyBtn" type="Button" parent="Panel/VBox/TabMargin/TabRow"]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -198,14 +203,14 @@ theme_override_colors/font_color = Color(0.34, 0.22, 0.10, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.20, 0.12, 0.04, 1)
 theme_override_colors/font_focus_color = Color(0.35, 0.25, 0.15, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
 theme_override_styles/hover = SubResource("StyleBoxFlat_tab_normal")
 theme_override_styles/focus = SubResource("StyleBoxFlat_tab_normal")
 
 [node name="WeeklyBtn" type="Button" parent="Panel/VBox/TabMargin/TabRow"]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -214,7 +219,7 @@ theme_override_colors/font_color = Color(0.34, 0.22, 0.10, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.20, 0.12, 0.04, 1)
 theme_override_colors/font_focus_color = Color(0.35, 0.25, 0.15, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
 theme_override_styles/hover = SubResource("StyleBoxFlat_tab_normal")
@@ -235,4 +240,4 @@ size_flags_vertical = 3
 [node name="CardList" type="VBoxContainer" parent="Panel/VBox/ScrollMargin/Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 6
+theme_override_constants/separation = 10

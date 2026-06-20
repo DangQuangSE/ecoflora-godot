@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://dailytaskcard01"]
 
 [ext_resource type="Script" path="res://scenes/daily_task/TaskCard.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/icon/xp.png" id="2_xp"]
+[ext_resource type="Texture2D" path="res://assets/icon/coin.PNG" id="3_coin"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(1.0, 0.95, 0.84, 0.94)
@@ -73,40 +75,111 @@ corner_radius_top_right = 10
 corner_radius_bottom_right = 10
 corner_radius_bottom_left = 10
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_reward_chip"]
+bg_color = Color(1, 0.98, 0.88, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 2
+border_color = Color(0.72, 0.54, 0.28, 0.75)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 5.0
+content_margin_right = 6.0
+content_margin_top = 2.0
+content_margin_bottom = 3.0
+
 [node name="TaskCard" type="PanelContainer"]
-custom_minimum_size = Vector2(0, 82)
+custom_minimum_size = Vector2(0, 104)
 script = ExtResource("1_script")
 theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 12
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
 
 [node name="HBox" type="HBoxContainer" parent="Margin"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 16
 
 [node name="Info" type="VBoxContainer" parent="Margin/HBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-theme_override_constants/separation = 6
+theme_override_constants/separation = 8
 
 [node name="Title" type="Label" parent="Margin/HBox/Info"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.34, 0.20, 0.08, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.26, 0.13, 0.04, 1)
+theme_override_colors/font_outline_color = Color(1, 0.94, 0.80, 0.9)
+theme_override_colors/font_shadow_color = Color(0.28, 0.14, 0.04, 0.22)
+theme_override_constants/outline_size = 2
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 19
 text = "Nhiệm vụ"
 text_overrun_behavior = 3
 
-[node name="RewardLabel" type="Label" parent="Margin/HBox/Info"]
+[node name="RewardRow" type="HBoxContainer" parent="Margin/HBox/Info"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="XpReward" type="PanelContainer" parent="Margin/HBox/Info/RewardRow"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_reward_chip")
+
+[node name="Content" type="HBoxContainer" parent="Margin/HBox/Info/RewardRow/XpReward"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Margin/HBox/Info/RewardRow/XpReward/Content"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("2_xp")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Margin/HBox/Info/RewardRow/XpReward/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.38, 0.25, 0.09, 1)
+theme_override_font_sizes/font_size = 15
+text = "+0"
+vertical_alignment = 1
+
+[node name="CoinReward" type="PanelContainer" parent="Margin/HBox/Info/RewardRow"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_reward_chip")
+
+[node name="Content" type="HBoxContainer" parent="Margin/HBox/Info/RewardRow/CoinReward"]
+layout_mode = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Icon" type="TextureRect" parent="Margin/HBox/Info/RewardRow/CoinReward/Content"]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+texture = ExtResource("3_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Value" type="Label" parent="Margin/HBox/Info/RewardRow/CoinReward/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.38, 0.25, 0.09, 1)
+theme_override_font_sizes/font_size = 15
+text = "+0"
+vertical_alignment = 1
+
+[node name="ItemRewardLabel" type="Label" parent="Margin/HBox/Info/RewardRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.42, 0.18, 1)
-theme_override_font_sizes/font_size = 11
-text = "Thưởng: ..."
+theme_override_font_sizes/font_size = 14
+text = "+0 vật phẩm"
 text_overrun_behavior = 3
 
 [node name="ProgressRow" type="HBoxContainer" parent="Margin/HBox/Info"]
@@ -117,7 +190,7 @@ theme_override_constants/separation = 6
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-custom_minimum_size = Vector2(0, 13)
+custom_minimum_size = Vector2(0, 16)
 show_percentage = false
 theme_override_styles/fill = SubResource("StyleBoxFlat_bar_fill")
 theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
@@ -125,12 +198,12 @@ theme_override_styles/background = SubResource("StyleBoxFlat_bar_bg")
 [node name="ProgressLabel" type="Label" parent="Margin/HBox/Info/ProgressRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.40, 0.27, 0.12, 1)
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 14
 text = "0 / 1"
 
 [node name="ClaimButton" type="Button" parent="Margin/HBox"]
 layout_mode = 2
-custom_minimum_size = Vector2(98, 34)
+custom_minimum_size = Vector2(116, 42)
 size_flags_vertical = 4
 text = "Nhận"
 disabled = true
@@ -138,7 +211,7 @@ theme_override_colors/font_color = Color(1.0, 0.94, 0.75, 1)
 theme_override_colors/font_hover_color = Color(1.0, 0.97, 0.82, 1)
 theme_override_colors/font_pressed_color = Color(1.0, 0.97, 0.82, 1)
 theme_override_colors/font_disabled_color = Color(0.78, 0.73, 0.65, 1)
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = SubResource("StyleBoxFlat_claim_normal")
 theme_override_styles/hover = SubResource("StyleBoxFlat_claim_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_claim_normal")

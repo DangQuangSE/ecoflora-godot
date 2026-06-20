@@ -10,6 +10,7 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _tips_panel: TipsPanelNode     = $TipsPanel
 @onready var _shop_panel: ShopScene         = $ShopScene
 @onready var _task_panel: DailyTaskPanel    = $DailyTaskPanel
+@onready var _settings_panel: SettingsPanel = $SettingsPanel
 @onready var _vitality_bar: VitalityBar     = $VitalityBar
 @onready var _selected_slot: Panel      = $SelectedItemSlot
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
@@ -17,6 +18,7 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _harvest_btn: Button       = $HarvestButton
 @onready var _shop_btn: Button          = $ShopButton
 @onready var _task_btn: Button          = $TaskButton
+@onready var _settings_btn: Button      = $SettingsButton
 @onready var _edit_btn: Button          = $EditModeButton
 @onready var _save_btn: Button          = $SaveButton
 @onready var _recall_btn: Button        = $RecallDecoButton
@@ -52,6 +54,13 @@ func _ready() -> void:
 			var task_node := _task_btn.get_node_or_null("TaskIcon") as TextureRect
 			if task_node:
 				task_node.texture = load(task_icon_path)
+	if _settings_btn:
+		_settings_btn.pressed.connect(_open_settings)
+		var settings_icon_path := "res://assets/icon/setting.png"
+		if ResourceLoader.exists(settings_icon_path):
+			var settings_node := _settings_btn.get_node_or_null("SettingsIcon") as TextureRect
+			if settings_node:
+				settings_node.texture = load(settings_icon_path)
 	_edit_btn.visible = false
 	_save_btn.visible = false
 	_recall_btn.visible = false
@@ -61,6 +70,8 @@ func _ready() -> void:
 		_vitality_bar.tips_pressed.connect(_toggle_tips)
 	_inv_panel.visibility_changed.connect(_sync_modal_chrome)
 	_shop_panel.visibility_changed.connect(_sync_modal_chrome)
+	_task_panel.visibility_changed.connect(_sync_modal_chrome)
+	_settings_panel.visibility_changed.connect(_sync_modal_chrome)
 	_sync_modal_chrome()
 
 func _on_joystick_direction(dir: Vector2) -> void:
@@ -77,6 +88,8 @@ func _toggle_inventory() -> void:
 	else:
 		_hide_tips_if_visible()
 		_hide_shop_if_visible()
+		_hide_tasks_if_visible()
+		_hide_settings_if_visible()
 		_inv_panel.show_panel()
 
 
@@ -91,6 +104,8 @@ func _toggle_tips() -> void:
 	else:
 		_hide_inventory_if_visible()
 		_hide_shop_if_visible()
+		_hide_tasks_if_visible()
+		_hide_settings_if_visible()
 		_tips_panel.show_panel()
 
 
@@ -116,6 +131,20 @@ func _hide_shop_if_visible() -> void:
 	if _shop_panel != null and _shop_panel.visible:
 		_shop_panel.hide()
 
+
+func _hide_tasks_if_visible() -> void:
+	if _task_panel != null and _task_panel.visible:
+		_task_panel.hide()
+
+
+func _hide_settings_if_visible() -> void:
+	if _settings_panel == null or not _settings_panel.visible:
+		return
+	if _settings_panel.has_method("hide_panel"):
+		_settings_panel.call("hide_panel")
+	else:
+		_settings_panel.hide()
+
 func _on_item_selected(item: InventoryItem) -> void:
 	if item != null:
 		_selected_icon.texture = ItemIconRegistry.get_icon(item.get_reference_id())
@@ -136,6 +165,8 @@ func open_shop(tab_idx: int = 0) -> void:
 		return
 	_hide_tips_if_visible()
 	_hide_inventory_if_visible()
+	_hide_tasks_if_visible()
+	_hide_settings_if_visible()
 	_shop_panel.show_panel(tab_idx)
 
 func _open_shop() -> void:
@@ -144,7 +175,21 @@ func _open_shop() -> void:
 func _open_tasks() -> void:
 	if _task_panel == null:
 		return
+	_hide_tips_if_visible()
+	_hide_inventory_if_visible()
+	_hide_shop_if_visible()
+	_hide_settings_if_visible()
 	_task_panel.show_panel(0)
+
+
+func _open_settings() -> void:
+	if _settings_panel == null:
+		return
+	_hide_tips_if_visible()
+	_hide_inventory_if_visible()
+	_hide_shop_if_visible()
+	_hide_tasks_if_visible()
+	_settings_panel.show_panel()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _recall_btn.visible:
@@ -176,7 +221,10 @@ func _on_recall_pressed() -> void:
 	DecoManager.recall_deco_async(pid)
 
 func _sync_modal_chrome() -> void:
-	var next_modal_open := (_inv_panel != null and _inv_panel.visible) or (_shop_panel != null and _shop_panel.visible)
+	var next_modal_open := (_inv_panel != null and _inv_panel.visible) \
+		or (_shop_panel != null and _shop_panel.visible) \
+		or (_task_panel != null and _task_panel.visible) \
+		or (_settings_panel != null and _settings_panel.visible)
 	if next_modal_open and not _modal_open:
 		_edit_was_visible = _edit_btn.visible
 		_save_was_visible = _save_btn.visible
@@ -187,6 +235,10 @@ func _sync_modal_chrome() -> void:
 	_harvest_btn.visible = not _modal_open
 	if _shop_btn:
 		_shop_btn.visible = not _modal_open
+	if _task_btn:
+		_task_btn.visible = not _modal_open
+	if _settings_btn:
+		_settings_btn.visible = not _modal_open
 	if _vitality_bar:
 		_vitality_bar.visible = not _modal_open
 

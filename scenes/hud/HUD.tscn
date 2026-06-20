@@ -14,6 +14,8 @@
 [ext_resource type="PackedScene" uid="uid://dailytaskpnl01" path="res://scenes/daily_task/DailyTaskPanel.tscn" id="10_taskpanel"]
 [ext_resource type="Texture2D" uid="uid://bjci1pjvrftfs" path="res://assets/icon/recall_deco.png" id="8_recall"]
 [ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="9_primary_button_script"]
+[ext_resource type="Texture2D" path="res://assets/icon/setting.png" id="11_setting"]
+[ext_resource type="PackedScene" path="res://scenes/hud/SettingsPanel.tscn" id="12_settingspanel"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_invbtn"]
 bg_color = Color(0.1, 0.14, 0.08, 0.88)
@@ -230,6 +232,33 @@ texture = ExtResource("5_task")
 expand_mode = 1
 stretch_mode = 5
 
+[node name="SettingsButton" type="Button" parent="." unique_id=810000001]
+script = ExtResource("9_primary_button_script")
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -78.0
+offset_top = 52.0
+offset_right = -22.0
+offset_bottom = 108.0
+flat = true
+
+[node name="SettingsIcon" type="TextureRect" parent="SettingsButton" unique_id=810000002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("11_setting")
+expand_mode = 1
+stretch_mode = 5
+
 [node name="ShopButton" type="Button" parent="." unique_id=270074715]
 script = ExtResource("9_primary_button_script")
 anchors_preset = 1
@@ -321,6 +350,14 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="DailyTaskPanel" parent="." unique_id=800000002 instance=ExtResource("10_taskpanel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="SettingsPanel" parent="." instance=ExtResource("12_settingspanel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

@@ -27,6 +27,7 @@ func _ready() -> void:
 	if stream:
 		_footstep_player.stream = stream
 		_footstep_player.volume_db = AudioManager.get_footstep_volume_db()
+	AudioManager.volume_settings_changed.connect(_on_audio_volume_changed)
 
 func set_move_direction(dir: Vector2) -> void:
 	move_direction = dir
@@ -107,3 +108,8 @@ func _handle_footsteps() -> void:
 			_footstep_player.play()
 	elif _footstep_player.playing:
 		_footstep_player.stop()
+
+
+func _on_audio_volume_changed() -> void:
+	if _footstep_player != null:
+		_footstep_player.volume_db = AudioManager.get_footstep_volume_db()
