@@ -117,7 +117,7 @@ y_sort_enabled = true
 [node name="PlotAnchors" type="Node2D" parent="." unique_id=2000000000]
 
 [node name="Zone1" type="Node2D" parent="PlotAnchors" unique_id=2000000017]
-position = Vector2(-461, -75)
+position = Vector2(-465, -64)
 
 [node name="PlotAnchor_0" type="Marker2D" parent="PlotAnchors/Zone1" unique_id=2000000001]
 position = Vector2(360, 80)
@@ -142,12 +142,6 @@ position = Vector2(180, 194)
 
 [node name="PlotAnchor_7" type="Marker2D" parent="PlotAnchors/Zone1" unique_id=2000000008]
 position = Vector2(240, 232)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="PlotAnchors/Zone1" unique_id=280560358]
-position = Vector2(322, 145)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="PlotAnchors/Zone1/StaticBody2D" unique_id=64795709]
-polygon = PackedVector2Array(-166, 33, 40, -99, 145, -26, -87, 132, -177, 57)
 
 [node name="Zone2" type="Node2D" parent="PlotAnchors" unique_id=2000000018]
 position = Vector2(-338, -329)
