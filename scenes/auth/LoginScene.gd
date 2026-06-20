@@ -11,6 +11,7 @@ signal login_requested(account: String, password: String)
 @onready var _register_link: Button    = $LoginFrame/FormArea/FormContent/RegisterLink
 @onready var _loading: ColorRect       = $LoadingOverlay
 @onready var _loading_label: Label     = $LoadingOverlay/LoadingLabel
+@onready var _logo: Sprite2D           = $Logo
 
 const GARDEN_SCENE := "res://scenes/garden/GardenScene.tscn"
 const REGISTER_SCENE := "res://scenes/auth/RegisterScene.tscn"
@@ -24,6 +25,8 @@ func _ready() -> void:
 	_login_btn.pressed.connect(_on_login_pressed)
 	_register_link.pressed.connect(_on_register_link_pressed)
 	_password_field.gui_input.connect(_on_password_gui_input)
+	resized.connect(_layout_logo)
+	_layout_logo()
 
 	UserManager.login_succeeded.connect(on_login_success)
 	UserManager.login_failed.connect(show_error)
@@ -101,3 +104,6 @@ func _show_error(msg: String) -> void:
 func _set_loading(active: bool) -> void:
 	_loading.visible = active
 	_login_btn.disabled = active
+
+func _layout_logo() -> void:
+	_logo.position.x = size.x * 0.5

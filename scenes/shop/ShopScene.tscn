@@ -219,10 +219,18 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.5)
 
 [node name="ShopPanel" type="Control" parent="." unique_id=303886638]
-anchors_preset = 0
-offset_top = 390.0
-offset_right = 720.0
-offset_bottom = 1110.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -210.0
+offset_right = 360.0
+offset_bottom = 510.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ShopBg" type="TextureRect" parent="ShopPanel" unique_id=1846608832]
 layout_mode = 0
@@ -547,11 +555,18 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="ShopTitleLabel" type="Label" parent="." unique_id=500000030]
-layout_mode = 0
-offset_left = 254.0
-offset_top = 268.0
-offset_right = 474.0
-offset_bottom = 314.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -106.0
+offset_top = -332.0
+offset_right = 114.0
+offset_bottom = -286.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
 theme_override_colors/font_shadow_color = Color(0.18, 0.08, 0.02, 0.7)
 theme_override_constants/shadow_offset_x = 1
@@ -563,11 +578,18 @@ vertical_alignment = 1
 
 [node name="CloseButton" type="Button" parent="." unique_id=500000020]
 script = ExtResource("7_primary_button_script")
-layout_mode = 0
-offset_left = 665.0
-offset_top = 252.0
-offset_right = 711.0
-offset_bottom = 298.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 305.0
+offset_top = -348.0
+offset_right = 351.0
+offset_bottom = -302.0
+grow_horizontal = 2
+grow_vertical = 2
 flat = true
 
 [node name="Icon" type="TextureRect" parent="CloseButton"]

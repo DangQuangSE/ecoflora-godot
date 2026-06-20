@@ -14,6 +14,7 @@ const GARDEN_SCENE := "res://scenes/garden/GardenScene.tscn"
 @onready var _error_label: Label = $RegisterFrame/FormArea/FormContent/ErrorLabel
 @onready var _loading: ColorRect = $LoadingOverlay
 @onready var _loading_label: Label = $LoadingOverlay/LoadingLabel
+@onready var _logo: Sprite2D = $Logo
 
 func _ready() -> void:
 	SceneTransition.force_clear()
@@ -24,6 +25,8 @@ func _ready() -> void:
 	_register_btn.pressed.connect(_on_register_pressed)
 	_login_link.pressed.connect(_on_login_link_pressed)
 	_confirm_password_field.gui_input.connect(_on_confirm_password_gui_input)
+	resized.connect(_layout_logo)
+	_layout_logo()
 
 	UserManager.register_succeeded.connect(on_register_success)
 	UserManager.register_failed.connect(show_error)
@@ -109,3 +112,6 @@ func _show_error(msg: String) -> void:
 func _set_loading(active: bool) -> void:
 	_loading.visible = false
 	_register_btn.disabled = active
+
+func _layout_logo() -> void:
+	_logo.position.x = size.x * 0.5
