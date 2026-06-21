@@ -7,6 +7,8 @@ const LEVEL_THRESHOLDS: Array[int] = [0, 0, 500, 1500, 3000, 5000, 8000, 12000]
 const MAX_LEVEL: int = 7
 
 var username: String = ""
+var first_name: String = ""
+var last_name: String = ""
 var level: int = 1
 var currency: int = 0
 var current_xp: int = 0     # within-level XP for HUD bar display
@@ -16,6 +18,12 @@ var login_streak: int = 0
 var avatar_index: int = 0
 var join_date: String = ""
 var vitality_ready_at: int = 0  # unix timestamp; 0 = ready to claim
+
+func get_display_name() -> String:
+	var display := last_name.strip_edges()
+	if display.is_empty():
+		return "UserNoName"
+	return display
 
 # XP needed to go from current level to the next (for HUD bar max value)
 func xp_to_next_level() -> int:

@@ -57,9 +57,10 @@ func _exit_tree() -> void:
 
 func _refresh() -> void:
 	var p := UserManager.get_profile()
-	if p.username == "":
+	var display_name := p.get_display_name()
+	if display_name == "":
 		return
-	_name_label.text  = p.username
+	_name_label.text  = display_name
 	_level_label.text = "%d" % p.level
 	_xp_bar.max_value = p.xp_to_next_level()
 	_xp_bar.value     = p.current_xp

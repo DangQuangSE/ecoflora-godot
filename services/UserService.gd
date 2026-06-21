@@ -8,6 +8,8 @@ func parse_profile(data: Dictionary) -> UserProfile:
 		return UserProfile.new()
 	var p := UserProfile.new()
 	p.username      = str(data.get("username", ""))
+	p.first_name    = str(data.get("firstName", ""))
+	p.last_name     = str(data.get("lastName", ""))
 	var total_xp: int = int(data.get("currentXp", 0))
 	var lvl: int      = int(data.get("level", 1))
 	p.level           = lvl
