@@ -80,13 +80,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -170.0
-offset_right = 240.0
-offset_bottom = 170.0
+offset_left = -300.0
+offset_top = -210.0
+offset_right = 300.0
+offset_bottom = 210.0
 grow_horizontal = 2
 grow_vertical = 2
-pivot_offset = Vector2(240, 170)
+pivot_offset = Vector2(300, 210)
 
 [node name="Background" type="TextureRect" parent="DialogBox"]
 layout_mode = 1
@@ -103,10 +103,10 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -62.0
-offset_top = 32.0
-offset_right = -26.0
-offset_bottom = 68.0
+offset_left = -78.0
+offset_top = 40.0
+offset_right = -36.0
+offset_bottom = 82.0
 flat = true
 
 [node name="Icon" type="TextureRect" parent="DialogBox/CancelBtn"]
@@ -132,19 +132,19 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 70
-theme_override_constants/margin_right = 60
-theme_override_constants/margin_bottom = 80
+theme_override_constants/margin_left = 76
+theme_override_constants/margin_top = 92
+theme_override_constants/margin_right = 76
+theme_override_constants/margin_bottom = 92
 
 [node name="Layout" type="VBoxContainer" parent="DialogBox/Content"]
 layout_mode = 2
-theme_override_constants/separation = 15
+theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="DialogBox/Content/Layout"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 21
+theme_override_font_sizes/font_size = 23
 text = "Thông báo"
 horizontal_alignment = 1
 
@@ -157,7 +157,7 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.45098, 0.317647, 0.207843, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 18
 text = "Nội dung thông báo..."
 horizontal_alignment = 1
 autowrap_mode = 3
@@ -168,7 +168,7 @@ theme_override_constants/separation = 20
 alignment = 1
 
 [node name="ConfirmBtn" parent="DialogBox/Content/Layout/ButtonRow" instance=ExtResource("3_primary_button")]
-custom_minimum_size = Vector2(130, 44)
+custom_minimum_size = Vector2(160, 50)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Xác nhận"

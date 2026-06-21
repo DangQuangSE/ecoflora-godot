@@ -360,21 +360,24 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_savebtn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_savebtn")
 text = "Save"
 
-[node name="RecallDecoButton" type="Button" parent="." unique_id=700000001]
+[node name="RecallDecoButton" type="Button" parent="LeftIconGrid" unique_id=700000001]
 script = ExtResource("9_primary_button_script")
 visible = false
-offset_left = 16.0
-offset_top = 366.0
-offset_right = 84.0
-offset_bottom = 434.0
+custom_minimum_size = Vector2(78, 78)
+layout_mode = 2
 flat = true
 
-[node name="RecallIcon" type="TextureRect" parent="RecallDecoButton" unique_id=700000002]
-layout_mode = 0
-offset_left = 0.0
-offset_top = 0.0
-offset_right = 68.0
-offset_bottom = 68.0
+[node name="RecallIcon" type="TextureRect" parent="LeftIconGrid/RecallDecoButton" unique_id=700000002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 texture = ExtResource("8_recall")
 expand_mode = 1
