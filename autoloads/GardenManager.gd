@@ -192,7 +192,7 @@ func _register_be_icons() -> void:
 		var raw_name: String = str(item.get("name", "")).to_lower()
 		var icon_path: String
 		if "watering can" in raw_name:
-			icon_path = "res://assets/icon/watering_can.PNG"
+			icon_path = "res://assets/icon/watering_can.png"
 		elif "fertilizer" in raw_name:
 			icon_path = "res://assets/icon/fertilizer.png"
 		elif "pesticide" in raw_name:

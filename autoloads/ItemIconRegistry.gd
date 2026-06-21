@@ -9,7 +9,7 @@ func _ready() -> void:
 	_try_register("lotus",        "res://assets/flowers/lotus/lotus 3.png")
 	_try_register("rose",         "res://assets/flowers/rose/rose 3.png")
 	_try_register("periwinkle",   "res://assets/flowers/periwinkle/periwinkle 3.png")
-	_try_register("watering_can", "res://assets/icon/watering_can.PNG")
+	_try_register("watering_can", "res://assets/icon/watering_can.png")
 	_try_register("fertilizer",   "res://assets/icon/fertilizer.png")
 	_try_register("sickle",       "res://assets/icon/sickle.png")
 	_try_register("grass_fence",  "res://assets/shop/deco/grass_fence.png")
