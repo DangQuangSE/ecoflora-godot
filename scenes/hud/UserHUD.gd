@@ -74,6 +74,7 @@ func _on_currency_changed(new_amount: int) -> void:
 func _on_level_up(new_level: int) -> void:
 	_refresh()
 	_pending_levelup_max = max(_pending_levelup_max, new_level)
+	AudioManager.play_sfx("res://sounds/levelup.wav")
 	if not _is_animating_level_up:
 		_flush_levelup_anim()
 

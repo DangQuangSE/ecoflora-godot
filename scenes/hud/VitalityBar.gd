@@ -96,6 +96,7 @@ func _on_vitality_ready() -> void:
 func _on_vitality_claimed(reward_type: String, reward_amount: int) -> void:
 	_refresh_display()
 	_show_reward_popup(reward_type, reward_amount)
+	AudioManager.play_sfx("res://sounds/reward.wav")
 
 func _show_reward_popup(reward_type: String, reward_amount: int) -> void:
 	var msg := "Bạn nhận được: %s x%d" % [reward_type, reward_amount]

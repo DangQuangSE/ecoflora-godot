@@ -85,6 +85,7 @@ func place_deco_async(inventory_item_id: String, x: float, y: float) -> void:
 	temp.position_y       = y
 	_placements.append(temp)
 	deco_placed.emit(temp)
+	AudioManager.play_sfx("res://sounds/place-decor.wav")
 
 	# 2. Async sync
 	var confirmed: DecoPlacement
@@ -205,6 +206,12 @@ func has_deco_at(world_pos: Vector2) -> bool:
 			if rect.has_point(world_pos):
 				return true
 	return false
+
+func get_deco_scene(slug: String) -> PackedScene:
+	var custom_path := "res://scenes/decor/%s.tscn" % slug
+	if ResourceLoader.exists(custom_path):
+		return load(custom_path) as PackedScene
+	return preload("res://scenes/shared/DecoNode.tscn")
 
 func _find_placement(placement_id: String) -> DecoPlacement:
 	for p: Variant in _placements:

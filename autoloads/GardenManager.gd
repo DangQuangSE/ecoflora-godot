@@ -323,6 +323,8 @@ func _mock_care(plot_id: String, base_xp: int, action_type: int) -> void:
 	if template == null:
 		_show_toast("Không tìm thấy dữ liệu hoa.")
 		return
+	if action_type == 0:
+		AudioManager.play_sfx("res://sounds/watering.wav")
 	plot.is_pending_sync = true
 	var bonus := _get_synergy_bonus(plot_id)
 	var total := base_xp + bonus
@@ -400,6 +402,7 @@ func _care_apply_optimistic(plot: Plot, ref_id: String, base_xp: int, bonus: int
 	plot.current_plant.current_stage = template.compute_stage_for_xp(plot.current_plant.current_xp)
 	if action_value == 0:
 		plot.current_plant.last_watered_at = int(Time.get_unix_time_from_system())
+		AudioManager.play_sfx("res://sounds/watering.wav")
 	plant_xp_gained.emit(plot.id, xp_delta, bonus)
 	plots_updated.emit(_plots)
 

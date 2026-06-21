@@ -348,6 +348,7 @@ func _on_confirm_purchase() -> void:
 	if result.is_empty():
 		_show_toast("Mua thất bại!", false)
 	else:
+		AudioManager.play_sfx("res://sounds/buy-successfully.wav")
 		_show_toast("Đã mua %s ×%d!" % [item.name, qty], true)
 		await InventoryManager.refresh_async()
 		_refresh_card_affordability()
