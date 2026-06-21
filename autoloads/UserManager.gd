@@ -155,6 +155,9 @@ func get_auth_header() -> String:
 func login_async(account: String, password: String) -> bool:
 	if use_mock:
 		_token_store.access_token = "mock_token"
+		_profile.username = account
+		_profile.first_name = ""
+		_profile.last_name = "Player"
 		_emit_login_succeeded_once()
 		return true
 
@@ -589,35 +592,43 @@ func set_avatar_async(idx: int) -> void:  # intentional: callers may fire-and-fo
 		profile_updated.emit()
 		push_warning("UserManager.set_avatar_async: BE sync failed (HTTP %d), reverted to %d" % [status_code, prev_idx])
 
-func set_username_async(new_name: String) -> void:
+func set_name_async(new_name: String) -> void:
 	if _rename_in_flight:
 		return
 	new_name = new_name.strip_edges()
-	if new_name.is_empty() or new_name == _profile.username:
+	if new_name.is_empty() or new_name == _profile.get_display_name():
 		return
-	var prev_name := _profile.username
-	_profile.username = new_name
+	var prev_first := _profile.first_name
+	var prev_last := _profile.last_name
+	_profile.first_name = ""
+	_profile.last_name = new_name
 	profile_updated.emit()
 	if use_mock:
 		return
 	_rename_in_flight = true
-	var body := JSON.stringify({"userName": new_name})
+	var body := JSON.stringify({
+		"firstName": "",
+		"lastName": new_name,
+		"userName": _profile.username
+	})
 	var headers := HttpHelper.make_headers(_token_store.access_token if _token_store else "")
 	headers.append("Content-Type: application/json")
 	var err := _rename_http.request(base_url + "/api/auth/profile", headers, HTTPClient.METHOD_PUT, body)
 	if err != OK:
-		_profile.username = prev_name
+		_profile.first_name = prev_first
+		_profile.last_name = prev_last
 		profile_updated.emit()
 		_rename_in_flight = false
-		push_warning("UserManager.set_username_async: request error %d" % err)
+		push_warning("UserManager.set_name_async: request error %d" % err)
 		return
 	var raw: Variant = await _rename_http.request_completed
 	_rename_in_flight = false
 	var status_code: int = raw[1]
 	if status_code != 200:
-		_profile.username = prev_name
+		_profile.first_name = prev_first
+		_profile.last_name = prev_last
 		profile_updated.emit()
-		push_warning("UserManager.set_username_async: BE sync failed HTTP %d" % status_code)
+		push_warning("UserManager.set_name_async: BE sync failed HTTP %d" % status_code)
 
 func _decode_raw(raw: Variant, context: String) -> Dictionary:
 	var http_result: int       = raw[0]

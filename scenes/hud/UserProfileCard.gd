@@ -90,9 +90,10 @@ func close() -> void:
 
 func _refresh_data() -> void:
 	var p := UserManager.get_profile()
-	if p.username.is_empty():
+	var display_name := p.get_display_name()
+	if display_name.is_empty():
 		return
-	_username_label.text  = p.username
+	_username_label.text  = display_name
 	_level_badge.text     = "Lv. " + str(p.level)
 	_join_date_label.text = _format_join_date(p.join_date)
 	_level_value.text     = str(p.level)
@@ -144,7 +145,7 @@ func _enter_rename_mode() -> void:
 	if _avatar_picker.visible:
 		return
 	_username_row.visible = false
-	_rename_edit.text = UserManager.get_profile().username
+	_rename_edit.text = UserManager.get_profile().get_display_name()
 	_rename_row.visible = true
 	_rename_edit.grab_focus()
 	_rename_edit.select_all()
@@ -156,8 +157,8 @@ func _exit_rename_mode() -> void:
 func _on_rename_save() -> void:
 	var new_name := _rename_edit.text.strip_edges()
 	_exit_rename_mode()
-	if not new_name.is_empty() and new_name != UserManager.get_profile().username:
-		UserManager.set_username_async(new_name)
+	if not new_name.is_empty() and new_name != UserManager.get_profile().get_display_name():
+		UserManager.set_name_async(new_name)
 
 func _on_avatar_frame_input(event: InputEvent) -> void:
 	if (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT) \
