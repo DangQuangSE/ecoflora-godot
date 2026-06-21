@@ -8,7 +8,6 @@ extends Control
 @onready var _redeem_btn: Button = $DialogBox/Content/Layout/ButtonRow/RedeemBtn
 
 const _COLOR_ERROR := Color(0.8, 0.2, 0.2)
-const _COLOR_SUCCESS := Color(0.2, 0.6, 0.2)
 
 func _ready() -> void:
 	_close_btn.pressed.connect(_on_close_pressed)
@@ -39,11 +38,9 @@ func _on_redeem_result(success: bool, message: String) -> void:
 	if not is_inside_tree():
 		return
 	if success:
-		_show_status(message, _COLOR_SUCCESS)
+		# Reward feedback is shown via Toast (GiftCodeManager), close immediately.
 		_set_busy(false)
-		await get_tree().create_timer(0.8).timeout
-		if is_inside_tree():
-			queue_free()
+		queue_free()
 		return
 	_show_status(message, _COLOR_ERROR)
 	_set_busy(GiftCodeManager.is_redeem_in_flight())

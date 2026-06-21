@@ -18,6 +18,7 @@ extends Control
 @onready var _tiktok_btn: Button = $Panel/VBox/SupportPage/Rows/TiktokBtn
 @onready var _youtube_btn: Button = $Panel/VBox/SupportPage/Rows/YoutubeBtn
 @onready var _terms_btn: Button = $Panel/VBox/SettingsPage/Rows/TermsBtn
+@onready var _gift_code_btn: Button = $Panel/VBox/SettingsPage/Rows/GiftCodeBtn
 
 const _EMAIL := "treesforfuture.eco@gmail.com"
 const _FACEBOOK_URL := "https://www.facebook.com/profile.php?id=61581382018162"
@@ -41,6 +42,7 @@ func _ready() -> void:
 	_tiktok_btn.pressed.connect(func() -> void: OS.shell_open(_TIKTOK_URL))
 	_youtube_btn.pressed.connect(func() -> void: OS.shell_open(_YOUTUBE_URL))
 	_terms_btn.pressed.connect(_on_terms_pressed)
+	_gift_code_btn.pressed.connect(_on_gift_code_pressed)
 	_sync_from_audio()
 	_show_tab(true)
 
@@ -109,3 +111,7 @@ func _show_tab(show_settings: bool) -> void:
 
 func _on_terms_pressed() -> void:
 	pass
+
+
+func _on_gift_code_pressed() -> void:
+	GiftCodeRedeemDialog.show_dialog(get_tree().root)

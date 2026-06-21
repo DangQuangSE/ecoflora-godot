@@ -3,6 +3,9 @@ extends Node
 signal redeem_result_received(success: bool, message: String)
 
 const REWARD_TYPE_CURRENCY: int = 0
+const REWARD_TYPE_ITEM: int = 1
+const REWARD_TYPE_FLOWER_SEED: int = 2
+const REWARD_TYPE_DECOR: int = 3
 
 @export var use_mock: bool = false
 
@@ -56,10 +59,12 @@ func redeem_async(code: String) -> void:
 		await get_tree().process_frame
 		UserManager.update_currency(UserManager.get_profile().currency + 50)
 		InventoryManager.add_reward_item("mock_seed", "Mock Seed", 1)
+		Toast.show_message(self, "Phần thưởng: +50 xu, +1 vật phẩm", 2.6)
 		redeem_result_received.emit(true, "Đổi mã thành công (mock).")
 		_redeem_in_flight = false
 		return
 
+	var old_currency := UserManager.get_profile().currency
 	var result := await _svc.redeem_async(_http_redeem, UserManager.base_url, UserManager.get_access_token(), normalized_code)
 
 	if result.get("network_error", false):
@@ -81,7 +86,9 @@ func redeem_async(code: String) -> void:
 		return
 
 	var data: Dictionary = result.get("data", {})
-	_apply_redeem_result(data)
+	var reward_summary := _apply_redeem_result(data, old_currency)
+	if not reward_summary.is_empty():
+		Toast.show_message(self, reward_summary, 2.6)
 
 	var success_message: String = str(result.get("message", ""))
 	if success_message.is_empty():
@@ -89,24 +96,49 @@ func redeem_async(code: String) -> void:
 	redeem_result_received.emit(true, success_message)
 	_redeem_in_flight = false
 
-func _apply_redeem_result(data: Dictionary) -> void:
+# Applies server-granted rewards locally and returns a Toast-ready summary
+# string (e.g. "Phần thưởng: +500 xu, +2 vật phẩm"), or "" if nothing to show.
+func _apply_redeem_result(data: Dictionary, old_currency: int) -> String:
 	var new_currency: Variant = data.get("newCurrencyTotal", null)
 	if new_currency != null:
 		UserManager.update_currency(int(new_currency))
 
 	var granted_rewards: Variant = data.get("grantedRewards", [])
-	if not granted_rewards is Array:
-		return
+	var item_qty := 0
+	var seed_qty := 0
+	var decor_qty := 0
 
-	for reward: Variant in granted_rewards:
-		if not reward is Dictionary:
-			continue
-		var reward_dict: Dictionary = reward as Dictionary
-		var reward_type := int(reward_dict.get("rewardType", -1))
-		if reward_type == REWARD_TYPE_CURRENCY:
-			continue
-		var ref_id := str(reward_dict.get("refId", ""))
-		var quantity := int(reward_dict.get("quantity", 0))
-		if ref_id.is_empty() or quantity <= 0:
-			continue
-		InventoryManager.add_reward_item(ref_id, "", quantity)
+	if granted_rewards is Array:
+		for reward: Variant in granted_rewards:
+			if not reward is Dictionary:
+				continue
+			var reward_dict: Dictionary = reward as Dictionary
+			var reward_type := int(reward_dict.get("rewardType", -1))
+			var quantity := int(reward_dict.get("quantity", 0))
+			var ref_id := str(reward_dict.get("refId", ""))
+			if reward_type == REWARD_TYPE_CURRENCY or ref_id.is_empty() or quantity <= 0:
+				continue
+			InventoryManager.add_reward_item(ref_id, "", quantity)
+			match reward_type:
+				REWARD_TYPE_FLOWER_SEED:
+					seed_qty += quantity
+				REWARD_TYPE_DECOR:
+					decor_qty += quantity
+				REWARD_TYPE_ITEM, _:
+					item_qty += quantity
+
+	var parts: PackedStringArray = []
+	if new_currency != null:
+		var currency_gain := int(new_currency) - old_currency
+		if currency_gain > 0:
+			parts.append("+%d xu" % currency_gain)
+	if item_qty > 0:
+		parts.append("+%d vật phẩm" % item_qty)
+	if seed_qty > 0:
+		parts.append("+%d hạt giống" % seed_qty)
+	if decor_qty > 0:
+		parts.append("+%d trang trí" % decor_qty)
+
+	if parts.is_empty():
+		return ""
+	return "Phần thưởng: " + ", ".join(parts)
