@@ -220,7 +220,7 @@ text = "Cài đặt"
 theme_override_colors/font_color = Color(0.34, 0.22, 0.10, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.20, 0.12, 0.04, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 21
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
 theme_override_styles/hover = SubResource("StyleBoxFlat_tab_normal")
@@ -235,7 +235,7 @@ text = "Hỗ trợ"
 theme_override_colors/font_color = Color(0.34, 0.22, 0.10, 1)
 theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/font_hover_color = Color(0.20, 0.12, 0.04, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 21
 theme_override_styles/normal = SubResource("StyleBoxFlat_tab_normal")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_tab_active")
 theme_override_styles/hover = SubResource("StyleBoxFlat_tab_normal")
@@ -260,7 +260,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 21
 text = "Nhạc nền"
 vertical_alignment = 1
 
@@ -281,7 +281,7 @@ theme_override_icons/grabber_highlight = ExtResource("8_grabber")
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "100%"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -294,7 +294,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 21
 text = "Hiệu ứng"
 vertical_alignment = 1
 
@@ -315,7 +315,7 @@ theme_override_icons/grabber_highlight = ExtResource("8_grabber")
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "100%"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -328,7 +328,7 @@ theme_override_constants/separation = 14
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 21
 text = "Bước chân"
 vertical_alignment = 1
 
@@ -349,7 +349,7 @@ theme_override_icons/grabber_highlight = ExtResource("8_grabber")
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.26, 0.15, 0.06, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "100%"
 horizontal_alignment = 2
 vertical_alignment = 1
@@ -364,7 +364,7 @@ custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.34, 0.22, 0.10, 1)
 theme_override_colors/font_hover_color = Color(0.20, 0.12, 0.04, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 21
 theme_override_styles/normal = SubResource("StyleBoxFlat_terms_btn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_terms_btn_hover")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_terms_btn")
@@ -419,13 +419,13 @@ theme_override_constants/separation = 2
 [node name="Label" type="Label" parent="Panel/VBox/SupportPage/Rows/EmailBtn/Row/TextCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.28, 0.16, 0.06, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "Email"
 
 [node name="Value" type="Label" parent="Panel/VBox/SupportPage/Rows/EmailBtn/Row/TextCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.47, 0.31, 0.13, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "treesforfuture.eco@gmail.com"
 text_overrun_behavior = 3
 
@@ -465,13 +465,13 @@ theme_override_constants/separation = 2
 [node name="Label" type="Label" parent="Panel/VBox/SupportPage/Rows/FacebookBtn/Row/TextCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.28, 0.16, 0.06, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "Facebook"
 
 [node name="Value" type="Label" parent="Panel/VBox/SupportPage/Rows/FacebookBtn/Row/TextCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.47, 0.31, 0.13, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "E.C.O - Green Tech Gamification"
 text_overrun_behavior = 3
 
@@ -511,13 +511,13 @@ theme_override_constants/separation = 2
 [node name="Label" type="Label" parent="Panel/VBox/SupportPage/Rows/TiktokBtn/Row/TextCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.28, 0.16, 0.06, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "TikTok"
 
 [node name="Value" type="Label" parent="Panel/VBox/SupportPage/Rows/TiktokBtn/Row/TextCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.47, 0.31, 0.13, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "E.C.O Startup"
 text_overrun_behavior = 3
 
@@ -557,12 +557,12 @@ theme_override_constants/separation = 2
 [node name="Label" type="Label" parent="Panel/VBox/SupportPage/Rows/YoutubeBtn/Row/TextCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.28, 0.16, 0.06, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "YouTube"
 
 [node name="Value" type="Label" parent="Panel/VBox/SupportPage/Rows/YoutubeBtn/Row/TextCol"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.47, 0.31, 0.13, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "E.C.O - Green Tech Gamification"
 text_overrun_behavior = 3

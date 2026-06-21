@@ -58,11 +58,12 @@ func _ready() -> void:
 		_setup_panel.visible = true
 		_running_panel.visible = false
 		_result_panel.visible = false
-		_duration_slider.min_value = min_duration_minutes
-		_duration_slider.max_value = max_duration_minutes
+		_duration_slider.min_value = _snap_duration(float(min_duration_minutes))
+		_duration_slider.max_value = _snap_duration(float(max_duration_minutes))
 		_duration_slider.step = 5
-		_duration_slider.value = default_duration_minutes
-		_duration_label.text = "%d phút" % default_duration_minutes
+		var default_minutes := _snap_duration(float(default_duration_minutes))
+		_duration_slider.value = default_minutes
+		_duration_label.text = "%d phút" % default_minutes
 
 func _exit_tree() -> void:
 	if FocusManager.tick.is_connected(_on_tick):
@@ -77,16 +78,24 @@ func _exit_tree() -> void:
 		FocusManager.session_reward_received.disconnect(_on_reward_received)
 
 func _on_slider_changed(value: float) -> void:
-	_duration_label.text = "%d phút" % int(value)
+	var minutes := _snap_duration(value)
+	if int(_duration_slider.value) != minutes:
+		_duration_slider.set_value_no_signal(minutes)
+	_duration_label.text = "%d phút" % minutes
 
 func _on_start_pressed() -> void:
-	var duration_sec := int(_duration_slider.value) * 60
+	var total_min := _snap_duration(_duration_slider.value)
+	_duration_slider.set_value_no_signal(total_min)
+	var duration_sec := total_min * 60
 	FocusManager.start_session(duration_sec)
 	_setup_panel.visible = false
 	_running_panel.visible = true
-	var total_min := int(_duration_slider.value)
 	_countdown_label.text = "%02d:00" % total_min
 	_violation_label.text = "Vi phạm: 0 / %d" % FocusManager.MAX_VIOLATIONS
+
+func _snap_duration(value: float) -> int:
+	var snapped_minutes := int(round(value / 5.0) * 5.0)
+	return clampi(snapped_minutes, min_duration_minutes, max_duration_minutes)
 
 func _on_pause_pressed() -> void:
 	if FocusManager.is_paused():

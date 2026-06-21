@@ -173,9 +173,11 @@ func _register_be_icons() -> void:
 		if asset_name.is_empty():
 			continue
 		ItemIconRegistry.register_plant_name(tid, asset_name)
-		var icon_path := "res://assets/flowers/%s/%s 3.png" % [asset_name, asset_name]
-		if ResourceLoader.exists(icon_path):
-			ItemIconRegistry.register(tid, load(icon_path))
+		for ext: String in ["png", "PNG"]:
+			var icon_path := "res://assets/flowers/%s/%s 3.%s" % [asset_name, asset_name, ext]
+			if ResourceLoader.exists(icon_path):
+				ItemIconRegistry.register(tid, load(icon_path))
+				break
 
 	# Register item icons by UUID.
 	# First try image_url as a static-key alias (e.g. watering_can already pre-registered).

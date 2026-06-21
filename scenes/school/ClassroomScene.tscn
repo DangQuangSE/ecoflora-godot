@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bplayerscene1" path="res://scenes/shared/Player.tscn" id="2_player"]
 [ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
+[ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="5_primary_button"]
 
 [node name="ClassroomScene" type="Node2D" unique_id=1810569524]
 script = ExtResource("1_class")
@@ -24,7 +25,7 @@ position = Vector2(360, 700)
 [node name="FocusLayer" type="CanvasLayer" parent="." unique_id=500000001]
 layer = 5
 
-[node name="FocusButton" type="Button" parent="FocusLayer" unique_id=500000002]
+[node name="FocusButton" parent="FocusLayer" unique_id=500000002 instance=ExtResource("5_primary_button")]
 anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
