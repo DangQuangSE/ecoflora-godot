@@ -22,7 +22,7 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _settings_btn: Button      = $SettingsButton
 @onready var _edit_btn: Button          = $EditModeButton
 @onready var _save_btn: Button          = $SaveButton
-@onready var _recall_btn: Button        = $RecallDecoButton
+@onready var _recall_btn: Button        = $LeftIconGrid/RecallDecoButton
 
 var _recall_placement_id: String = ""
 var _modal_open := false
