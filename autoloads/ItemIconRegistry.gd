@@ -30,9 +30,6 @@ func get_icon(ref_id: String) -> Texture2D:
 		return _icons[ref_id]
 	return _fallback
 
-## Maps asset folder names that use uppercase file extensions.
-const _UPPERCASE_EXT: Array[String] = ["sun_flower"]
-
 ## Registers a name mapping for a BE UUID template so get_plant_texture can find the asset.
 func register_plant_name(template_id: String, asset_name: String) -> void:
 	_plant_name_by_id[template_id] = asset_name
@@ -47,10 +44,10 @@ func get_plant_texture(template_id: String, stage: int) -> Texture2D:
 	# Stage 1-3 → flower-specific sprite
 	var img_num: int = clampi(stage, 1, 3)
 	var name_key: String = _plant_name_by_id.get(template_id, template_id)
-	var ext: String = "PNG" if name_key in _UPPERCASE_EXT else "png"
-	var path := "res://assets/flowers/%s/%s %d.%s" % [name_key, name_key, img_num, ext]
-	if ResourceLoader.exists(path):
-		return load(path)
+	for ext: String in ["png", "PNG"]:
+		var path := "res://assets/flowers/%s/%s %d.%s" % [name_key, name_key, img_num, ext]
+		if ResourceLoader.exists(path):
+			return load(path)
 	return null
 
 func _try_register(ref_id: String, path: String) -> void:

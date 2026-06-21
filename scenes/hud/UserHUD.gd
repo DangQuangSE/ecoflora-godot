@@ -23,7 +23,7 @@ func _ready() -> void:
 	_coin_btn.pressed.connect(_on_coin_tapped)
 	_profile_btn.pressed.connect(_open_profile_card)
 	UserManager.profile_updated.connect(_on_profile_updated)
-	var coin_path := "res://assets/icon/coin.PNG"
+	var coin_path := "res://assets/icon/coin.png"
 	if ResourceLoader.exists(coin_path):
 		var coin_icon := get_node_or_null("CoinIcon") as TextureRect
 		if coin_icon:
@@ -102,7 +102,7 @@ func _spawn_levelup_label(new_level: int) -> void:
 	lbl.text = "Level Up! Lv.%d" % new_level
 	lbl.position = Vector2(0, -10)
 	lbl.add_theme_color_override("font_color", Color(0.4, 0.9, 0.3, 1))
-	lbl.add_theme_font_size_override("font_size", 13)
+	lbl.add_theme_font_size_override("font_size", 14)
 	lbl.mouse_filter = MOUSE_FILTER_IGNORE
 	add_child(lbl)
 	var tw := create_tween().set_parallel(true)

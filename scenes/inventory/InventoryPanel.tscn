@@ -130,25 +130,25 @@ theme_override_constants/separation = 0
 [node name="BtnAll" type="Button" parent="PanelRoot/VBox/Tabs" unique_id=913871881]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "Tất Cả"
 
 [node name="BtnSeed" type="Button" parent="PanelRoot/VBox/Tabs" unique_id=864241441]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "Hạt Giống"
 
 [node name="BtnItem" type="Button" parent="PanelRoot/VBox/Tabs" unique_id=1685209967]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "Vật Phẩm"
 
 [node name="BtnDecor" type="Button" parent="PanelRoot/VBox/Tabs" unique_id=1685209968]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "Trang Trí"
 
 [node name="Scroll" type="ScrollContainer" parent="PanelRoot/VBox" unique_id=470132555]
@@ -169,7 +169,7 @@ visible = false
 modulate = Color(1, 1, 1, 0.4)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 text = "Trống"
 horizontal_alignment = 1
 
@@ -194,7 +194,7 @@ theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
 theme_override_colors/font_shadow_color = Color(0.18, 0.08, 0.02, 0.7)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 29
 text = "Kho Đồ"
 horizontal_alignment = 1
 vertical_alignment = 1

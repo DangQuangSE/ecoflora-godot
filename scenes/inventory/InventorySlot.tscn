@@ -65,7 +65,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -26.0
 theme_override_colors/font_color = Color(0.25, 0.12, 0.04, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 horizontal_alignment = 2
 
 [node name="Highlight" type="Panel" parent="." unique_id=1102128486]

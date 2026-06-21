@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://shopscene001"]
 
 [ext_resource type="Script" uid="uid://dd8rmj3r1nq1d" path="res://scenes/shop/ShopScene.gd" id="1_shop"]
-[ext_resource type="Texture2D" path="res://assets/icon/coin.PNG" id="2_coin"]
+[ext_resource type="Texture2D" path="res://assets/icon/coin.png" id="2_coin"]
 [ext_resource type="Texture2D" uid="uid://dhugu051tjq67" path="res://assets/shop/shop_bg.png" id="4_shopbg"]
 [ext_resource type="Texture2D" uid="uid://b7rf077bkwfcq" path="res://assets/shop/shop_frame.png" id="4_xu4g4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="5_primary_button"]
@@ -219,10 +219,18 @@ grow_vertical = 2
 color = Color(0, 0, 0, 0.5)
 
 [node name="ShopPanel" type="Control" parent="." unique_id=303886638]
-anchors_preset = 0
-offset_top = 390.0
-offset_right = 720.0
-offset_bottom = 1110.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -360.0
+offset_top = -210.0
+offset_right = 360.0
+offset_bottom = 510.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ShopBg" type="TextureRect" parent="ShopPanel" unique_id=1846608832]
 layout_mode = 0
@@ -254,7 +262,7 @@ script = ExtResource("7_primary_button_script")
 custom_minimum_size = Vector2(0, 69)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "Hạt giống"
 
 [node name="CongCuBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=1352065426]
@@ -262,7 +270,7 @@ script = ExtResource("7_primary_button_script")
 custom_minimum_size = Vector2(0, 69)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "Công cụ"
 
 [node name="TrangTriBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=600000010]
@@ -270,7 +278,7 @@ script = ExtResource("7_primary_button_script")
 custom_minimum_size = Vector2(0, 69)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "Trang Trí"
 
 [node name="CoinBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=1760526262]
@@ -278,7 +286,7 @@ script = ExtResource("7_primary_button_script")
 custom_minimum_size = Vector2(0, 69)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "Coin"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="ShopPanel" unique_id=222153017]
@@ -313,7 +321,7 @@ alignment = 1
 script = ExtResource("7_primary_button_script")
 custom_minimum_size = Vector2(36, 28)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = SubResource("StyleBoxFlat_arrow_btn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_arrow_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_arrow_btn")
@@ -324,7 +332,7 @@ text = "◁"
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.22, 0.12, 0.04, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 text = "1/1"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -333,7 +341,7 @@ vertical_alignment = 1
 script = ExtResource("7_primary_button_script")
 custom_minimum_size = Vector2(36, 28)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = SubResource("StyleBoxFlat_arrow_btn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_arrow_pressed")
 theme_override_styles/hover = SubResource("StyleBoxFlat_arrow_btn")
@@ -355,7 +363,7 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.7, 0.9, 0.5, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = "Đang tải..."
 horizontal_alignment = 1
 
@@ -414,7 +422,7 @@ theme_override_colors/font_color = Color(0.18, 0.09, 0.02, 1)
 theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.3)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 25
 text = "Tên sản phẩm"
 horizontal_alignment = 1
 autowrap_mode = 3
@@ -422,7 +430,7 @@ autowrap_mode = 3
 [node name="ItemDescLabel" type="Label" parent="ConfirmDialog/VBox" unique_id=1682594468]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.38, 0.22, 0.08, 1)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 18
 horizontal_alignment = 1
 autowrap_mode = 3
 max_lines_visible = 2
@@ -445,13 +453,13 @@ stretch_mode = 5
 [node name="PriceLabel" type="Label" parent="ConfirmDialog/VBox/PriceRow" unique_id=1578511764]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.68, 0.42, 0.04, 1)
-theme_override_font_sizes/font_size = 19
+theme_override_font_sizes/font_size = 20
 text = "0"
 
 [node name="BalanceHint" type="Label" parent="ConfirmDialog/VBox/PriceRow" unique_id=1462513168]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.38, 0.22, 0.08, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 17
 text = " (số dư: 0)"
 
 [node name="QuantityRow" type="HBoxContainer" parent="ConfirmDialog/VBox" unique_id=842922223]
@@ -463,7 +471,7 @@ alignment = 1
 custom_minimum_size = Vector2(58, 50)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.95, 0.82, 1)
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 27
 theme_override_styles/normal = SubResource("StyleBoxFlat_qty_btn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_qty_btn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_qty_btn_hover")
@@ -473,7 +481,7 @@ text = "−"
 custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.18, 0.09, 0.02, 1)
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 27
 text = "1"
 horizontal_alignment = 1
 
@@ -481,7 +489,7 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(58, 50)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.95, 0.82, 1)
-theme_override_font_sizes/font_size = 26
+theme_override_font_sizes/font_size = 27
 theme_override_styles/normal = SubResource("StyleBoxFlat_qty_btn")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_qty_btn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_qty_btn_hover")
@@ -504,7 +512,7 @@ stretch_mode = 5
 [node name="TotalLabel" type="Label" parent="ConfirmDialog/VBox/TotalRow" unique_id=1353415082]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.62, 0.38, 0.04, 1)
-theme_override_font_sizes/font_size = 17
+theme_override_font_sizes/font_size = 18
 text = "Tổng: 0"
 
 [node name="ButtonRow" type="VBoxContainer" parent="ConfirmDialog/VBox" unique_id=2126814058]
@@ -516,7 +524,7 @@ custom_minimum_size = Vector2(230, 52)
 layout_mode = 2
 size_flags_horizontal = 4
 theme = ExtResource("6_global_theme")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 21
 text = "Mua ngay"
 
 [node name="CancelButton" type="Button" parent="ConfirmDialog" unique_id=1220137245]
@@ -547,27 +555,41 @@ expand_mode = 1
 stretch_mode = 5
 
 [node name="ShopTitleLabel" type="Label" parent="." unique_id=500000030]
-layout_mode = 0
-offset_left = 254.0
-offset_top = 268.0
-offset_right = 474.0
-offset_bottom = 314.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -106.0
+offset_top = -332.0
+offset_right = 114.0
+offset_bottom = -286.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
 theme_override_colors/font_shadow_color = Color(0.18, 0.08, 0.02, 0.7)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 29
 text = "Cửa hàng"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="CloseButton" type="Button" parent="." unique_id=500000020]
 script = ExtResource("7_primary_button_script")
-layout_mode = 0
-offset_left = 665.0
-offset_top = 252.0
-offset_right = 711.0
-offset_bottom = 298.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 305.0
+offset_top = -348.0
+offset_right = 351.0
+offset_bottom = -302.0
+grow_horizontal = 2
+grow_vertical = 2
 flat = true
 
 [node name="Icon" type="TextureRect" parent="CloseButton"]

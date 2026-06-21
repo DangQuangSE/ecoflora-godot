@@ -144,7 +144,7 @@ theme_override_constants/separation = 15
 [node name="TitleLabel" type="Label" parent="DialogBox/Content/Layout"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 21
 text = "Thông báo"
 horizontal_alignment = 1
 
@@ -157,7 +157,7 @@ horizontal_scroll_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.45098, 0.317647, 0.207843, 1)
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
 text = "Nội dung thông báo..."
 horizontal_alignment = 1
 autowrap_mode = 3
