@@ -34,6 +34,7 @@ TaskManager="*res://autoloads/TaskManager.gd"
 ItemIconRegistry="*res://autoloads/ItemIconRegistry.gd"
 WeatherManager="*res://autoloads/WeatherManager.gd"
 DecoManager="*res://autoloads/DecoManager.gd"
+GiftCodeManager="*res://autoloads/GiftCodeManager.gd"
 
 [display]
 
