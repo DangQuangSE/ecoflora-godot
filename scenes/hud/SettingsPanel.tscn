@@ -359,6 +359,18 @@ custom_minimum_size = Vector2(0, 300)
 layout_mode = 2
 size_flags_vertical = 3
 
+[node name="GiftCodeBtn" type="Button" parent="Panel/VBox/SettingsPage/Rows"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.34, 0.22, 0.10, 1)
+theme_override_colors/font_hover_color = Color(0.20, 0.12, 0.04, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_terms_btn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_terms_btn_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_terms_btn")
+theme_override_styles/focus = SubResource("StyleBoxFlat_terms_btn_hover")
+text = "Nhập mã quà tặng"
+
 [node name="TermsBtn" type="Button" parent="Panel/VBox/SettingsPage/Rows"]
 custom_minimum_size = Vector2(0, 52)
 layout_mode = 2
