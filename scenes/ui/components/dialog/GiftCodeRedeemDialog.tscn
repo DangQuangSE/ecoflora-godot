@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scenes/ui/components/dialog/GiftCodeRedeemDialog.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/frame/dialog/dialog.png" id="2_dialog_bg"]
 [ext_resource type="PackedScene" path="res://scenes/auth/components/AuthInput.tscn" id="3_auth_input"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="4_primary_button"]
 [ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="5_global_theme"]
+[ext_resource type="Texture2D" path="res://assets/icon/close.png" id="6_close_icon"]
 
 [node name="GiftCodeRedeemDialog" type="Control"]
 layout_mode = 3
@@ -60,7 +61,22 @@ offset_top = 32.0
 offset_right = -26.0
 offset_bottom = 68.0
 flat = true
-text = "X"
+
+[node name="Icon" type="TextureRect" parent="DialogBox/CloseBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("6_close_icon")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="Content" type="MarginContainer" parent="DialogBox"]
 layout_mode = 1

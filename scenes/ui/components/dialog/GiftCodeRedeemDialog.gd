@@ -46,13 +46,9 @@ func _on_redeem_result(success: bool, message: String) -> void:
 	_set_busy(GiftCodeManager.is_redeem_in_flight())
 
 func _on_close_pressed() -> void:
-	if GiftCodeManager.is_redeem_in_flight():
-		return
 	queue_free()
 
 func _on_backdrop_input(event: InputEvent) -> void:
-	if GiftCodeManager.is_redeem_in_flight():
-		return
 	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
 		queue_free()
 	elif event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
@@ -60,7 +56,6 @@ func _on_backdrop_input(event: InputEvent) -> void:
 
 func _set_busy(busy: bool) -> void:
 	_redeem_btn.disabled = busy
-	_close_btn.disabled = busy
 
 func _show_status(message: String, color: Color) -> void:
 	_status_label.text = message
@@ -68,5 +63,9 @@ func _show_status(message: String, color: Color) -> void:
 
 static func show_dialog(parent: Node) -> GiftCodeRedeemDialog:
 	var dialog: GiftCodeRedeemDialog = preload("res://scenes/ui/components/dialog/GiftCodeRedeemDialog.tscn").instantiate()
-	parent.add_child(dialog)
+	var canvas := CanvasLayer.new()
+	canvas.layer = 200
+	parent.get_tree().root.add_child(canvas)
+	canvas.add_child(dialog)
+	dialog.tree_exited.connect(canvas.queue_free)
 	return dialog

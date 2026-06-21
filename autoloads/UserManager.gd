@@ -54,6 +54,7 @@ var _request_in_flight: bool = false
 var _register_in_flight: bool = false
 var _profile_in_flight: bool = false
 var _claim_in_flight: bool = false
+var _vitality_status_in_flight: bool = false
 var _catalog_in_flight: bool = false
 var _purchase_in_flight: bool = false
 var _avatar_in_flight: bool = false
@@ -463,7 +464,11 @@ func request_vitality_status_async() -> void:
 func _poll_vitality_status() -> void:
 	if use_mock or _token_store.access_token.is_empty():
 		return
+	if _vitality_status_in_flight:
+		return
+	_vitality_status_in_flight = true
 	var data: Dictionary = await _vitality_service.get_status_async(base_url, _token_store.access_token)
+	_vitality_status_in_flight = false
 	if data.is_empty():
 		return
 	var seconds_until: int = int(data.get("secondsUntilReady", 0))
@@ -655,6 +660,9 @@ func _exit_tree() -> void:
 	if _claim_in_flight:
 		_vitality_claim_http.cancel_request()
 		_claim_in_flight = false
+	if _vitality_status_in_flight:
+		_vitality_http.cancel_request()
+		_vitality_status_in_flight = false
 	if _catalog_in_flight:
 		_shop_http.cancel_request()
 		_catalog_in_flight = false
