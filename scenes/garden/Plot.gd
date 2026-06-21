@@ -8,6 +8,16 @@ const WATER_COOLDOWN  := 60
 # Y offset (px, negative = up) per stage index [0, 1, 2, 3+]
 const _PLANT_Y_OFFSET: Array[float] = [0.0, 0.0, -28.0, -40.0]
 
+# Custom Y offsets per stage for plants with alignment issues in their sprite assets
+const _CUSTOM_PLANT_OFFSETS: Dictionary = {
+	"tulip": [0.0, -36.0, -28.0, -40.0],
+	"purple_bellflower": [0.0, -20.0, -28.0, -40.0],
+	"anthurium": [0.0, -16.0, -28.0, -32.0],
+	"rose": [0.0, -16.0, -28.0, -40.0],
+	"periwinkle": [0.0, -16.0, -28.0, -40.0],
+	"lotus": [0.0, 0.0, -28.0, -28.0]
+}
+
 @export var plot_id: String = ""
 
 @onready var plot_texture: Sprite2D = $PlotTexture
@@ -59,7 +69,9 @@ func _refresh_visual() -> void:
 	var tex := ItemIconRegistry.get_plant_texture(plant.flower_template_id, stage)
 	if tex != null:
 		plant_sprite.texture = tex
-		plant_sprite.position = Vector2(0.0, _PLANT_Y_OFFSET[clampi(stage, 0, _PLANT_Y_OFFSET.size() - 1)])
+		var plant_key := ItemIconRegistry.get_plant_base_name(plant.flower_template_id)
+		var offsets: Array = _CUSTOM_PLANT_OFFSETS.get(plant_key, _PLANT_Y_OFFSET)
+		plant_sprite.position = Vector2(0.0, offsets[clampi(stage, 0, offsets.size() - 1)])
 		plant_sprite.visible = true
 	else:
 		plant_sprite.visible = false
@@ -175,6 +187,8 @@ func is_point_inside(world_pos: Vector2) -> bool:
 
 func apply_drag_action() -> void:
 	if _current_plot == null or ZoneManager.is_plot_locked(plot_id):
+		return
+	if _current_plot.is_pending_sync:
 		return
 	var selected: InventoryItem = InventoryManager.get_selected_item()
 	if selected != null and selected.category != InventoryItem.Category.SEED:

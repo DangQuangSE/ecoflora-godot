@@ -34,6 +34,9 @@ func get_icon(ref_id: String) -> Texture2D:
 func register_plant_name(template_id: String, asset_name: String) -> void:
 	_plant_name_by_id[template_id] = asset_name
 
+func get_plant_base_name(template_id: String) -> String:
+	return _plant_name_by_id.get(template_id, template_id)
+
 func get_plant_texture(template_id: String, stage: int) -> Texture2D:
 	# Stage 0 = just planted → shared sprout sprite
 	if stage == 0:

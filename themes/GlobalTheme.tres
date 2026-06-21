@@ -1,11 +1,11 @@
 [gd_resource type="Theme" format=3 uid="uid://va43502fvf6a"]
 
-[ext_resource type="FontFile" uid="uid://mwofahrkmgmj" path="res://assets/fonts/Fredoka-VariableFont_wdth_wght.ttf" id="1_fredoka"]
+[ext_resource type="FontFile" uid="uid://o1mvimvrarw5" path="res://assets/fonts/Nunito-VariableFont_wght.ttf" id="1_nunito"]
 
 [sub_resource type="FontVariation" id="FontVariation_strong"]
-base_font = ExtResource("1_fredoka")
+base_font = ExtResource("1_nunito")
 variation_opentype = {
-"wght": 820.0
+"wght": 800.0
 }
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_disabled"]
@@ -200,7 +200,7 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 
 [sub_resource type="FontVariation" id="FontVariation_body"]
-base_font = ExtResource("1_fredoka")
+base_font = ExtResource("1_nunito")
 variation_opentype = {
 "wght": 700.0
 }
