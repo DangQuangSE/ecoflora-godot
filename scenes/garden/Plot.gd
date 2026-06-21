@@ -12,9 +12,10 @@ const _PLANT_Y_OFFSET: Array[float] = [0.0, 0.0, -28.0, -40.0]
 const _CUSTOM_PLANT_OFFSETS: Dictionary = {
 	"tulip": [0.0, -36.0, -28.0, -40.0],
 	"purple_bellflower": [0.0, -20.0, -28.0, -40.0],
-	"anthurium": [0.0, -16.0, -28.0, -40.0],
+	"anthurium": [0.0, -16.0, -28.0, -32.0],
 	"rose": [0.0, -16.0, -28.0, -40.0],
-	"periwinkle": [0.0, -16.0, -28.0, -40.0]
+	"periwinkle": [0.0, -16.0, -28.0, -40.0],
+	"lotus": [0.0, 0.0, -28.0, -28.0]
 }
 
 @export var plot_id: String = ""
