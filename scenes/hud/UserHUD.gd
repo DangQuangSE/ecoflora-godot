@@ -23,7 +23,7 @@ func _ready() -> void:
 	_coin_btn.pressed.connect(_on_coin_tapped)
 	_profile_btn.pressed.connect(_open_profile_card)
 	UserManager.profile_updated.connect(_on_profile_updated)
-	var coin_path := "res://assets/icon/coin.PNG"
+	var coin_path := "res://assets/icon/coin.png"
 	if ResourceLoader.exists(coin_path):
 		var coin_icon := get_node_or_null("CoinIcon") as TextureRect
 		if coin_icon:

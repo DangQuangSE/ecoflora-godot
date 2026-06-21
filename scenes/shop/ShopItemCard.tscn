@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://shopitemcard001"]
 
 [ext_resource type="Script" path="res://scenes/shop/ShopItemCard.gd" id="1_card"]
-[ext_resource type="Texture2D" path="res://assets/icon/coin.PNG" id="2_coin"]
+[ext_resource type="Texture2D" path="res://assets/icon/coin.png" id="2_coin"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="3_primary_button"]
 [ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="4_global_theme"]
 
