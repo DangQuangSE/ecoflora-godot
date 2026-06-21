@@ -4,6 +4,8 @@ extends Sprite2D
 signal tapped(placement_id: String)
 signal drag_ended(placement_id: String, new_pos: Vector2)
 
+@export var auto_configure_shapes: bool = true
+
 var placement_data: DecoPlacement
 var boundary_rect: Rect2 = Rect2()
 
@@ -13,6 +15,9 @@ var _drag_active: bool = false
 var _hold_elapsed: float = 0.0
 var _press_start_screen: Vector2 = Vector2.ZERO
 var _base_scale: float = 1.0
+
+var _static_body: StaticBody2D
+var _static_collision: CollisionShape2D
 
 const _TAP_MAX_SEC: float = 0.3
 const _DRAG_THRESHOLD: float = 12.0
@@ -27,16 +32,40 @@ func _ready() -> void:
 	if placement_data == null:
 		push_warning("DecoNode: placement_data is null")
 		return
+	
+	# Reference StaticBody2D / CollisionShape2D if they exist in the scene tree
+	_static_body = get_node_or_null("StaticBody2D")
+	if _static_body:
+		_static_collision = _static_body.get_node_or_null("CollisionShape2D")
+	
+	# Connect to edit mode state changes
+	DecoManager.edit_mode_changed.connect(_on_edit_mode_changed)
+	
 	var tex := ItemIconRegistry.get_icon(placement_data.decor_slug)
 	texture = tex
 	if tex != null:
-		var display_px := _DISPLAY_PX * (4.0 if placement_data.decor_slug in _LARGE_SLUGS else 1.0)
-		_base_scale = display_px / maxf(tex.get_width(), tex.get_height())
-		scale = Vector2(_base_scale, _base_scale)
-		var rect_shape := RectangleShape2D.new()
-		rect_shape.size = tex.get_size()
-		shape_node.shape = rect_shape
+		if auto_configure_shapes:
+			var display_px := _DISPLAY_PX * (4.0 if placement_data.decor_slug in _LARGE_SLUGS else 1.0)
+			_base_scale = display_px / maxf(tex.get_width(), tex.get_height())
+			scale = Vector2(_base_scale, _base_scale)
+			
+			# Set Area2D shape for detection (drag/recall)
+			var rect_shape := RectangleShape2D.new()
+			rect_shape.size = tex.get_size()
+			shape_node.shape = rect_shape
+		else:
+			# Keep the custom scale designed in the Editor scene
+			_base_scale = scale.x
+		
+		# Set initial state of collision shape if manually defined in the scene
+		if _static_collision:
+			_static_collision.disabled = DecoManager.edit_mode
+		
 	_area.input_event.connect(_on_area_input_event)
+
+func _on_edit_mode_changed(is_edit: bool) -> void:
+	if _static_collision:
+		_static_collision.set_deferred("disabled", is_edit)
 
 func _process(delta: float) -> void:
 	if not _pressing or _drag_active:

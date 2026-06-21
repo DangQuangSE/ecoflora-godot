@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://b3qqlrryhbpck"]
+
+[ext_resource type="Script" uid="uid://chs7mg4jtdkum" path="res://scenes/shared/DecoNode.gd" id="1_nqyj5"]
+[ext_resource type="Texture2D" uid="uid://fo3jdr25cyvp" path="res://assets/shop/deco/supper_fence.png" id="1_ypv3p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(350, 420.00006)
+
+[node name="DecoNode" type="Sprite2D" unique_id=619496172]
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("1_ypv3p")
+script = ExtResource("1_nqyj5")
+auto_configure_shapes = false
+
+[node name="Area2D" type="Area2D" parent="." unique_id=903711373]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=2085652507]
+position = Vector2(34.99996, -50.000034)
+scale = Vector2(0.99999976, 0.99999976)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=571230562]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=1703962000]
+polygon = PackedVector2Array(-59.999992, 159.99998, 209.99998, 9.999999, 199.99998, -179.99998, 129.99998, -229.99998, -109.99999, -99.99999, -139.99998, -9.999999, -109.99999, 19.999998, -139.99998, 139.99998, -79.99999, 169.99998)
