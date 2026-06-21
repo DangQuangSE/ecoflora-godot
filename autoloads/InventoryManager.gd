@@ -71,7 +71,6 @@ func _fetch_inventory() -> void:
 		return
 	var inv_svc := InventoryService.new()
 	var fetched: UserInventory = inv_svc.parse_inventory(items_arr)
-	_merge_harvest_products_from_disk(fetched)
 	_inventory = fetched
 	inventory_updated.emit(_inventory)
 

@@ -594,7 +594,6 @@ func harvest(plot_id: String) -> void:
 
 	if use_mock:
 		harvest_completed.emit(plot_id, product_id)
-		InventoryManager.add_harvest_product(product_id)
 		await get_tree().process_frame
 		plot.is_pending_sync = false
 		plots_updated.emit(_plots)
@@ -630,7 +629,6 @@ func harvest(plot_id: String) -> void:
 				var new_user_level: Variant = data.get("newUserLevel", null)
 				if new_user_xp != null and new_user_level != null:
 					UserManager.apply_server_xp(int(new_user_xp), int(new_user_level))
-		InventoryManager.add_harvest_product(product_id)
 		harvest_completed.emit(plot_id, product_id)
 		_show_toast("Thu hoạch thành công: %s." % _flower_display_name(template))
 	else:
