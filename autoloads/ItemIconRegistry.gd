@@ -9,7 +9,7 @@ func _ready() -> void:
 	_try_register("lotus",        "res://assets/flowers/lotus/lotus 3.png")
 	_try_register("rose",         "res://assets/flowers/rose/rose 3.png")
 	_try_register("periwinkle",   "res://assets/flowers/periwinkle/periwinkle 3.png")
-	_try_register("watering_can", "res://assets/icon/watering_can.PNG")
+	_try_register("watering_can", "res://assets/icon/watering_can.png")
 	_try_register("fertilizer",   "res://assets/icon/fertilizer.png")
 	_try_register("sickle",       "res://assets/icon/sickle.png")
 	_try_register("grass_fence",  "res://assets/shop/deco/grass_fence.png")
@@ -18,6 +18,28 @@ func _ready() -> void:
 	_try_register("supper_fence", "res://assets/shop/deco/supper_fence.png")
 	_try_register("warterfall",   "res://assets/shop/deco/warterfall.png")
 	_try_register("warter_tower", "res://assets/shop/deco/warter_tower.png")
+	# Harvest product icons — reuse each flower's stage-3 (bloom) art.
+	# IDs and "variant reuses base asset" mapping must match services/ReferenceDataService.gd's _FLOWER_DEFAULTS.
+	_try_register("harvest_anthurium_bloom",           "res://assets/flowers/anthurium/anthurium 3.png")
+	_try_register("harvest_lotus_bloom",               "res://assets/flowers/lotus/lotus 3.png")
+	_try_register("harvest_periwinkle_bloom",          "res://assets/flowers/periwinkle/periwinkle 3.png")
+	_try_register("harvest_purple_bellflower_bloom",   "res://assets/flowers/purple_bellflower/purple_bellflower 3.png")
+	_try_register("harvest_rose_bloom",                "res://assets/flowers/rose/rose 3.png")
+	_try_register("harvest_sun_flower_bloom",          "res://assets/flowers/sun_flower/sun_flower 3.png")
+	_try_register("harvest_tulip_bloom",               "res://assets/flowers/tulip/tulip 3.png")
+	_try_register("harvest_golden_rose_bloom",         "res://assets/flowers/rose/rose 3.png")
+	_try_register("harvest_blue_lotus_bloom",          "res://assets/flowers/lotus/lotus 3.png")
+	_try_register("harvest_rainbow_tulip_bloom",       "res://assets/flowers/tulip/tulip 3.png")
+	_try_register("harvest_midnight_periwinkle_bloom", "res://assets/flowers/periwinkle/periwinkle 3.png")
+	_try_register("harvest_crimson_anthurium_bloom",   "res://assets/flowers/anthurium/anthurium 3.png")
+	_try_register("harvest_sunset_sunflower_bloom",    "res://assets/flowers/sun_flower/sun_flower 3.png")
+	_try_register("harvest_violet_bellflower_bloom",   "res://assets/flowers/purple_bellflower/purple_bellflower 3.png")
+	_try_register("harvest_moonlit_rose_bloom",        "res://assets/flowers/rose/rose 3.png")
+	_try_register("harvest_crystal_lotus_bloom",       "res://assets/flowers/lotus/lotus 3.png")
+	_try_register("harvest_fire_tulip_bloom",          "res://assets/flowers/tulip/tulip 3.png")
+	_try_register("harvest_silver_anthurium_bloom",    "res://assets/flowers/anthurium/anthurium 3.png")
+	_try_register("harvest_jade_periwinkle_bloom",     "res://assets/flowers/periwinkle/periwinkle 3.png")
+	_try_register("harvest_star_sunflower_bloom",      "res://assets/flowers/sun_flower/sun_flower 3.png")
 
 func register(ref_id: String, texture: Texture2D) -> void:
 	_icons[ref_id] = texture

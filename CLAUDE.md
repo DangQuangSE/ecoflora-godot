@@ -94,7 +94,7 @@ var result = await service.get_data_async()
 
 - Never trust client-sent stage — always compute from XP via `compute_stage_for_xp()`
 - `is_pending_sync` must be set before any async call and cleared after (success or failure)
-- HarvestProduct inventory entries must be created if they don't exist (unlike seeds/consumables)
+- Harvest grants user XP only — it does NOT create a HarvestProduct inventory item (no sell/use sink exists for them)
 - All UI updates go through signals, never direct Manager→View calls
 
 ## Mock Data (for reference)

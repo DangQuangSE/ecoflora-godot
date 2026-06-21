@@ -71,7 +71,6 @@ func _fetch_inventory() -> void:
 		return
 	var inv_svc := InventoryService.new()
 	var fetched: UserInventory = inv_svc.parse_inventory(items_arr)
-	_merge_harvest_products_from_disk(fetched)
 	_inventory = fetched
 	inventory_updated.emit(_inventory)
 
@@ -92,8 +91,8 @@ func select_item(item_id: String) -> void:
 		_selected_item = null
 	else:
 		_selected_item = item
-		if _selected_item != null and InteractionManager.is_harvest_mode():
-			InteractionManager.toggle_harvest_mode()
+		if _selected_item != null and InteractionManager.is_in_action_mode():
+			InteractionManager.exit_action_mode()
 	item_selected.emit(_selected_item)
 
 func deselect() -> void:
@@ -145,6 +144,19 @@ func increment_item(item_id: String) -> void:
 			inventory_updated.emit(_inventory)
 			return
 	push_warning("InventoryManager.increment_item: item_id '%s' not found" % item_id)
+
+func restore_seed(flower_template_id: String) -> void:
+	var existing: InventoryItem = _inventory.find_by_reference_id(flower_template_id)
+	if existing != null and existing.category == InventoryItem.Category.SEED:
+		existing.quantity += 1
+	else:
+		var new_item := InventoryItem.new()
+		new_item.id = "seed_%s_%d" % [flower_template_id, _inventory.items.size()]
+		new_item.flower_template_id = flower_template_id
+		new_item.category = InventoryItem.Category.SEED
+		new_item.quantity = 1
+		_inventory.items.append(new_item)
+	inventory_updated.emit(_inventory)
 
 func remove_harvest_product(product_id: String) -> void:
 	var existing: InventoryItem = _inventory.find_harvest_product(product_id)
