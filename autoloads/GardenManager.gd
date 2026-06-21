@@ -316,8 +316,10 @@ func pesticide(plot_id: String, ref_id: String = "") -> void:
 
 func _mock_care(plot_id: String, base_xp: int, action_type: int) -> void:
 	var plot: Plot = _find_plot(plot_id)
-	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+	if plot == null or not plot.is_occupied:
 		_show_toast(_care_action_name(action_type) + " thất bại.")
+		return
+	if plot.is_pending_sync:
 		return
 	var template: FlowerTemplate = _templates.get(plot.current_plant.flower_template_id)
 	if template == null:
@@ -340,8 +342,10 @@ func _mock_care(plot_id: String, base_xp: int, action_type: int) -> void:
 
 func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	var plot: Plot = _find_plot(plot_id)
-	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+	if plot == null or not plot.is_occupied:
 		_show_toast(_care_action_name(action_value) + " thất bại.")
+		return
+	if plot.is_pending_sync:
 		return
 	if _templates.get(plot.current_plant.flower_template_id) == null:
 		_show_toast("Không tìm thấy dữ liệu hoa.")
@@ -407,15 +411,21 @@ func _care_apply_optimistic(plot: Plot, ref_id: String, base_xp: int, bonus: int
 	plots_updated.emit(_plots)
 
 func _care_apply_server_response(plot: Plot, raw: Variant, action_value: int, snapshot_item_id: String) -> bool:
+	var http_result: int       = raw[0]
 	var status: int            = raw[1]
 	var bytes: PackedByteArray = raw[3]
+	var body_text := bytes.get_string_from_utf8()
+	if http_result != HTTPRequest.RESULT_SUCCESS:
+		push_warning("GardenManager._care_apply_server_response: request result %d, HTTP %d, body=%s" % [http_result, status, body_text])
+		return false
 	if status != 200:
 		if status == 401:
 			UserManager.handle_401()
+		push_warning("GardenManager._care_apply_server_response: HTTP %d, body=%s" % [status, body_text])
 		return false
 	var json := JSON.new()
-	if json.parse(bytes.get_string_from_utf8()) != OK:
-		push_warning("GardenManager._care_apply_server_response: JSON parse error")
+	if json.parse(body_text) != OK:
+		push_warning("GardenManager._care_apply_server_response: JSON parse error, body=%s" % body_text)
 		return false
 	var data: Variant = HttpHelper.unwrap_envelope(json.get_data())
 	if not data is Dictionary:

@@ -149,6 +149,8 @@ func is_point_inside(world_pos: Vector2) -> bool:
 func apply_drag_action() -> void:
 	if _current_plot == null or ZoneManager.is_plot_locked(plot_id):
 		return
+	if _current_plot.is_pending_sync:
+		return
 	var selected: InventoryItem = InventoryManager.get_selected_item()
 	if selected != null and selected.category != InventoryItem.Category.SEED:
 		_apply_item(selected.get_reference_id(), selected.category)
