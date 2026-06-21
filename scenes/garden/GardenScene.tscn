@@ -16,7 +16,7 @@ script = ExtResource("6_gdscript")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=382669791]
 z_index = -2
-position = Vector2(-1251, -709)
+position = Vector2(-1236, -715)
 scale = Vector2(1.2128905, 1.2167968)
 texture = ExtResource("2_34pd8")
 centered = false
@@ -304,3 +304,51 @@ position = Vector2(-264, 2763)
 
 [node name="PlotAnchor_55" type="Marker2D" parent="PlotAnchors/Zone7" unique_id=2000000063]
 position = Vector2(-204, 2801)
+
+[node name="StaticBody2DZone1" type="StaticBody2D" parent="." unique_id=564219896]
+position = Vector2(-164, 92)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2DZone1" unique_id=735150409]
+polygon = PackedVector2Array(-181, 33, 66, -113, 176, -35, -77, 118)
+
+[node name="StaticBody2DZone2" type="StaticBody2D" parent="." unique_id=1340184261]
+position = Vector2(-33, 190)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2DZone2" unique_id=78933952]
+position = Vector2(130, 102)
+polygon = PackedVector2Array(-307, -68, -60, -214, 50, -136, -203, 17)
+
+[node name="StaticBody2DZone3" type="StaticBody2D" parent="." unique_id=357015438]
+position = Vector2(85, 515)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2DZone3" unique_id=1493295474]
+position = Vector2(98, 55)
+polygon = PackedVector2Array(-277, -21, -30, -167, 80, -89, -173, 64)
+
+[node name="StaticBody2DZone4" type="StaticBody2D" parent="." unique_id=1639613788]
+position = Vector2(237, 639)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2DZone4" unique_id=2055694471]
+position = Vector2(380, 247)
+polygon = PackedVector2Array(-551, -202, -311, -361, -217, -283, -448, -138)
+
+[node name="StaticBody2DZone5" type="StaticBody2D" parent="." unique_id=1355633654]
+position = Vector2(-448, 475)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2DZone5" unique_id=1704719389]
+position = Vector2(-320, 66)
+polygon = PackedVector2Array(162, -23, 381, -178, 475, -102, 257, 36)
+
+[node name="StaticBody2DZone6" type="StaticBody2D" parent="." unique_id=1708038315]
+position = Vector2(-291, 579)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2DZone6" unique_id=1388053795]
+position = Vector2(-327, 77)
+polygon = PackedVector2Array(162, -23, 381, -178, 474, -107, 257, 36)
+
+[node name="StaticBody2DZone7" type="StaticBody2D" parent="." unique_id=1548049066]
+position = Vector2(767, 146)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2DZone7" unique_id=368122577]
+position = Vector2(624, -151)
+polygon = PackedVector2Array(-784, 191, -557, 47, -476, 118, -689, 250)
