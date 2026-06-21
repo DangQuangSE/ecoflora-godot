@@ -79,6 +79,8 @@ func _on_plot_gui_input(event: InputEvent) -> void:
 		if _current_plot.is_occupied:
 			if InteractionManager.is_harvest_mode():
 				_try_harvest()
+			elif InteractionManager.is_dig_up_mode():
+				_try_dig_up()
 			else:
 				InteractionManager.request_show_flower_info(plot_id)
 	else:
@@ -126,6 +128,31 @@ func _try_harvest() -> void:
 		return
 	if _current_plot.current_plant.current_stage >= template.get_max_stage_level():
 		InteractionManager.request_plot_action(plot_id, "harvest")
+
+func _try_dig_up() -> void:
+	if _current_plot == null or not _current_plot.is_occupied or _current_plot.is_pending_sync or _current_plot.current_plant == null:
+		return
+	var template: FlowerTemplate = GardenManager.get_templates().get(
+		_current_plot.current_plant.flower_template_id, null) as FlowerTemplate
+	if template == null:
+		return
+	var flower_name: String = template.name.replace("_", " ") if template.name else "Hoa"
+	var dialog: BaseDialog = BaseDialog.show_confirm(
+		self,
+		"Xúc cây",
+		"Bạn chắc chắn muốn xúc %s? Hành động này sẽ mất toàn bộ stage/XP đã trồng.\nCây sẽ trở thành hạt giống Lv0." % flower_name,
+		"Xúc",
+		"Hủy"
+	)
+	if dialog == null:
+		push_error("PlotNode._try_dig_up: BaseDialog instantiation failed")
+		return
+	var result := [false]  # boxed in an Array: lambda captures locals by value, this needs a reference type
+	dialog.confirmed.connect(func(): result[0] = true, CONNECT_ONE_SHOT)
+	dialog.cancelled.connect(func(): result[0] = false, CONNECT_ONE_SHOT)
+	await dialog.tree_exited
+	if result[0]:
+		InteractionManager.request_plot_action(plot_id, "dig_up", {})
 
 func _on_plant_xp_gained(gained_plot_id: String, xp_amount: int, synergy_bonus: int = 0) -> void:
 	if gained_plot_id != plot_id:

@@ -21,9 +21,11 @@ var _http_catalog: HTTPRequest
 var _http_garden: HTTPRequest
 var _http_plant: HTTPRequest
 var _http_harvest: HTTPRequest
+var _http_dig_up: HTTPRequest
 var _garden_in_flight: bool = false
 var _plant_in_flight: bool = false
 var _harvest_in_flight: bool = false
+var _dig_up_in_flight: bool = false
 var _ref_svc  # ReferenceDataService instance (preloaded to avoid autoload parse-order issue)
 
 const _RefDataScript = preload("res://services/ReferenceDataService.gd")
@@ -66,6 +68,9 @@ func _ready() -> void:
 		_http_harvest = HTTPRequest.new()
 		_http_harvest.timeout = 15.0
 		add_child(_http_harvest)
+		_http_dig_up = HTTPRequest.new()
+		_http_dig_up.timeout = 15.0
+		add_child(_http_dig_up)
 		# Fetch catalogs + garden after login  -  never before
 		UserManager.login_succeeded.connect(_on_login_succeeded)
 
@@ -258,6 +263,9 @@ func _exit_tree() -> void:
 	if _garden_in_flight and _http_garden != null:
 		_http_garden.cancel_request()
 		_garden_in_flight = false
+	if _dig_up_in_flight and _http_dig_up != null:
+		_http_dig_up.cancel_request()
+		_dig_up_in_flight = false
 
 func get_item_cache() -> Dictionary:
 	return _item_cache
@@ -625,6 +633,59 @@ func harvest(plot_id: String) -> void:
 	plot.is_pending_sync = false
 	plots_updated.emit(_plots)
 
+func dig_up(plot_id: String) -> void:
+	if _dig_up_in_flight:
+		push_warning("GardenManager.dig_up: request already in flight, ignoring")
+		_show_toast("Đang xúc cây, vui lòng chờ.")
+		return
+	var plot: Plot = _find_plot(plot_id)
+	if plot == null or not plot.is_occupied or plot.is_pending_sync:
+		_show_toast("Chưa thể xúc ô đất này.")
+		return
+
+	var snapshot_flower: PlantedFlower = plot.current_plant.deep_copy()
+	var flower_template_id := plot.current_plant.flower_template_id
+
+	plot.is_pending_sync = true
+	plot.clear()
+	plots_updated.emit(_plots)
+
+	if use_mock:
+		await get_tree().process_frame
+		plot.is_pending_sync = false
+		InventoryManager.restore_seed(flower_template_id)
+		plots_updated.emit(_plots)
+		_show_toast("Xúc cây thành công.")
+		return
+
+	var url := UserManager.base_url + "/api/garden/plots/%s/dig-up" % plot_id
+	var headers := PackedStringArray(["Content-Type: application/json", UserManager.get_auth_header()])
+	_dig_up_in_flight = true
+	var err := _http_dig_up.request(url, headers, HTTPClient.METHOD_POST, "")
+	if err != OK:
+		_dig_up_in_flight = false
+		plot.plant(snapshot_flower)
+		plot.is_pending_sync = false
+		plots_updated.emit(_plots)
+		_show_toast("Xúc cây thất bại. Vui lòng thử lại.")
+		return
+
+	var raw: Variant = await _http_dig_up.request_completed
+	_dig_up_in_flight = false
+	var status: int = raw[1]
+
+	if status == 200:
+		InventoryManager.restore_seed(flower_template_id)
+		_show_toast("Xúc cây thành công.")
+	else:
+		if status == 401:
+			UserManager.handle_401()
+		plot.plant(snapshot_flower)
+		_show_toast("Xúc cây thất bại. Vui lòng thử lại.")
+
+	plot.is_pending_sync = false
+	plots_updated.emit(_plots)
+
 func apply_focus_xp_bulk(xp_delta: int) -> void:
 	for plot: Plot in _plots:
 		if not plot.is_occupied or plot.is_pending_sync:
@@ -720,6 +781,7 @@ func _on_plot_action(plot_id: String, action: String, data: Dictionary) -> void:
 	match action:
 		"plant":      plant(plot_id, data.get("template_id", ""))
 		"harvest":    harvest(plot_id)
+		"dig_up":     dig_up(plot_id)
 		"water":      water(plot_id, data.get("ref_id", ""))
 		"fertilize":  fertilize(plot_id, data.get("ref_id", ""))
 		"pesticide":  pesticide(plot_id, data.get("ref_id", ""))

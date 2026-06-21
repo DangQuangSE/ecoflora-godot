@@ -16,6 +16,7 @@ signal joystick_direction_changed(direction: Vector2)
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
 @onready var _harvest_btn: Button       = $RightIconGrid/HarvestButton
+@onready var _shovel_btn: Button        = $RightIconGrid/ShovelButton
 @onready var _shop_btn: Button          = $RightIconGrid/ShopButton
 @onready var _task_btn: Button          = $RightIconGrid/TaskButton
 @onready var _task_claim_dot: Control   = $RightIconGrid/TaskButton/ClaimDot
@@ -41,6 +42,9 @@ func _ready() -> void:
 		harvest_icon.texture = preload("res://assets/icon/sickle.png")
 	_harvest_btn.pressed.connect(InteractionManager.toggle_harvest_mode)
 	InteractionManager.harvest_mode_changed.connect(_on_harvest_mode_changed)
+	if _shovel_btn:
+		_shovel_btn.pressed.connect(InteractionManager.toggle_dig_up_mode)
+		InteractionManager.dig_up_mode_changed.connect(_on_dig_up_mode_changed)
 	if _shop_btn:
 		_shop_btn.pressed.connect(_open_shop)
 		var shop_icon_path := "res://assets/icon/shop.png"
@@ -163,6 +167,10 @@ func _on_item_selected(item: InventoryItem) -> void:
 func _on_harvest_mode_changed(active: bool) -> void:
 	_harvest_btn.modulate = Color(1.0, 0.75, 0.2, 1.0) if active else Color.WHITE
 
+func _on_dig_up_mode_changed(active: bool) -> void:
+	if _shovel_btn:
+		_shovel_btn.modulate = Color(0.8, 0.6, 0.2, 1.0) if active else Color.WHITE
+
 func open_shop(tab_idx: int = 0) -> void:
 	if _shop_panel == null:
 		return
@@ -251,6 +259,8 @@ func _sync_modal_chrome() -> void:
 	_joystick.visible = not _modal_open
 	_inv_btn.visible = not _modal_open
 	_harvest_btn.visible = not _modal_open
+	if _shovel_btn:
+		_shovel_btn.visible = not _modal_open
 	if _shop_btn:
 		_shop_btn.visible = not _modal_open
 	if _task_btn:
