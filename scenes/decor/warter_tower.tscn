@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://n88p5u68muo3"]
+
+[ext_resource type="Script" uid="uid://chs7mg4jtdkum" path="res://scenes/shared/DecoNode.gd" id="1_1x8ss"]
+[ext_resource type="Texture2D" uid="uid://btr8lb0twtmy6" path="res://assets/shop/deco/warter_tower.png" id="1_lhss3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(620.1744, 696.25525)
+
+[node name="DecoNode" type="Sprite2D" unique_id=31618952]
+position = Vector2(-0.4999962, 2.9999886)
+scale = Vector2(0.46, 0.4)
+texture = ExtResource("1_lhss3")
+script = ExtResource("1_1x8ss")
+auto_configure_shapes = false
+
+[node name="Area2D" type="Area2D" parent="." unique_id=38385217]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=797004180]
+position = Vector2(-12.453325, -2.7739296)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1521662447]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D" unique_id=696331832]
+polygon = PackedVector2Array(-16.304356, 242.50003, 140.21738, 160.00003, 237.47495, 112.903244, 319.63925, -27.649742, 257.515, -179.72346, 175.3507, -235.023, 5.0100126, -331.79718, -155.31062, -251.15202, -287.57516, -112.90319, -301.60324, 25.345646, -243.48698, 119.81568, -201.08696, 150.00003)
