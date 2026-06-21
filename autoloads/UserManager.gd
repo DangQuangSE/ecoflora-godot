@@ -57,6 +57,7 @@ var _purchase_in_flight: bool = false
 var _avatar_in_flight: bool = false
 var _rename_in_flight: bool = false
 var _refresh_in_flight: bool = false
+var _session_ready_emitted: bool = false
 
 var shop_open_tab: int = 0
 var _registration_success_message: String = ""
@@ -144,7 +145,7 @@ func get_auth_header() -> String:
 func login_async(account: String, password: String) -> bool:
 	if use_mock:
 		_token_store.access_token = "mock_token"
-		login_succeeded.emit()
+		_emit_login_succeeded_once()
 		return true
 
 	if _request_in_flight:
@@ -206,8 +207,24 @@ func login_async(account: String, password: String) -> bool:
 	_token_store.save_refresh_token(tokens["refreshToken"])
 	if not use_mock:
 		await fetch_profile_async()
-	login_succeeded.emit()
+	_emit_login_succeeded_once()
 	return true
+
+func resume_session_async() -> bool:
+	if not is_logged_in():
+		return false
+	if not use_mock:
+		await fetch_profile_async()
+	if not is_logged_in():
+		return false
+	_emit_login_succeeded_once()
+	return true
+
+func _emit_login_succeeded_once() -> void:
+	if _session_ready_emitted:
+		return
+	_session_ready_emitted = true
+	login_succeeded.emit()
 
 func take_registration_success_message() -> String:
 	var msg := _registration_success_message
@@ -385,11 +402,13 @@ func _refresh_access_token_async() -> void:
 
 func _force_logout() -> void:
 	_token_store.access_token = ""
+	_session_ready_emitted = false
 	InventoryManager.clear_harvest_products()
 	login_required.emit()
 
 func logout() -> void:
 	_token_store.clear()
+	_session_ready_emitted = false
 	InventoryManager.clear_harvest_products()
 	login_required.emit()
 

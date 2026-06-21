@@ -15,6 +15,7 @@ signal login_requested(account: String, password: String)
 
 const GARDEN_SCENE := "res://scenes/garden/GardenScene.tscn"
 const REGISTER_SCENE := "res://scenes/auth/RegisterScene.tscn"
+const LOGO_TOP_Y := 205.0
 func _ready() -> void:
 	SceneTransition.force_clear()
 	WeatherManager.set_overlay_visible(false)
@@ -34,8 +35,10 @@ func _ready() -> void:
 	if UserManager.is_logged_in():
 		_set_loading(true)
 		_loading_label.text = "Đang tải..."
-		await UserManager.fetch_profile_async()
-		SceneTransition.fade_to(GARDEN_SCENE)
+		if await UserManager.resume_session_async():
+			SceneTransition.fade_to(GARDEN_SCENE)
+		else:
+			_set_loading(false)
 		return
 
 	AudioManager.play_bgm("res://sounds/lobby_v2.mp3")
@@ -47,21 +50,21 @@ func _ready() -> void:
 	_username_input.focus_field()
 
 func _apply_theme() -> void:
-	_success_label.add_theme_font_size_override("font_size", 13)
+	_success_label.add_theme_font_size_override("font_size", 14)
 	_success_label.add_theme_color_override("font_color", Color(0.1, 0.55, 0.2))
 
-	_error_label.add_theme_font_size_override("font_size", 13)
+	_error_label.add_theme_font_size_override("font_size", 14)
 	_error_label.add_theme_color_override("font_color", Color(0.75, 0.15, 0.1))
 
-	_login_btn.add_theme_font_size_override("font_size", 22)
+	_login_btn.add_theme_font_size_override("font_size", 23)
 
-	_register_link.add_theme_font_size_override("font_size", 17)
+	_register_link.add_theme_font_size_override("font_size", 18)
 	_register_link.add_theme_color_override("font_color", Color(0.2, 0.45, 0.75))
 	_register_link.add_theme_color_override("font_hover_color", Color(0.3, 0.55, 0.85))
 	_register_link.add_theme_color_override("font_pressed_color", Color(0.15, 0.35, 0.65))
 
 	_loading.color = Color(0, 0, 0, 0.6)
-	_loading_label.add_theme_font_size_override("font_size", 18)
+	_loading_label.add_theme_font_size_override("font_size", 19)
 	_loading_label.add_theme_color_override("font_color", Color.WHITE)
 
 func _on_login_pressed() -> void:
@@ -107,3 +110,4 @@ func _set_loading(active: bool) -> void:
 
 func _layout_logo() -> void:
 	_logo.position.x = size.x * 0.5
+	_logo.position.y = LOGO_TOP_Y

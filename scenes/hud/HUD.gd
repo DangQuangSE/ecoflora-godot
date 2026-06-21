@@ -4,20 +4,21 @@ extends CanvasLayer
 signal joystick_direction_changed(direction: Vector2)
 
 @onready var _joystick: DynamicJoystick = $DynamicJoystick
-@onready var _inv_btn: Button           = $InventoryButton
-@onready var _inv_icon: TextureRect     = $InventoryButton/Icon
+@onready var _inv_btn: Button           = $RightIconGrid/InventoryButton
+@onready var _inv_icon: TextureRect     = $RightIconGrid/InventoryButton/Icon
 @onready var _inv_panel: InventoryPanelNode = $InventoryPanel
 @onready var _tips_panel: TipsPanelNode     = $TipsPanel
 @onready var _shop_panel: ShopScene         = $ShopScene
 @onready var _task_panel: DailyTaskPanel    = $DailyTaskPanel
 @onready var _settings_panel: SettingsPanel = $SettingsPanel
-@onready var _vitality_bar: VitalityBar     = $VitalityBar
+@onready var _vitality_bar: VitalityBar     = $LeftIconGrid/VitalityBar
 @onready var _selected_slot: Panel      = $SelectedItemSlot
 @onready var _selected_icon: TextureRect = $SelectedItemSlot/SelectedIcon
 @onready var _deselect_btn: Button      = $SelectedItemSlot/DeselectBtn
-@onready var _harvest_btn: Button       = $HarvestButton
-@onready var _shop_btn: Button          = $ShopButton
-@onready var _task_btn: Button          = $TaskButton
+@onready var _harvest_btn: Button       = $RightIconGrid/HarvestButton
+@onready var _shop_btn: Button          = $RightIconGrid/ShopButton
+@onready var _task_btn: Button          = $RightIconGrid/TaskButton
+@onready var _task_claim_dot: Control   = $RightIconGrid/TaskButton/ClaimDot
 @onready var _settings_btn: Button      = $SettingsButton
 @onready var _edit_btn: Button          = $EditModeButton
 @onready var _save_btn: Button          = $SaveButton
@@ -33,9 +34,9 @@ func _ready() -> void:
 	_inv_btn.pressed.connect(_toggle_inventory)
 	_deselect_btn.pressed.connect(InventoryManager.deselect)
 	InventoryManager.item_selected.connect(_on_item_selected)
-	_inv_icon.texture = preload("res://assets/icon/bag.png")
+	_inv_icon.texture = preload("res://assets/icon/bag2.png")
 	_selected_slot.visible = false
-	var harvest_icon := get_node_or_null("HarvestButton/Icon") as TextureRect
+	var harvest_icon := get_node_or_null("RightIconGrid/HarvestButton/Icon") as TextureRect
 	if harvest_icon:
 		harvest_icon.texture = preload("res://assets/icon/sickle.png")
 	_harvest_btn.pressed.connect(InteractionManager.toggle_harvest_mode)
@@ -49,11 +50,13 @@ func _ready() -> void:
 				shop_node.texture = load(shop_icon_path)
 	if _task_btn:
 		_task_btn.pressed.connect(_open_tasks)
+		TaskManager.tasks_updated.connect(_on_tasks_updated)
 		var task_icon_path := "res://assets/icon/task.png"
 		if ResourceLoader.exists(task_icon_path):
 			var task_node := _task_btn.get_node_or_null("TaskIcon") as TextureRect
 			if task_node:
 				task_node.texture = load(task_icon_path)
+		_sync_task_claim_dot()
 	if _settings_btn:
 		_settings_btn.pressed.connect(_open_settings)
 		var settings_icon_path := "res://assets/icon/setting.png"
@@ -180,6 +183,21 @@ func _open_tasks() -> void:
 	_hide_shop_if_visible()
 	_hide_settings_if_visible()
 	_task_panel.show_panel(0)
+
+func _on_tasks_updated(_tasks: Array, _progress: Array) -> void:
+	_sync_task_claim_dot()
+
+func _sync_task_claim_dot() -> void:
+	if _task_claim_dot == null:
+		return
+	_task_claim_dot.visible = _has_claimable_task()
+
+func _has_claimable_task() -> bool:
+	for task: DailyTask in TaskManager.get_tasks():
+		var prog: TaskProgress = TaskManager.get_progress(task.id)
+		if prog != null and not prog.claimed and prog.is_complete(task.target):
+			return true
+	return false
 
 
 func _open_settings() -> void:

@@ -273,7 +273,7 @@ func _render_items(items: Array[ShopItem]) -> void:
 		var lbl := Label.new()
 		lbl.text = "Sắp ra mắt..." if _TAB_CATEGORIES[_current_tab].is_empty() else "Trống"
 		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		lbl.add_theme_font_size_override("font_size", 14)
+		lbl.add_theme_font_size_override("font_size", 15)
 		lbl.add_theme_color_override("font_color", Color(0.65, 0.75, 0.55, 1))
 		_grid.call_deferred("add_child", lbl)
 		return

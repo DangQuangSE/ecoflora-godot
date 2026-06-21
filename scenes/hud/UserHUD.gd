@@ -101,7 +101,7 @@ func _spawn_levelup_label(new_level: int) -> void:
 	lbl.text = "Level Up! Lv.%d" % new_level
 	lbl.position = Vector2(0, -10)
 	lbl.add_theme_color_override("font_color", Color(0.4, 0.9, 0.3, 1))
-	lbl.add_theme_font_size_override("font_size", 13)
+	lbl.add_theme_font_size_override("font_size", 14)
 	lbl.mouse_filter = MOUSE_FILTER_IGNORE
 	add_child(lbl)
 	var tw := create_tween().set_parallel(true)

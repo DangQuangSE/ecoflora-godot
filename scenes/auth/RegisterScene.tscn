@@ -30,7 +30,7 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="Logo" type="Sprite2D" parent="." unique_id=2094896205]
-position = Vector2(360, 150)
+position = Vector2(360, 205)
 scale = Vector2(0.22, 0.22)
 texture = ExtResource("3_hgf62")
 region_enabled = true
@@ -71,7 +71,7 @@ theme_override_colors/font_color = Color(0.45, 0.27, 0.10, 1)
 theme_override_colors/font_shadow_color = Color(1, 0.96, 0.82, 0.85)
 theme_override_constants/shadow_offset_x = 0
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 31
 text = "Đăng ký"
 horizontal_alignment = 1
 

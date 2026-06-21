@@ -81,7 +81,7 @@ func _build_tabs() -> void:
 		btn.text = tip.title
 		btn.custom_minimum_size = Vector2(0.0, 48.0)
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		btn.add_theme_font_size_override("font_size", 17)
+		btn.add_theme_font_size_override("font_size", 18)
 		btn.pressed.connect(func() -> void: _set_tip(tip.id))
 		_tabs_container.add_child(btn)
 		_tab_buttons.append(btn)
@@ -170,7 +170,7 @@ func _refresh_content() -> void:
 	title.text = tip.title
 	title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 21)
+	title.add_theme_font_size_override("font_size", 22)
 	title.add_theme_color_override("font_color", Color(0.36, 0.18, 0.04, 1))
 	title.add_theme_constant_override("outline_size", 1)
 	title.add_theme_color_override("font_outline_color", Color(0.97, 0.86, 0.60, 0.35))
@@ -180,7 +180,7 @@ func _refresh_content() -> void:
 	body.text = tip.content
 	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body.add_theme_font_size_override("font_size", 16)
+	body.add_theme_font_size_override("font_size", 17)
 	body.add_theme_constant_override("line_spacing", 6)
 	body.add_theme_color_override("font_color", Color(0.24, 0.15, 0.06, 1))
 	content.add_child(body)

@@ -8,7 +8,7 @@ func play(text_val: String, color: Color = Color(1, 0.88, 0.1, 1)) -> void:
 	lbl.add_theme_color_override("font_shadow_color", Color(0.05, 0.05, 0.05, 0.9))
 	lbl.add_theme_constant_override("shadow_offset_x", 1)
 	lbl.add_theme_constant_override("shadow_offset_y", 1)
-	lbl.add_theme_font_size_override("font_size", 14)
+	lbl.add_theme_font_size_override("font_size", 15)
 	lbl.position = Vector2(-24, 0)
 	lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(lbl)

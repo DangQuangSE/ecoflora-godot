@@ -84,7 +84,7 @@ stretch_mode = 5
 layout_mode = 2
 mouse_filter = 2
 text = "Item"
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 theme_override_colors/font_color = Color(0.25, 0.15, 0.05, 1)
 horizontal_alignment = 1
 autowrap_mode = 3
@@ -108,7 +108,7 @@ stretch_mode = 5
 layout_mode = 2
 mouse_filter = 2
 text = "0"
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 15
 theme_override_colors/font_color = Color(0.58, 0.34, 0.03, 1)
 
 [node name="BuyButton" parent="VBoxContainer" instance=ExtResource("3_primary_button")]
@@ -117,7 +117,7 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(0, 42)
 theme = ExtResource("4_global_theme")
 text = "Mua"
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("StyleBoxFlat_buy")
 theme_override_styles/hover = SubResource("StyleBoxFlat_buy")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_buy")
