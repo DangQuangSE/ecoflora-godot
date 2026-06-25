@@ -19,7 +19,7 @@ signal register_failed(reason: String)
 signal profile_updated
 
 @export var use_mock: bool = false
-@export var base_url: String = "https://ecocham.xyz"
+@export var base_url: String = "https://api.ecocham.xyz"
 @export var profile_poll_interval_sec: float = 30.0
 
 const _XP_TABLE: Dictionary = {
