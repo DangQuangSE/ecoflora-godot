@@ -3,6 +3,7 @@ extends Control
 const LOGIN_SCENE := "res://scenes/auth/LoginScene.tscn"
 const GARDEN_SCENE := "res://scenes/garden/GardenScene.tscn"
 const LOGO_TOP_Y := 205.0
+const _TERMS_URL := "https://eco-frontend-zeta.vercel.app/term?tab=terms"
 
 @onready var _first_name_input: AuthInput = $RegisterFrame/FormArea/FormContent/NameRow/FirstNameInput
 @onready var _last_name_input: AuthInput = $RegisterFrame/FormArea/FormContent/NameRow/LastNameInput
@@ -16,6 +17,8 @@ const LOGO_TOP_Y := 205.0
 @onready var _loading: ColorRect = $LoadingOverlay
 @onready var _loading_label: Label = $LoadingOverlay/LoadingLabel
 @onready var _logo: Sprite2D = $Logo
+@onready var _terms_checkbox: CheckBox = $RegisterFrame/FormArea/FormContent/TermsRow/TermsCheckBox
+@onready var _terms_link: Button = $RegisterFrame/FormArea/FormContent/TermsRow/TermsLink
 
 func _ready() -> void:
 	SceneTransition.force_clear()
@@ -25,6 +28,7 @@ func _ready() -> void:
 	_loading.visible = false
 	_register_btn.pressed.connect(_on_register_pressed)
 	_login_link.pressed.connect(_on_login_link_pressed)
+	_terms_link.pressed.connect(_on_terms_link_pressed)
 	_confirm_password_field.gui_input.connect(_on_confirm_password_gui_input)
 	resized.connect(_layout_logo)
 	_layout_logo()
@@ -49,6 +53,11 @@ func _apply_theme() -> void:
 	_login_link.add_theme_color_override("font_color", Color(0.2, 0.45, 0.75))
 	_login_link.add_theme_color_override("font_hover_color", Color(0.3, 0.55, 0.85))
 	_login_link.add_theme_color_override("font_pressed_color", Color(0.15, 0.35, 0.65))
+
+	_terms_link.add_theme_font_size_override("font_size", 18)
+	_terms_link.add_theme_color_override("font_color", Color(0.2, 0.45, 0.75))
+	_terms_link.add_theme_color_override("font_hover_color", Color(0.3, 0.55, 0.85))
+	_terms_link.add_theme_color_override("font_pressed_color", Color(0.15, 0.35, 0.65))
 
 	_loading.color = Color(0, 0, 0, 0.6)
 	_loading_label.add_theme_font_size_override("font_size", 19)
@@ -76,6 +85,8 @@ func _validate_form() -> String:
 		return "Mật khẩu phải có ít nhất 6 ký tự."
 	if password != confirm:
 		return "Mật khẩu xác nhận không khớp."
+	if not _terms_checkbox.button_pressed:
+		return "Bạn cần đồng ý với Điều khoản sử dụng để đăng ký."
 	return ""
 
 func _on_register_pressed() -> void:
@@ -94,6 +105,9 @@ func _on_register_pressed() -> void:
 
 func _on_login_link_pressed() -> void:
 	SceneTransition.fade_to(LOGIN_SCENE)
+
+func _on_terms_link_pressed() -> void:
+	OS.shell_open(_TERMS_URL)
 
 func _on_confirm_password_gui_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER:

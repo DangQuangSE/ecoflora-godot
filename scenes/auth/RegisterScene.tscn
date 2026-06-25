@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://c3c1x12w7jfe1"]
+[gd_scene load_steps=7 format=3 uid="uid://c3c1x12w7jfe1"]
 
 [ext_resource type="Script" uid="uid://fkay4cl08qt8" path="res://scenes/auth/RegisterScene.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://i77c84g73osi" path="res://assets/background/login/login_bg.png" id="2_loginbg"]
@@ -6,6 +6,8 @@
 [ext_resource type="PackedScene" uid="uid://b8r4phuv5f66p" path="res://scenes/auth/components/AuthInput.tscn" id="7_auth_input"]
 [ext_resource type="Theme" uid="uid://va43502fvf6a" path="res://themes/GlobalTheme.tres" id="8_global_theme"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="9_primary_button"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_terms"]
 
 [node name="RegisterScene" type="Control" unique_id=821908537]
 layout_mode = 3
@@ -47,7 +49,7 @@ anchor_bottom = 0.5
 offset_left = -280.0
 offset_top = -210.0
 offset_right = 280.0
-offset_bottom = 235.0
+offset_bottom = 265.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -95,6 +97,32 @@ secret = true
 [node name="ConfirmPasswordInput" parent="RegisterFrame/FormArea/FormContent" unique_id=105076274 instance=ExtResource("7_auth_input")]
 placeholder_text = "Xác nhận mật khẩu"
 secret = true
+
+[node name="TermsRow" type="HBoxContainer" parent="RegisterFrame/FormArea/FormContent" unique_id=555111222]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="TermsCheckBox" type="CheckBox" parent="RegisterFrame/FormArea/FormContent/TermsRow" unique_id=555111223]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_terms")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_terms")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_terms")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_terms")
+theme_override_styles/hover_pressed = SubResource("StyleBoxEmpty_terms")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_terms")
+
+[node name="TermsLabel" type="Label" parent="RegisterFrame/FormArea/FormContent/TermsRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Tôi đồng ý với"
+
+[node name="TermsLink" type="Button" parent="RegisterFrame/FormArea/FormContent/TermsRow" unique_id=555111224]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Điều khoản sử dụng"
+flat = true
+
 
 [node name="BtnSpacer" type="Control" parent="RegisterFrame/FormArea/FormContent" unique_id=243457098]
 custom_minimum_size = Vector2(0, 10)
