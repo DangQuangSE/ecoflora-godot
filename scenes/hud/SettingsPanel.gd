@@ -24,6 +24,7 @@ const _EMAIL := "treesforfuture.eco@gmail.com"
 const _FACEBOOK_URL := "https://www.facebook.com/profile.php?id=61581382018162"
 const _TIKTOK_URL := "https://www.tiktok.com/@chamflora.eco"
 const _YOUTUBE_URL := "https://www.youtube.com/@e.c.o-greentechgamification"
+const _TERMS_URL := "https://eco-frontend-zeta.vercel.app/term?tab=terms"
 
 var _syncing := false
 
@@ -110,7 +111,7 @@ func _show_tab(show_settings: bool) -> void:
 
 
 func _on_terms_pressed() -> void:
-	pass
+	OS.shell_open(_TERMS_URL)
 
 
 func _on_gift_code_pressed() -> void:
