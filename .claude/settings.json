@@ -135,6 +135,8 @@
     "**/node_modules/**"
   ],
   "env": {
-    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "true"
+    "CLAUDE_CODE_DISABLE_1M_CONTEXT": "true",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "95",
+    "COMPACT_THRESHOLD": "95"
   }
 }

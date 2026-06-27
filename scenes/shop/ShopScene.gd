@@ -24,30 +24,18 @@ const _COIN_PACKAGES := [
 ]
 
 const _CHARACTER_CATALOG := [
-	{"id": "character:0", "name": "Mặc định",   "price": 0,     "preview": "res://assets/characters/char_0_thumb.png"},
-	{"id": "character:1", "name": "Nhân vật 1", "price": 10000, "preview": "res://assets/characters/char_1_thumb.png"},
+	{"id": "character:0", "name": "Mặc định",   "price": 0,     "preview": "res://assets/characters/char_0.tres"},
+	{"id": "character:1", "name": "Nhân vật 1", "price": 10000, "preview": "res://assets/characters/char_1.tres"},
 ]
 
-@onready var _grid: GridContainer        = $ShopPanel/ScrollContainer/GridContainer
-@onready var _bg_dimmer: ColorRect       = $BGDimmer
-@onready var _close_btn: Button          = $CloseButton
-@onready var _pagination_bar: Control    = $ShopPanel/PaginationBar
-@onready var _prev_btn: Button           = $ShopPanel/PaginationBar/HBox/PrevBtn
-@onready var _page_label: Label          = $ShopPanel/PaginationBar/HBox/PageLabel
-@onready var _next_btn: Button           = $ShopPanel/PaginationBar/HBox/NextBtn
-@onready var _confirm_overlay: ColorRect = $ConfirmOverlay
-@onready var _confirm_dialog: Control    = $ConfirmDialog
-@onready var _confirm_name: Label        = $ConfirmDialog/VBox/ItemNameLabel
-@onready var _confirm_desc: Label        = $ConfirmDialog/VBox/ItemDescLabel
-@onready var _confirm_price: Label       = $ConfirmDialog/VBox/PriceRow/PriceLabel
-@onready var _confirm_balance: Label     = $ConfirmDialog/VBox/PriceRow/BalanceHint
-@onready var _qty_minus: Button          = $ConfirmDialog/VBox/QuantityRow/MinusButton
-@onready var _qty_label: Label           = $ConfirmDialog/VBox/QuantityRow/QuantityLabel
-@onready var _qty_plus: Button           = $ConfirmDialog/VBox/QuantityRow/PlusButton
-@onready var _total_label: Label         = $ConfirmDialog/VBox/TotalRow/TotalLabel
-@onready var _confirm_btn: Button        = $ConfirmDialog/VBox/ButtonRow/ConfirmButton
-@onready var _cancel_btn: Button         = $ConfirmDialog/CancelButton
-@onready var _loading: Label             = $LoadingSpinner
+@onready var _grid: GridContainer     = $ShopPanel/ScrollContainer/GridContainer
+@onready var _bg_dimmer: ColorRect    = $BGDimmer
+@onready var _close_btn: Button       = $CloseButton
+@onready var _pagination_bar: Control = $ShopPanel/PaginationBar
+@onready var _prev_btn: Button        = $ShopPanel/PaginationBar/HBox/PrevBtn
+@onready var _page_label: Label       = $ShopPanel/PaginationBar/HBox/PageLabel
+@onready var _next_btn: Button        = $ShopPanel/PaginationBar/HBox/NextBtn
+@onready var _loading: Label          = $LoadingSpinner
 
 const _ITEMS_PER_PAGE := 6
 
@@ -72,7 +60,6 @@ var _current_items: Array[ShopItem] = []
 var _current_page: int = 0
 var _current_tab: int = 0
 var _pending_item: ShopItem = null
-var _pending_qty: int = 1
 
 func _ready() -> void:
 	_build_tab_styles()
@@ -94,13 +81,6 @@ func _ready() -> void:
 	_bg_dimmer.gui_input.connect(_on_bg_dimmer_input)
 	_prev_btn.pressed.connect(_on_prev_page)
 	_next_btn.pressed.connect(_on_next_page)
-	_confirm_btn.pressed.connect(_on_confirm_purchase)
-	_cancel_btn.pressed.connect(_hide_dialog)
-	_confirm_overlay.gui_input.connect(_on_overlay_input)
-	_qty_minus.pressed.connect(_on_qty_minus)
-	_qty_plus.pressed.connect(_on_qty_plus)
-	_confirm_dialog.hide()
-	_confirm_overlay.hide()
 	_loading.hide()
 
 func _build_tab_styles() -> void:
@@ -330,58 +310,24 @@ func _on_item_tapped(item: ShopItem) -> void:
 		_show_toast("Vui lòng truy cập trang web của game để nạp coin nhé!", true)
 		return
 	_pending_item = item
-	_pending_qty = 1
-	_confirm_name.text = item.name
-	_confirm_desc.text = item.description
-	_confirm_price.text = str(item.price)
-	_confirm_balance.text = " (số dư: %d)" % UserManager.get_profile().currency
-	_qty_label.text = "1"
-	_update_dialog_total()
-	_confirm_overlay.show()
-	_confirm_dialog.show()
-
-func _update_dialog_total() -> void:
-	if _pending_item == null:
+	var balance: int = UserManager.get_profile().currency
+	var msg := "%s\n\nGiá: %d xu  ·  Số dư: %d xu" % [item.description, item.price, balance]
+	var dialog := BaseDialog.show_confirm(self, "Xác nhận mua %s" % item.name, msg)
+	if dialog == null:
 		return
-	var total: int = _pending_item.price * _pending_qty
-	_total_label.text = "Tổng: %d" % total
-	_confirm_btn.disabled = UserManager.get_profile().currency < total
-
-func _on_qty_minus() -> void:
-	if _pending_qty <= 1:
-		return
-	_pending_qty -= 1
-	_qty_label.text = str(_pending_qty)
-	_update_dialog_total()
-
-func _on_qty_plus() -> void:
-	_pending_qty += 1
-	_qty_label.text = str(_pending_qty)
-	_update_dialog_total()
-
-func _hide_dialog() -> void:
-	_confirm_dialog.hide()
-	_confirm_overlay.hide()
-
-func _on_overlay_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
-		_hide_dialog()
+	dialog.confirmed.connect(_on_confirm_purchase)
 
 func _on_confirm_purchase() -> void:
-	if _pending_item == null:
-		return
 	var item := _pending_item
-	var qty  := _pending_qty
-	_hide_dialog()
-	_confirm_btn.disabled = true
-	var result: Dictionary = await UserManager.purchase_async(item.id, qty)
-	_confirm_btn.disabled = false
+	if item == null:
+		return
 	_pending_item = null
+	var result: Dictionary = await UserManager.purchase_async(item.id, 1)
 	if result.is_empty():
 		_show_toast("Mua thất bại!", false)
 	else:
 		AudioManager.play_sfx("res://sounds/buy-successfully.wav")
-		_show_toast("Đã mua %s ×%d!" % [item.name, qty], true)
+		_show_toast("Đã mua %s!" % item.name, true)
 		if item.category == "Character":
 			_refresh_tab()
 			return

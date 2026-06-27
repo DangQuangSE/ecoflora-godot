@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bplayerscene1"]
 
 [ext_resource type="Script" uid="uid://cfugs0skeikqp" path="res://scenes/shared/Player.gd" id="1_player"]
-[ext_resource type="SpriteFrames" uid="uid://04h1q7yi37rg" path="res://assets/characters/char_1.tres" id="2_b0uwr"]
+[ext_resource type="SpriteFrames" uid="uid://urdnwi36jrhx" path="res://assets/characters/char_0.tres" id="2_b0uwr"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1"]
 radius = 17.0
@@ -14,8 +14,8 @@ script = ExtResource("1_player")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1019259191]
 scale = Vector2(0.4, 0.4)
 sprite_frames = ExtResource("2_b0uwr")
-animation = &"walk_up"
-frame_progress = 0.71096236
+animation = &"idle_down"
+frame_progress = 0.7655762
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1641672062]
 position = Vector2(0, 6)

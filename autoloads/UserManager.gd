@@ -20,6 +20,8 @@ signal profile_updated
 signal character_changed(idx: int)
 
 @export var use_mock: bool = false
+@export var mock_character_index: int = 0
+@export var mock_owned_characters: Array[int] = [0]
 @export var base_url: String = "https://ecocham.xyz"
 @export var profile_poll_interval_sec: float = 30.0
 
@@ -587,13 +589,13 @@ func load_avatar_index() -> int:
 	return int(config.get_value("avatar", "index", 0))
 
 func get_character_index() -> int:
-	return _character_index
+	return mock_character_index if use_mock else _character_index
 
 func get_owned_characters() -> Array[int]:
-	return _owned_characters
+	return mock_owned_characters if use_mock else _owned_characters
 
 func is_character_owned(idx: int) -> bool:
-	return idx in _owned_characters
+	return idx in (mock_owned_characters if use_mock else _owned_characters)
 
 func save_character_prefs() -> void:
 	var cfg := ConfigFile.new()
@@ -610,12 +612,14 @@ func load_character_index_local() -> int:
 func set_character_async(idx: int) -> void:
 	if not is_character_owned(idx) or _character_in_flight:
 		return
+	if use_mock:
+		mock_character_index = idx
+		character_changed.emit(idx)
+		return
 	var prev := _character_index
 	_character_index = idx
 	save_character_prefs()
 	character_changed.emit(idx)
-	if use_mock:
-		return
 	_character_in_flight = true
 	var body := JSON.stringify({"characterIndex": idx})
 	var headers := HttpHelper.make_headers(_token_store.access_token if _token_store else "")

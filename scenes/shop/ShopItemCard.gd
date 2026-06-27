@@ -13,7 +13,12 @@ var _item: ShopItem
 func setup(item: ShopItem, balance: int = -1) -> void:
 	_item = item
 	_name_label.text = item.name
-	_load_icon(item)
+	_clear_char_preview()
+	if item.category == "Character" and item.image_url.ends_with(".tres") \
+			and ResourceLoader.exists(item.image_url):
+		_setup_animated_preview(item.image_url)
+	else:
+		_load_icon(item)
 	if item.owned:
 		_price_label.text = "Đã sở hữu"
 		_buy_btn.disabled = true
@@ -24,6 +29,35 @@ func setup(item: ShopItem, balance: int = -1) -> void:
 	else:
 		_price_label.text = str(item.price)
 		_buy_btn.disabled = balance >= 0 and balance < item.price
+
+func _clear_char_preview() -> void:
+	_item_icon.show()
+	for child: Node in $VBoxContainer.get_children():
+		if child.name == "CharPreview":
+			child.free()
+			break
+
+func _setup_animated_preview(tres_path: String) -> void:
+	_item_icon.hide()
+	var svpc := SubViewportContainer.new()
+	svpc.name = "CharPreview"
+	svpc.custom_minimum_size = Vector2(0, 104)
+	svpc.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	svpc.stretch = true
+	var sv := SubViewport.new()
+	sv.size = Vector2i(175, 104)
+	sv.transparent_bg = true
+	sv.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	var sprite := AnimatedSprite2D.new()
+	sprite.sprite_frames = load(tres_path)
+	sprite.play("idle_down")
+	sprite.position = Vector2(87, 92)
+	sprite.scale = Vector2(0.3, 0.3)
+	sv.add_child(sprite)
+	svpc.add_child(sv)
+	var vbox := $VBoxContainer
+	vbox.add_child(svpc)
+	vbox.move_child(svpc, _item_icon.get_index())
 
 func set_affordable(affordable: bool) -> void:
 	if _item == null or not _item.is_active:
