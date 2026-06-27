@@ -17,6 +17,7 @@ signal login_failed(reason: String)
 signal register_succeeded
 signal register_failed(reason: String)
 signal profile_updated
+signal character_changed(idx: int)
 
 @export var use_mock: bool = false
 @export var base_url: String = "https://ecocham.xyz"
@@ -60,7 +61,11 @@ var _purchase_in_flight: bool = false
 var _avatar_in_flight: bool = false
 var _rename_in_flight: bool = false
 var _refresh_in_flight: bool = false
+var _character_in_flight: bool = false
 var _session_ready_emitted: bool = false
+var _character_index: int = 0
+var _owned_characters: Array[int] = [0]
+var _character_http: HTTPRequest
 
 var shop_open_tab: int = 0
 var _registration_success_message: String = ""
@@ -110,10 +115,15 @@ func _ready() -> void:
 	_refresh_http.timeout = 10.0
 	add_child(_refresh_http)
 
+	_character_http = HTTPRequest.new()
+	_character_http.timeout = 10.0
+	add_child(_character_http)
+
 	_vitality_service = _VitalityServiceScript.new(_vitality_http, _vitality_claim_http)
 	_shop_service = _ShopServiceScript.new(_shop_http, _shop_purchase_http)
 
 	_profile.avatar_index = load_avatar_index()
+	_character_index = load_character_index_local()
 
 	_vitality_poll_timer = Timer.new()
 	_vitality_poll_timer.wait_time = 60.0
@@ -339,6 +349,18 @@ func fetch_profile_async() -> void:
 		return
 	var old_level: int = _profile.level
 	_profile = _user_service.parse_profile(data)
+	var be_char_idx: int = data.get("characterIndex", 0)
+	var be_owned: Variant = data.get("ownedCharacters", [0])
+	if be_owned is Array:
+		_owned_characters = Array(be_owned, TYPE_INT, "", null)
+	var local_char_idx := load_character_index_local()
+	if local_char_idx != be_char_idx and is_character_owned(local_char_idx):
+		_character_index = local_char_idx
+		set_character_async(local_char_idx)
+	else:
+		_character_index = be_char_idx
+	save_character_prefs()
+	character_changed.emit(_character_index)
 	var local_idx := load_avatar_index()
 	if local_idx > 0:
 		_profile.avatar_index = local_idx
@@ -532,6 +554,9 @@ func purchase_async(prefixed_id: String, quantity: int) -> Dictionary:
 	if data.is_empty():
 		return {}
 	update_currency(int(data.get("remainingCurrency", _profile.currency)))
+	if data.has("ownedCharacters") and data["ownedCharacters"] is Array:
+		_owned_characters = Array(data["ownedCharacters"], TYPE_INT, "", null)
+		save_character_prefs()
 	return data
 
 func _notification(what: int) -> void:
@@ -560,6 +585,58 @@ func load_avatar_index() -> int:
 	if config.load("user://avatar_prefs.cfg") != OK:
 		return 0
 	return int(config.get_value("avatar", "index", 0))
+
+func get_character_index() -> int:
+	return _character_index
+
+func get_owned_characters() -> Array[int]:
+	return _owned_characters
+
+func is_character_owned(idx: int) -> bool:
+	return idx in _owned_characters
+
+func save_character_prefs() -> void:
+	var cfg := ConfigFile.new()
+	cfg.set_value("character", "index", _character_index)
+	cfg.set_value("character", "owned", JSON.stringify(_owned_characters))
+	cfg.save("user://character_prefs.cfg")
+
+func load_character_index_local() -> int:
+	var cfg := ConfigFile.new()
+	if cfg.load("user://character_prefs.cfg") != OK:
+		return 0
+	return int(cfg.get_value("character", "index", 0))
+
+func set_character_async(idx: int) -> void:
+	if not is_character_owned(idx) or _character_in_flight:
+		return
+	var prev := _character_index
+	_character_index = idx
+	save_character_prefs()
+	character_changed.emit(idx)
+	if use_mock:
+		return
+	_character_in_flight = true
+	var body := JSON.stringify({"characterIndex": idx})
+	var headers := HttpHelper.make_headers(_token_store.access_token if _token_store else "")
+	headers.append("Content-Type: application/json")
+	var err := _character_http.request(
+		base_url + "/api/auth/character", headers, HTTPClient.METHOD_PUT, body)
+	if err != OK:
+		_character_index = prev
+		save_character_prefs()
+		character_changed.emit(_character_index)
+		_character_in_flight = false
+		push_warning("UserManager.set_character_async: request error %d" % err)
+		return
+	var raw: Variant = await _character_http.request_completed
+	_character_in_flight = false
+	var status_code: int = raw[1]
+	if status_code != 200:
+		_character_index = prev
+		save_character_prefs()
+		character_changed.emit(_character_index)
+		push_warning("UserManager.set_character_async: BE sync failed (HTTP %d), reverted to %d" % [status_code, prev])
 
 func set_avatar_async(idx: int) -> void:  # intentional: callers may fire-and-forget
 	if _avatar_in_flight:
@@ -689,6 +766,9 @@ func _exit_tree() -> void:
 	if _refresh_in_flight:
 		_refresh_http.cancel_request()
 		_refresh_in_flight = false
+	if _character_in_flight:
+		_character_http.cancel_request()
+		_character_in_flight = false
 	_vitality_poll_timer.stop()
 
 func _show_loading() -> void:

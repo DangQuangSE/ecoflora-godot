@@ -2,6 +2,7 @@ extends Control
 
 const LOGIN_SCENE := "res://scenes/auth/LoginScene.tscn"
 const GARDEN_SCENE := "res://scenes/garden/GardenScene.tscn"
+const CHARACTER_SELECT_SCENE := "res://scenes/auth/CharacterSelectScene.tscn"
 const LOGO_TOP_Y := 205.0
 const _TERMS_URL := "https://eco-frontend-zeta.vercel.app/term?tab=terms"
 
@@ -119,7 +120,7 @@ func show_error(message: String) -> void:
 
 func on_register_success() -> void:
 	_set_loading(false)
-	SceneTransition.fade_to(LOGIN_SCENE)
+	SceneTransition.fade_to(CHARACTER_SELECT_SCENE)
 
 func _show_error(msg: String) -> void:
 	_error_label.visible = false

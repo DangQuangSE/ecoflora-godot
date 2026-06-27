@@ -1,0 +1,136 @@
+[gd_scene load_steps=2 format=3 uid="uid://b_charselect01"]
+
+[ext_resource type="Script" path="res://scenes/auth/CharacterSelectScene.gd" id="1_script"]
+
+[node name="CharacterSelectScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.082, 0.22, 0.082, 1)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 80.0
+offset_bottom = 130.0
+grow_horizontal = 2
+text = "Chọn Nhân Vật"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 28
+
+[node name="CharacterGrid" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -175.0
+offset_top = -170.0
+offset_right = 175.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="CharCard0" type="Panel" parent="CharacterGrid"]
+custom_minimum_size = Vector2(155, 220)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Preview" type="AnimatedSprite2D" parent="CharacterGrid/CharCard0"]
+position = Vector2(77, 80)
+scale = Vector2(2.5, 2.5)
+
+[node name="NameLabel" type="Label" parent="CharacterGrid/CharCard0"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 145.0
+offset_right = 150.0
+offset_bottom = 168.0
+text = "Mặc định"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="CharacterGrid/CharCard0"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 170.0
+offset_right = 150.0
+offset_bottom = 192.0
+text = "Miễn phí"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="SelectedBorder" type="Panel" parent="CharacterGrid/CharCard0"]
+layout_mode = 0
+offset_right = 155.0
+offset_bottom = 220.0
+self_modulate = Color(0.2, 0.85, 0.2, 0.4)
+visible = false
+mouse_filter = 2
+
+[node name="CharCard1" type="Panel" parent="CharacterGrid"]
+custom_minimum_size = Vector2(155, 220)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Preview" type="AnimatedSprite2D" parent="CharacterGrid/CharCard1"]
+position = Vector2(77, 80)
+scale = Vector2(2.5, 2.5)
+
+[node name="NameLabel" type="Label" parent="CharacterGrid/CharCard1"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 145.0
+offset_right = 150.0
+offset_bottom = 168.0
+text = "Nhân vật 1"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="CharacterGrid/CharCard1"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 170.0
+offset_right = 150.0
+offset_bottom = 192.0
+text = "10,000 coin"
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 12
+
+[node name="LockOverlay" type="Panel" parent="CharacterGrid/CharCard1"]
+layout_mode = 0
+offset_right = 155.0
+offset_bottom = 220.0
+self_modulate = Color(0, 0, 0, 0.6)
+mouse_filter = 0
+
+[node name="ConfirmBtn" type="Button" parent="."]
+layout_mode = 1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -130.0
+offset_right = 100.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Bắt đầu"
+theme_override_font_sizes/font_size = 20

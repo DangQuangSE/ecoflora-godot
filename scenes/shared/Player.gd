@@ -1,6 +1,11 @@
 class_name Player
 extends CharacterBody2D
 
+const _CHARACTER_FRAME_PATHS: Array[String] = [
+	"res://assets/characters/char_0.tres",
+	"res://assets/characters/char_1.tres",
+]
+
 @export var speed: float = 200.0
 @export var camera_zoom: float = 1.0
 @export var sprite_scale: float = 0.4
@@ -28,6 +33,15 @@ func _ready() -> void:
 		_footstep_player.stream = stream
 		_footstep_player.volume_db = AudioManager.get_footstep_volume_db()
 	AudioManager.volume_settings_changed.connect(_on_audio_volume_changed)
+
+func set_character(idx: int) -> void:
+	var clamped := clampi(idx, 0, _CHARACTER_FRAME_PATHS.size() - 1)
+	var path: String = _CHARACTER_FRAME_PATHS[clamped]
+	if not ResourceLoader.exists(path):
+		return
+	_sprite.sprite_frames = load(path)
+	if not _sprite.sprite_frames.has_animation(_sprite.animation):
+		_sprite.play("idle_down")
 
 func set_move_direction(dir: Vector2) -> void:
 	move_direction = dir

@@ -6,6 +6,11 @@ const _CARD_H_LARGE: float  = 1050.0
 const _CARD_W: float = 700.0
 const _OPEN_SLIDE_OFFSET: float = 20.0
 
+const _CHAR_THUMBS: Array[String] = [
+	"res://assets/characters/char_0_thumb.png",
+	"res://assets/characters/char_1_thumb.png",
+]
+
 @onready var _dimmer: ColorRect             = $Dimmer
 @onready var _card: Panel                   = $Card
 @onready var _close_btn: Button             = $Card/CloseBtn
@@ -28,6 +33,7 @@ const _OPEN_SLIDE_OFFSET: float = 20.0
 @onready var _harvest_value: Label          = $Card/Content/RowHarvest/HarvestValue
 @onready var _streak_value: Label           = $Card/Content/RowStreak/StreakValue
 @onready var _flowers_value: Label          = $Card/Content/RowFlowers/FlowersValue
+@onready var _char_grid: HBoxContainer      = $Card/Content/CharacterSection/CharacterGrid
 @onready var _avatar_picker: VBoxContainer  = $Card/AvatarPicker
 @onready var _picker_grid: GridContainer    = $Card/AvatarPicker/Grid
 @onready var _confirm_btn: Button           = $Card/AvatarPicker/ButtonRow/ConfirmBtn
@@ -53,11 +59,15 @@ func _ready() -> void:
 		var btn := _picker_grid.get_child(i) as Button
 		if btn:
 			btn.pressed.connect(_on_avatar_selected.bind(i))
+	_load_char_buttons()
 	UserManager.profile_updated.connect(_refresh_data)
+	UserManager.character_changed.connect(_refresh_character_section)
 
 func _exit_tree() -> void:
 	if UserManager.profile_updated.is_connected(_refresh_data):
 		UserManager.profile_updated.disconnect(_refresh_data)
+	if UserManager.character_changed.is_connected(_refresh_character_section):
+		UserManager.character_changed.disconnect(_refresh_character_section)
 
 func open() -> void:
 	_is_closing = false
@@ -102,6 +112,7 @@ func _refresh_data() -> void:
 	_streak_value.text    = str(p.login_streak) + " ngày"
 	_flowers_value.text   = str(_count_flowers())
 	_refresh_avatar(p.avatar_index)
+	_refresh_character_section()
 
 func _refresh_avatar(idx: int) -> void:
 	var path := _avatar_path(idx)
@@ -117,6 +128,33 @@ func _count_flowers() -> int:
 		or item.category == InventoryItem.Category.HARVEST_PRODUCT:
 			count += item.quantity
 	return count
+
+func _load_char_buttons() -> void:
+	for i in _char_grid.get_child_count():
+		var btn := _char_grid.get_child(i) as Button
+		if not btn:
+			continue
+		var tex := btn.get_node_or_null("Tex") as TextureRect
+		if tex and i < _CHAR_THUMBS.size() and ResourceLoader.exists(_CHAR_THUMBS[i]):
+			tex.texture = load(_CHAR_THUMBS[i])
+		btn.pressed.connect(_on_char_selected.bind(i))
+
+func _refresh_character_section(_idx: int = -1) -> void:
+	var owned := UserManager.get_owned_characters()
+	var equipped := UserManager.get_character_index()
+	for i in _char_grid.get_child_count():
+		var btn := _char_grid.get_child(i) as Button
+		if not btn:
+			continue
+		btn.disabled = not owned.has(i)
+		var badge := btn.get_node_or_null("EquippedBadge") as Label
+		if badge:
+			badge.visible = (i == equipped)
+
+func _on_char_selected(idx: int) -> void:
+	if not UserManager.is_character_owned(idx):
+		return
+	UserManager.set_character_async(idx)
 
 func _load_picker_icons() -> void:
 	for i in 7:

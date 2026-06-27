@@ -273,6 +273,14 @@ size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 17
 text = "Công cụ"
 
+[node name="NhanVatBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=600000009]
+script = ExtResource("7_primary_button_script")
+custom_minimum_size = Vector2(0, 69)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 17
+text = "Nhân Vật"
+
 [node name="TrangTriBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=600000010]
 script = ExtResource("7_primary_button_script")
 custom_minimum_size = Vector2(0, 69)

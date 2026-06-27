@@ -9,7 +9,7 @@ var _style_skeleton_card := StyleBoxFlat.new()
 var _style_skeleton_band := StyleBoxFlat.new()
 
 # Tab index → API category string ("" = no API call, "Coin" = local top-up packages, no API call)
-const _TAB_CATEGORIES := ["Seed", "Consumable", "Decoration", "Coin"]
+const _TAB_CATEGORIES := ["Seed", "Consumable", "Character", "Decoration", "Coin"]
 
 # Coin top-up packages — matches eco-backend's seeded CoinPackage rows
 # (10 coin = 1.000đ, no admin CRUD for MVP). Real purchase happens on the
@@ -21,6 +21,11 @@ const _COIN_PACKAGES := [
 	{"vnd": 50000,  "coin": 500},
 	{"vnd": 100000, "coin": 1000},
 	{"vnd": 200000, "coin": 2000},
+]
+
+const _CHARACTER_CATALOG := [
+	{"id": "character:0", "name": "Mặc định",   "price": 0,     "preview": "res://assets/characters/char_0_thumb.png"},
+	{"id": "character:1", "name": "Nhân vật 1", "price": 10000, "preview": "res://assets/characters/char_1_thumb.png"},
 ]
 
 @onready var _grid: GridContainer        = $ShopPanel/ScrollContainer/GridContainer
@@ -75,6 +80,7 @@ func _ready() -> void:
 	_tab_btns = [
 		$ShopPanel/ShopBg/TabGroup/HatGiongBtn,
 		$ShopPanel/ShopBg/TabGroup/CongCuBtn,
+		$ShopPanel/ShopBg/TabGroup/NhanVatBtn,
 		$ShopPanel/ShopBg/TabGroup/TrangTriBtn,
 		$ShopPanel/ShopBg/TabGroup/CoinBtn,
 	]
@@ -147,6 +153,10 @@ func _on_tab_pressed(idx: int) -> void:
 		_current_items = _build_coin_packages()
 		_render_page()
 		return
+	if category == "Character":
+		_current_items = _build_character_items()
+		_render_page()
+		return
 	if category.is_empty():
 		_current_items = []
 		_render_page()
@@ -176,6 +186,28 @@ func _build_coin_packages() -> Array[ShopItem]:
 		item.is_active = true
 		packages.append(item)
 	return packages
+
+func _build_character_items() -> Array[ShopItem]:
+	var items: Array[ShopItem] = []
+	for entry: Dictionary in _CHARACTER_CATALOG:
+		var idx: int = int((entry["id"] as String).split(":")[1])
+		var item := ShopItem.new()
+		item.id = entry["id"]
+		item.name = entry["name"]
+		item.description = "Nhân vật trang trí — đổi diện mạo trong Profile"
+		item.price = entry["price"]
+		item.category = "Character"
+		item.image_url = entry["preview"]
+		item.is_active = true
+		item.owned = UserManager.is_character_owned(idx)
+		items.append(item)
+	return items
+
+func _refresh_tab() -> void:
+	var category: String = _TAB_CATEGORIES[_current_tab]
+	if category == "Character":
+		_current_items = _build_character_items()
+		_render_page()
 
 func _format_vnd(amount: int) -> String:
 	var digits := str(amount)
@@ -350,6 +382,9 @@ func _on_confirm_purchase() -> void:
 	else:
 		AudioManager.play_sfx("res://sounds/buy-successfully.wav")
 		_show_toast("Đã mua %s ×%d!" % [item.name, qty], true)
+		if item.category == "Character":
+			_refresh_tab()
+			return
 		await InventoryManager.refresh_async()
 		_refresh_card_affordability()
 

@@ -11,7 +11,10 @@ Quy tắc cốt lõi: `imageUrl` trên BE **phải khớp** với key đăng ký
 |---|---|
 | Hạt Giống | `Seed` (FlowerTemplate) |
 | Công Cụ | `Consumable` (Item) |
+| Nhân Vật | `Character` — catalog hardcode trong `ShopScene._CHARACTER_CATALOG` |
 | Trang Trí | `Decoration` (Decor) |
+
+Tab **Nhân Vật** không dùng API catalog — danh sách nhân vật hardcode trong `ShopScene.gd`. Mua qua `PUT /api/shop/purchase` (itemId = `"character:N"`). Hiển thị "Đã sở hữu" sau khi mua; trang bị qua Profile.
 
 Tab **Coin** không hiển thị item từ API.
 

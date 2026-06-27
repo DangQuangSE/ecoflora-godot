@@ -12,13 +12,17 @@ var _item: ShopItem
 
 func setup(item: ShopItem, balance: int = -1) -> void:
 	_item = item
-	_name_label.text  = item.name
-	_price_label.text = str(item.price)
+	_name_label.text = item.name
 	_load_icon(item)
-	if not item.is_active:
+	if item.owned:
+		_price_label.text = "Đã sở hữu"
+		_buy_btn.disabled = true
+	elif not item.is_active:
+		_price_label.text = str(item.price)
 		modulate = Color(0.5, 0.5, 0.5, 1.0)
 		_buy_btn.disabled = true
 	else:
+		_price_label.text = str(item.price)
 		_buy_btn.disabled = balance >= 0 and balance < item.price
 
 func set_affordable(affordable: bool) -> void:
