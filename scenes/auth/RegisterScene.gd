@@ -4,7 +4,7 @@ const LOGIN_SCENE := "res://scenes/auth/LoginScene.tscn"
 const GARDEN_SCENE := "res://scenes/garden/GardenScene.tscn"
 const CHARACTER_SELECT_SCENE := "res://scenes/auth/CharacterSelectScene.tscn"
 const LOGO_TOP_Y := 205.0
-const _TERMS_URL := "https://eco-frontend-zeta.vercel.app/term?tab=terms"
+const _TERMS_URL := "https://ecocham.xyz/term?tab=terms"
 
 @onready var _first_name_input: AuthInput = $RegisterFrame/FormArea/FormContent/NameRow/FirstNameInput
 @onready var _last_name_input: AuthInput = $RegisterFrame/FormArea/FormContent/NameRow/LastNameInput
