@@ -28,8 +28,6 @@ func _ready() -> void:
 	_boundary_rect = _compute_boundary()
 	_setup_camera()
 	_player.set_movement_bounds(_boundary_rect)
-	var _char_idx: int = UserManager.get_character_index() if UserManager.has_method("get_character_index") else 0
-	_player.set_character(_char_idx)
 	SceneTransition.apply_spawn_origin(self, _player)
 	_spawn_plots()
 	_spawn_flower_info_card()

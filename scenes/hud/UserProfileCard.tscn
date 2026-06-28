@@ -450,6 +450,15 @@ text = "Đang mặc"
 horizontal_alignment = 1
 mouse_filter = 2
 
+[node name="UseCharacterBtn" parent="Card/Content/CharacterSection" instance=ExtResource("3_primary_button")]
+visible = false
+custom_minimum_size = Vector2(180, 42)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = ExtResource("4_global_theme")
+theme_override_font_sizes/font_size = 18
+text = "Sử dụng"
+
 [node name="BottomRow" type="HBoxContainer" parent="Card"]
 layout_mode = 1
 anchors_preset = 7
