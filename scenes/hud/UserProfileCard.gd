@@ -14,6 +14,10 @@ const _CHAR_FRAME_PATHS: Array[String] = [
 	"res://assets/characters/char_0.tres",
 	"res://assets/characters/char_1.tres",
 ]
+const _CHARACTER_NAMES: Array[String] = [
+	"Mặc định",
+	"Nhân vật 1",
+]
 
 @onready var _dimmer: ColorRect             = $Dimmer
 @onready var _card: Panel                   = $Card
@@ -37,8 +41,14 @@ const _CHAR_FRAME_PATHS: Array[String] = [
 @onready var _harvest_value: Label          = $Card/Content/RowHarvest/HarvestValue
 @onready var _streak_value: Label           = $Card/Content/RowStreak/StreakValue
 @onready var _flowers_value: Label          = $Card/Content/RowFlowers/FlowersValue
-@onready var _char_grid: HBoxContainer      = $Card/Content/CharacterSection/CharacterGrid
-@onready var _use_character_btn: Button     = $Card/Content/CharacterSection/UseCharacterBtn
+@onready var _char_card: Button             = $Card/Content/CharacterSection/CharacterCard
+@onready var _char_preview: TextureRect     = $Card/Content/CharacterSection/CharacterCard/HBox/Tex
+@onready var _char_name_label: Label        = $Card/Content/CharacterSection/CharacterCard/HBox/Info/NameLabel
+@onready var _edit_char_btn: Button         = $Card/Content/CharacterSection/CharacterCard/HBox/EditCharBtn
+@onready var _char_picker: VBoxContainer    = $Card/CharacterPicker
+@onready var _char_picker_grid: GridContainer = $Card/CharacterPicker/Grid
+@onready var _confirm_char_btn: Button      = $Card/CharacterPicker/ButtonRow/ConfirmBtn
+@onready var _cancel_char_btn: Button       = $Card/CharacterPicker/ButtonRow/CancelBtn
 @onready var _avatar_picker: VBoxContainer  = $Card/AvatarPicker
 @onready var _picker_grid: GridContainer    = $Card/AvatarPicker/Grid
 @onready var _confirm_btn: Button           = $Card/AvatarPicker/ButtonRow/ConfirmBtn
@@ -46,7 +56,7 @@ const _CHAR_FRAME_PATHS: Array[String] = [
 
 var _is_closing: bool = false
 var _pending_idx: int = -1
-var _selected_character_idx: int = -1
+var _pending_char_idx: int = -1
 
 func _ready() -> void:
 	visible = false
@@ -57,7 +67,10 @@ func _ready() -> void:
 	_confirm_btn.pressed.connect(_on_confirm_avatar)
 	_cancel_btn.pressed.connect(_collapse_card)
 	_edit_btn.pressed.connect(_enter_rename_mode)
-	_use_character_btn.pressed.connect(_on_use_character_pressed)
+	_char_card.pressed.connect(_on_edit_char_pressed)
+	_edit_char_btn.pressed.connect(_on_edit_char_pressed)
+	_confirm_char_btn.pressed.connect(_on_confirm_character)
+	_cancel_char_btn.pressed.connect(_collapse_card)
 	_rename_save_btn.pressed.connect(_on_rename_save)
 	_rename_cancel_btn.pressed.connect(_exit_rename_mode)
 	_rename_edit.text_submitted.connect(func(_t: String) -> void: _on_rename_save())
@@ -67,6 +80,10 @@ func _ready() -> void:
 		if btn:
 			btn.pressed.connect(_on_avatar_selected.bind(i))
 	_load_char_buttons()
+	for i in _char_picker_grid.get_child_count():
+		var btn := _char_picker_grid.get_child(i) as Button
+		if btn:
+			btn.pressed.connect(_on_char_selected.bind(i))
 	UserManager.profile_updated.connect(_refresh_data)
 	UserManager.character_changed.connect(_refresh_character_section)
 
@@ -137,14 +154,13 @@ func _count_flowers() -> int:
 	return count
 
 func _load_char_buttons() -> void:
-	for i in _char_grid.get_child_count():
-		var btn := _char_grid.get_child(i) as Button
+	for i in _char_picker_grid.get_child_count():
+		var btn := _char_picker_grid.get_child(i) as Button
 		if not btn:
 			continue
-		var tex := btn.get_node_or_null("Tex") as TextureRect
+		var tex := btn.get_node_or_null("Margin/Tex") as TextureRect
 		if tex:
 			tex.texture = _character_thumb_texture(i)
-		btn.pressed.connect(_on_char_selected.bind(i))
 
 func _character_thumb_texture(idx: int) -> Texture2D:
 	if idx < _CHAR_THUMBS.size() and ResourceLoader.exists(_CHAR_THUMBS[idx]):
@@ -159,46 +175,60 @@ func _character_thumb_texture(idx: int) -> Texture2D:
 	return frames.get_frame_texture(&"idle_down", 0)
 
 func _refresh_character_section(_idx: int = -1) -> void:
-	var owned := UserManager.get_owned_characters()
 	var equipped := _idx if _idx >= 0 else UserManager.get_character_index()
-	for i in _char_grid.get_child_count():
-		var btn := _char_grid.get_child(i) as Button
+	_char_preview.texture = _character_thumb_texture(equipped)
+	if equipped >= 0 and equipped < _CHARACTER_NAMES.size():
+		_char_name_label.text = _CHARACTER_NAMES[equipped]
+	else:
+		_char_name_label.text = "Nhân vật " + str(equipped)
+	
+	var owned := UserManager.get_owned_characters()
+	for i in _char_picker_grid.get_child_count():
+		var btn := _char_picker_grid.get_child(i) as Button
 		if not btn:
 			continue
 		btn.disabled = not owned.has(i)
 		var badge := btn.get_node_or_null("EquippedBadge") as Label
 		if badge:
 			badge.visible = (i == equipped)
-	if _selected_character_idx == equipped or not owned.has(_selected_character_idx):
-		_selected_character_idx = -1
-	_update_use_character_button(equipped, owned)
 
 func _on_char_selected(idx: int) -> void:
 	if not UserManager.is_character_owned(idx):
 		return
-	_selected_character_idx = idx
-	_update_use_character_button()
+	_pending_char_idx = idx
+	_update_char_picker_highlight()
 
-func _on_use_character_pressed() -> void:
-	if _selected_character_idx < 0:
-		return
-	if not UserManager.is_character_owned(_selected_character_idx):
-		return
-	if _selected_character_idx == UserManager.get_character_index():
-		return
-	_use_character_btn.disabled = true
-	UserManager.set_character_async(_selected_character_idx)
+func _on_edit_char_pressed() -> void:
+	_open_char_picker()
 
-func _update_use_character_button(equipped: int = -1, owned: Array[int] = []) -> void:
-	if equipped < 0:
-		equipped = UserManager.get_character_index()
-	if owned.is_empty():
-		owned = UserManager.get_owned_characters()
-	var can_use := _selected_character_idx >= 0 \
-			and owned.has(_selected_character_idx) \
-			and _selected_character_idx != equipped
-	_use_character_btn.visible = can_use
-	_use_character_btn.disabled = not can_use
+func _open_char_picker() -> void:
+	if _avatar_picker.visible:
+		return
+	_pending_char_idx = UserManager.get_character_index()
+	_update_char_picker_highlight()
+	_expand_char_picker()
+
+func _on_confirm_character() -> void:
+	if _pending_char_idx >= 0 and _pending_char_idx != UserManager.get_character_index():
+		if UserManager.is_character_owned(_pending_char_idx):
+			UserManager.set_character_async(_pending_char_idx)
+	_collapse_card()
+
+func _expand_char_picker() -> void:
+	_content.visible = false
+	_bottom_row.visible = false
+	_char_picker.visible = true
+	var tween := create_tween().set_parallel(true)
+	tween.tween_property(_card, "offset_top", -(_CARD_H_LARGE * 0.5), 0.1)
+	tween.tween_property(_card, "offset_bottom", _CARD_H_LARGE * 0.5, 0.1)
+
+func _update_char_picker_highlight() -> void:
+	for i in _char_picker_grid.get_child_count():
+		var btn := _char_picker_grid.get_child(i) as Button
+		if btn:
+			var border := btn.get_node_or_null("SelectedBorder") as Panel
+			if border:
+				border.visible = (i == _pending_char_idx)
 
 func _load_picker_icons() -> void:
 	for i in 7:
@@ -271,9 +301,11 @@ func _expand_card() -> void:
 
 func _collapse_card() -> void:
 	_avatar_picker.visible = false
+	_char_picker.visible = false
 	_content.visible = true
 	_bottom_row.visible = true
 	_refresh_avatar(UserManager.get_profile().avatar_index)
+	_refresh_character_section()
 	var tween := create_tween().set_parallel(true)
 	tween.tween_property(_card, "offset_top", -(_CARD_H_SMALL * 0.5), 0.1)
 	tween.tween_property(_card, "offset_bottom", _CARD_H_SMALL * 0.5, 0.1)

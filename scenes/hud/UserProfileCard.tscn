@@ -365,99 +365,67 @@ theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
 theme_override_font_sizes/font_size = 19
 text = "Nhân Vật"
 
-[node name="CharacterGrid" type="HBoxContainer" parent="Card/Content/CharacterSection"]
+[node name="CharacterCard" type="Button" parent="Card/Content/CharacterSection"]
+custom_minimum_size = Vector2(280, 110)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_constants/separation = 16
-
-[node name="CharBtn0" type="Button" parent="Card/Content/CharacterSection/CharacterGrid"]
-custom_minimum_size = Vector2(104, 104)
-layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_opt_bg")
 theme_override_styles/focus = SubResource("StyleBoxFlat_opt_bg")
+mouse_default_cursor_shape = 2
 
-[node name="Tex" type="TextureRect" parent="Card/Content/CharacterSection/CharacterGrid/CharBtn0"]
+[node name="HBox" type="HBoxContainer" parent="Card/Content/CharacterSection/CharacterCard"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = -6.0
-offset_bottom = -22.0
+offset_left = 12.0
+offset_top = 8.0
+offset_right = -12.0
+offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 12
+alignment = 0
+mouse_filter = 2
+
+[node name="Tex" type="TextureRect" parent="Card/Content/CharacterSection/CharacterCard/HBox"]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+size_flags_vertical = 4
 expand_mode = 1
 stretch_mode = 5
 mouse_filter = 2
 
-[node name="EquippedBadge" type="Label" parent="Card/Content/CharacterSection/CharacterGrid/CharBtn0"]
-visible = false
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -20.0
-offset_bottom = 0.0
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.239216, 0.560784, 0.160784, 1)
-theme_override_font_sizes/font_size = 11
-text = "Đang mặc"
-horizontal_alignment = 1
-mouse_filter = 2
-
-[node name="CharBtn1" type="Button" parent="Card/Content/CharacterSection/CharacterGrid"]
-custom_minimum_size = Vector2(104, 104)
+[node name="Info" type="VBoxContainer" parent="Card/Content/CharacterSection/CharacterCard/HBox"]
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
-theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_opt_bg")
-theme_override_styles/focus = SubResource("StyleBoxFlat_opt_bg")
-
-[node name="Tex" type="TextureRect" parent="Card/Content/CharacterSection/CharacterGrid/CharBtn1"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 6.0
-offset_top = 6.0
-offset_right = -6.0
-offset_bottom = -22.0
-grow_horizontal = 2
-grow_vertical = 2
-expand_mode = 1
-stretch_mode = 5
+size_flags_horizontal = 3
+alignment = 1
+theme_override_constants/separation = 4
 mouse_filter = 2
 
-[node name="EquippedBadge" type="Label" parent="Card/Content/CharacterSection/CharacterGrid/CharBtn1"]
-visible = false
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -20.0
-offset_bottom = 0.0
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.239216, 0.560784, 0.160784, 1)
-theme_override_font_sizes/font_size = 11
-text = "Đang mặc"
-horizontal_alignment = 1
-mouse_filter = 2
-
-[node name="UseCharacterBtn" parent="Card/Content/CharacterSection" instance=ExtResource("3_primary_button")]
-visible = false
-custom_minimum_size = Vector2(180, 42)
+[node name="NameLabel" type="Label" parent="Card/Content/CharacterSection/CharacterCard/HBox/Info"]
 layout_mode = 2
-size_flags_horizontal = 4
-theme = ExtResource("4_global_theme")
-theme_override_font_sizes/font_size = 18
-text = "Sử dụng"
+theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
+theme_override_font_sizes/font_size = 19
+text = "Mặc định"
+mouse_filter = 2
+
+[node name="StatusLabel" type="Label" parent="Card/Content/CharacterSection/CharacterCard/HBox/Info"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.239216, 0.560784, 0.160784, 1)
+theme_override_font_sizes/font_size = 14
+text = "Đang mặc"
+mouse_filter = 2
+
+[node name="EditCharBtn" type="Button" parent="Card/Content/CharacterSection/CharacterCard/HBox"]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("2_edit")
+flat = true
+expand_icon = true
 
 [node name="BottomRow" type="HBoxContainer" parent="Card"]
 layout_mode = 1
@@ -798,6 +766,168 @@ theme_override_styles/focus = SubResource("StyleBoxFlat_btn_cancel_hover")
 text = "Hủy"
 
 [node name="ConfirmBtn" parent="Card/AvatarPicker/ButtonRow" instance=ExtResource("3_primary_button")]
+custom_minimum_size = Vector2(170, 52)
+layout_mode = 2
+theme = ExtResource("4_global_theme")
+theme_override_font_sizes/font_size = 21
+text = "Xác nhận"
+
+[node name="CharacterPicker" type="VBoxContainer" parent="Card"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 112.0
+offset_top = 135.0
+offset_right = -112.0
+offset_bottom = -220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="Card/CharacterPicker"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.352941, 0.219608, 0.109804, 1)
+theme_override_font_sizes/font_size = 29
+text = "NHÂN VẬT"
+horizontal_alignment = 1
+
+[node name="Grid" type="GridContainer" parent="Card/CharacterPicker"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+theme_override_constants/h_separation = 24
+theme_override_constants/v_separation = 24
+columns = 3
+
+[node name="CharOpt0" type="Button" parent="Card/CharacterPicker/Grid"]
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
+theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_opt_bg")
+theme_override_styles/focus = SubResource("StyleBoxFlat_opt_bg")
+
+[node name="Margin" type="MarginContainer" parent="Card/CharacterPicker/Grid/CharOpt0"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+mouse_filter = 2
+
+[node name="Tex" type="TextureRect" parent="Card/CharacterPicker/Grid/CharOpt0/Margin"]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="SelectedBorder" type="Panel" parent="Card/CharacterPicker/Grid/CharOpt0"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_opt_selected")
+
+[node name="EquippedBadge" type="Label" parent="Card/CharacterPicker/Grid/CharOpt0"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+offset_bottom = 0.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.239216, 0.560784, 0.160784, 1)
+theme_override_font_sizes/font_size = 11
+text = "Đang mặc"
+horizontal_alignment = 1
+mouse_filter = 2
+
+[node name="CharOpt1" type="Button" parent="Card/CharacterPicker/Grid"]
+custom_minimum_size = Vector2(104, 104)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_opt_bg")
+theme_override_styles/hover = SubResource("StyleBoxFlat_opt_bg")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_opt_bg")
+theme_override_styles/focus = SubResource("StyleBoxFlat_opt_bg")
+
+[node name="Margin" type="MarginContainer" parent="Card/CharacterPicker/Grid/CharOpt1"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+mouse_filter = 2
+
+[node name="Tex" type="TextureRect" parent="Card/CharacterPicker/Grid/CharOpt1/Margin"]
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+mouse_filter = 2
+
+[node name="SelectedBorder" type="Panel" parent="Card/CharacterPicker/Grid/CharOpt1"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_opt_selected")
+
+[node name="EquippedBadge" type="Label" parent="Card/CharacterPicker/Grid/CharOpt1"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -20.0
+offset_bottom = 0.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.239216, 0.560784, 0.160784, 1)
+theme_override_font_sizes/font_size = 11
+text = "Đang mặc"
+horizontal_alignment = 1
+mouse_filter = 2
+
+[node name="ButtonRow" type="HBoxContainer" parent="Card/CharacterPicker"]
+layout_mode = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="CancelBtn" parent="Card/CharacterPicker/ButtonRow" instance=ExtResource("3_primary_button")]
+custom_minimum_size = Vector2(170, 52)
+layout_mode = 2
+theme = ExtResource("4_global_theme")
+theme_override_font_sizes/font_size = 21
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_cancel_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_cancel_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_cancel_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_cancel_hover")
+text = "Hủy"
+
+[node name="ConfirmBtn" parent="Card/CharacterPicker/ButtonRow" instance=ExtResource("3_primary_button")]
 custom_minimum_size = Vector2(170, 52)
 layout_mode = 2
 theme = ExtResource("4_global_theme")

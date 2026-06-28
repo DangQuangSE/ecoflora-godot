@@ -22,7 +22,7 @@ signal character_changed(idx: int)
 @export var use_mock: bool = false
 @export var mock_character_index: int = 0
 @export var mock_owned_characters: Array[int] = [0]
-@export var base_url: String = "http://api.ecocham.xyz:5000"
+@export var base_url: String = "https://api.ecocham.xyz"
 @export var profile_poll_interval_sec: float = 30.0
 
 const _XP_TABLE: Dictionary = {
