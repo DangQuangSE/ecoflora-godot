@@ -64,6 +64,7 @@ var _avatar_in_flight: bool = false
 var _rename_in_flight: bool = false
 var _refresh_in_flight: bool = false
 var _character_in_flight: bool = false
+var _initial_character_in_flight: bool = false
 var _session_ready_emitted: bool = false
 var _character_index: int = 0
 var _owned_characters: Array[int] = [0]
@@ -71,6 +72,12 @@ var _character_http: HTTPRequest
 
 var shop_open_tab: int = 0
 var _registration_success_message: String = ""
+var _last_login_account: String = ""
+
+const _CHARACTER_SELECT_PREFS := "user://character_select_prefs.cfg"
+const _CHARACTER_SELECT_SECTION := "initial_character_select"
+const _CHARACTER_SELECT_ACCOUNT_KEY := "pending_account"
+const _CHARACTER_SELECT_CHOICE_KEY := "selected_idx"
 
 func _ready() -> void:
 	_token_store  = _TokenStoreScript.new()
@@ -165,6 +172,7 @@ func get_auth_header() -> String:
 	return "Authorization: Bearer %s" % _token_store.access_token
 
 func login_async(account: String, password: String) -> bool:
+	_last_login_account = account.strip_edges()
 	if use_mock:
 		_token_store.access_token = "mock_token"
 		_profile.username = account
@@ -244,6 +252,63 @@ func resume_session_async() -> bool:
 		return false
 	_emit_login_succeeded_once()
 	return true
+
+func get_last_login_account() -> String:
+	return _last_login_account
+
+func mark_initial_character_select_pending(account: String) -> void:
+	var normalized := _normalize_account(account)
+	if normalized.is_empty():
+		return
+	var cfg := ConfigFile.new()
+	cfg.set_value(_CHARACTER_SELECT_SECTION, _CHARACTER_SELECT_ACCOUNT_KEY, normalized)
+	cfg.set_value(_CHARACTER_SELECT_SECTION, _CHARACTER_SELECT_CHOICE_KEY, -1)
+	cfg.save(_CHARACTER_SELECT_PREFS)
+
+func clear_initial_character_select_pending() -> void:
+	var cfg := ConfigFile.new()
+	cfg.set_value(_CHARACTER_SELECT_SECTION, _CHARACTER_SELECT_ACCOUNT_KEY, "")
+	cfg.set_value(_CHARACTER_SELECT_SECTION, _CHARACTER_SELECT_CHOICE_KEY, -1)
+	cfg.save(_CHARACTER_SELECT_PREFS)
+
+func is_initial_character_select_pending(account: String = "") -> bool:
+	var cfg := ConfigFile.new()
+	if cfg.load(_CHARACTER_SELECT_PREFS) != OK:
+		return false
+	var pending := str(cfg.get_value(_CHARACTER_SELECT_SECTION, _CHARACTER_SELECT_ACCOUNT_KEY, ""))
+	if pending.is_empty():
+		return false
+	var candidate := _normalize_account(account)
+	if candidate.is_empty():
+		candidate = _normalize_account(_last_login_account)
+	if candidate.is_empty():
+		candidate = _normalize_account(_profile.username)
+	if candidate.is_empty():
+		return true
+	return pending == candidate
+
+func has_any_initial_character_select_pending() -> bool:
+	var cfg := ConfigFile.new()
+	if cfg.load(_CHARACTER_SELECT_PREFS) != OK:
+		return false
+	return not str(cfg.get_value(_CHARACTER_SELECT_SECTION, _CHARACTER_SELECT_ACCOUNT_KEY, "")).is_empty()
+
+func set_pending_initial_character_selection(idx: int) -> void:
+	var cfg := ConfigFile.new()
+	cfg.load(_CHARACTER_SELECT_PREFS)
+	cfg.set_value(_CHARACTER_SELECT_SECTION, _CHARACTER_SELECT_CHOICE_KEY, idx)
+	cfg.save(_CHARACTER_SELECT_PREFS)
+
+func get_pending_initial_character_selection(account: String = "") -> int:
+	if not is_initial_character_select_pending(account):
+		return -1
+	var cfg := ConfigFile.new()
+	if cfg.load(_CHARACTER_SELECT_PREFS) != OK:
+		return -1
+	return int(cfg.get_value(_CHARACTER_SELECT_SECTION, _CHARACTER_SELECT_CHOICE_KEY, -1))
+
+func _normalize_account(account: String) -> String:
+	return account.strip_edges().to_lower()
 
 func _emit_login_succeeded_once() -> void:
 	if _session_ready_emitted:
@@ -352,11 +417,20 @@ func fetch_profile_async() -> void:
 	var old_level: int = _profile.level
 	_profile = _user_service.parse_profile(data)
 	var be_char_idx: int = data.get("characterIndex", 0)
-	var be_owned: Variant = data.get("ownedCharacters", [0])
+	var be_owned: Variant = data.get("ownedCharacters", [])
 	if be_owned is Array:
 		_owned_characters = Array(be_owned, TYPE_INT, "", null)
+	if not data.has("hasSelectedInitialCharacter") and _owned_characters.is_empty():
+		_profile.has_selected_initial_character = false
 	var local_char_idx := load_character_index_local()
-	if local_char_idx != be_char_idx and is_character_owned(local_char_idx):
+	var pending_initial_idx := get_pending_initial_character_selection(_last_login_account)
+	if not _profile.has_selected_initial_character and pending_initial_idx >= 0:
+		var synced_initial := await select_initial_character_async(pending_initial_idx)
+		if synced_initial:
+			be_char_idx = _character_index
+	if not _profile.has_selected_initial_character:
+		_character_index = -1
+	elif local_char_idx != be_char_idx and is_character_owned(local_char_idx):
 		_character_index = local_char_idx
 		set_character_async(local_char_idx)
 	else:
@@ -557,7 +631,7 @@ func purchase_async(prefixed_id: String, quantity: int) -> Dictionary:
 		return {}
 	update_currency(int(data.get("remainingCurrency", _profile.currency)))
 	if data.has("ownedCharacters") and data["ownedCharacters"] is Array:
-		_owned_characters = Array(data["ownedCharacters"], TYPE_INT, "", null)
+		_owned_characters = _merge_owned_characters(_owned_characters, Array(data["ownedCharacters"], TYPE_INT, "", null))
 		save_character_prefs()
 	return data
 
@@ -591,6 +665,11 @@ func load_avatar_index() -> int:
 func get_character_index() -> int:
 	return mock_character_index if use_mock else _character_index
 
+func needs_initial_character_select() -> bool:
+	if use_mock:
+		return false
+	return not _profile.has_selected_initial_character
+
 func get_owned_characters() -> Array[int]:
 	return mock_owned_characters if use_mock else _owned_characters
 
@@ -603,11 +682,90 @@ func save_character_prefs() -> void:
 	cfg.set_value("character", "owned", JSON.stringify(_owned_characters))
 	cfg.save("user://character_prefs.cfg")
 
+func apply_initial_character_selection(idx: int) -> void:
+	_character_index = idx
+	_owned_characters = Array([idx], TYPE_INT, "", null)
+	save_character_prefs()
+	set_pending_initial_character_selection(idx)
+	character_changed.emit(idx)
+
+func select_initial_character_async(idx: int) -> bool:
+	if idx < 0 or _initial_character_in_flight:
+		return false
+	if use_mock:
+		mock_character_index = idx
+		mock_owned_characters = Array([idx], TYPE_INT, "", null)
+		_profile.has_selected_initial_character = true
+		character_changed.emit(idx)
+		return true
+	if _token_store.access_token.is_empty():
+		apply_initial_character_selection(idx)
+		return true
+	_initial_character_in_flight = true
+	var body := JSON.stringify({"characterIndex": idx})
+	var headers := HttpHelper.make_headers(_token_store.access_token)
+	headers.append("Content-Type: application/json")
+	var err := _character_http.request(
+		base_url + "/api/auth/initial-character", headers, HTTPClient.METHOD_POST, body)
+	if err != OK:
+		_initial_character_in_flight = false
+		push_warning("UserManager.select_initial_character_async: request error %d" % err)
+		return false
+	var raw: Variant = await _character_http.request_completed
+	_initial_character_in_flight = false
+	var decoded := _decode_raw(raw, "select_initial_character_async")
+	if decoded.is_empty():
+		return false
+	var status_code: int = decoded["status"]
+	var body_bytes: PackedByteArray = decoded["bytes"]
+	if status_code != 200:
+		push_warning("UserManager.select_initial_character_async: HTTP %d" % status_code)
+		return false
+	var envelope: Variant = _parse_json_body(body_bytes, "select_initial_character_async")
+	if envelope == null:
+		return false
+	var data: Variant = HttpHelper.unwrap_envelope(envelope)
+	if data is Dictionary:
+		_profile = _user_service.parse_profile(data)
+		_character_index = int((data as Dictionary).get("characterIndex", idx))
+		var owned: Variant = (data as Dictionary).get("ownedCharacters", [idx])
+		if owned is Array:
+			_owned_characters = Array(owned, TYPE_INT, "", null)
+	else:
+		_character_index = idx
+		_owned_characters = Array([idx], TYPE_INT, "", null)
+		_profile.has_selected_initial_character = true
+	save_character_prefs()
+	clear_initial_character_select_pending()
+	character_changed.emit(_character_index)
+	profile_updated.emit()
+	return true
+
 func load_character_index_local() -> int:
 	var cfg := ConfigFile.new()
 	if cfg.load("user://character_prefs.cfg") != OK:
 		return 0
 	return int(cfg.get_value("character", "index", 0))
+
+func load_character_owned_local() -> Array[int]:
+	var cfg := ConfigFile.new()
+	if cfg.load("user://character_prefs.cfg") != OK:
+		return []
+	var raw := str(cfg.get_value("character", "owned", "[]"))
+	var parsed: Variant = JSON.parse_string(raw)
+	if not parsed is Array:
+		return []
+	return Array(parsed, TYPE_INT, "", null)
+
+func _merge_owned_characters(local_owned: Array[int], remote_owned: Array[int]) -> Array[int]:
+	var merged: Array[int] = []
+	for idx: int in remote_owned:
+		if not merged.has(idx):
+			merged.append(idx)
+	for idx: int in local_owned:
+		if not merged.has(idx):
+			merged.append(idx)
+	return merged
 
 func set_character_async(idx: int) -> void:
 	if not is_character_owned(idx) or _character_in_flight:
@@ -773,6 +931,9 @@ func _exit_tree() -> void:
 	if _character_in_flight:
 		_character_http.cancel_request()
 		_character_in_flight = false
+	if _initial_character_in_flight:
+		_character_http.cancel_request()
+		_initial_character_in_flight = false
 	_vitality_poll_timer.stop()
 
 func _show_loading() -> void:

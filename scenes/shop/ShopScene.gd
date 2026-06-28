@@ -24,7 +24,7 @@ const _COIN_PACKAGES := [
 ]
 
 const _CHARACTER_CATALOG := [
-	{"id": "character:0", "name": "Mặc định",   "price": 0,     "preview": "res://assets/characters/char_0.tres"},
+	{"id": "character:0", "name": "Mặc định",   "price": 10000, "preview": "res://assets/characters/char_0.tres"},
 	{"id": "character:1", "name": "Nhân vật 1", "price": 10000, "preview": "res://assets/characters/char_1.tres"},
 ]
 
@@ -133,10 +133,6 @@ func _on_tab_pressed(idx: int) -> void:
 		_current_items = _build_coin_packages()
 		_render_page()
 		return
-	if category == "Character":
-		_current_items = _build_character_items()
-		_render_page()
-		return
 	if category.is_empty():
 		_current_items = []
 		_render_page()
@@ -149,6 +145,12 @@ func _on_tab_pressed(idx: int) -> void:
 	var filtered := _filter_known_seeds(items)
 	for item: ShopItem in filtered:
 		_localize_item(item)
+	if category == "Character":
+		if filtered.is_empty():
+			filtered = _build_character_items()
+		else:
+			for item: ShopItem in filtered:
+				_apply_character_metadata(item)
 	_current_items = filtered
 	_render_page()
 
@@ -183,11 +185,35 @@ func _build_character_items() -> Array[ShopItem]:
 		items.append(item)
 	return items
 
+func _apply_character_metadata(item: ShopItem) -> void:
+	var idx := _get_character_index_from_id(item.id)
+	if idx < 0:
+		return
+	var fallback := _get_character_fallback(idx)
+	if fallback.is_empty():
+		return
+	if item.name.strip_edges().is_empty():
+		item.name = str(fallback.get("name", item.name))
+	item.description = "Nhân vật trang trí — đổi diện mạo trong Profile"
+	item.image_url = str(fallback.get("preview", item.image_url))
+	item.owned = UserManager.is_character_owned(idx)
+
+func _get_character_index_from_id(id: String) -> int:
+	var parts := id.split(":")
+	if parts.size() != 2:
+		return -1
+	return int(parts[1]) if parts[1].is_valid_int() else -1
+
+func _get_character_fallback(idx: int) -> Dictionary:
+	for entry: Dictionary in _CHARACTER_CATALOG:
+		if _get_character_index_from_id(str(entry.get("id", ""))) == idx:
+			return entry
+	return {}
+
 func _refresh_tab() -> void:
 	var category: String = _TAB_CATEGORIES[_current_tab]
 	if category == "Character":
-		_current_items = _build_character_items()
-		_render_page()
+		await _on_tab_pressed(_current_tab)
 
 func _format_vnd(amount: int) -> String:
 	var digits := str(amount)
@@ -329,7 +355,7 @@ func _on_confirm_purchase() -> void:
 		AudioManager.play_sfx("res://sounds/buy-successfully.wav")
 		_show_toast("Đã mua %s!" % item.name, true)
 		if item.category == "Character":
-			_refresh_tab()
+			await _refresh_tab()
 			return
 		await InventoryManager.refresh_async()
 		_refresh_card_affordability()

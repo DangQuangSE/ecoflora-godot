@@ -7,17 +7,17 @@ const _CHARACTER_FRAME_PATHS: Array[String] = [
 	"res://assets/characters/char_1.tres",
 ]
 const _CHARACTER_NAMES: Array[String] = ["Mặc định", "Nhân vật 1"]
-const _OWNED_AT_REGISTER: Array[int] = [0]
+const _AVAILABLE_AT_REGISTER: Array[int] = [0, 1]
 
 @onready var _confirm_btn: Button = $ConfirmBtn
 @onready var _grid: HBoxContainer = $CharacterGrid
 
-var _selected_idx: int = 0
+var _selected_idx: int = -1
 
 func _ready() -> void:
 	_build_cards()
 	_confirm_btn.pressed.connect(_on_confirm)
-	_select(0)
+	_confirm_btn.disabled = true
 
 func _build_cards() -> void:
 	for i in _CHARACTER_FRAME_PATHS.size():
@@ -31,7 +31,7 @@ func _build_cards() -> void:
 			if frames.has_animation("idle_down"):
 				preview.play("idle_down")
 		(card.get_node("NameLabel") as Label).text = _CHARACTER_NAMES[i]
-		var owned: bool = i in _OWNED_AT_REGISTER
+		var owned: bool = i in _AVAILABLE_AT_REGISTER
 		var lock := card.get_node_or_null("LockOverlay") as Panel
 		if lock:
 			lock.visible = not owned
@@ -44,9 +44,10 @@ func _on_card_input(event: InputEvent, idx: int) -> void:
 		_select(idx)
 
 func _select(idx: int) -> void:
-	if not (idx in _OWNED_AT_REGISTER):
+	if not (idx in _AVAILABLE_AT_REGISTER):
 		return
 	_selected_idx = idx
+	_confirm_btn.disabled = false
 	for i in _CHARACTER_FRAME_PATHS.size():
 		var card := _grid.get_child(i) as Panel
 		if card:
@@ -55,8 +56,14 @@ func _select(idx: int) -> void:
 				border.visible = (i == idx)
 
 func _on_confirm() -> void:
-	var cfg := ConfigFile.new()
-	cfg.set_value("character", "index", _selected_idx)
-	cfg.set_value("character", "owned", JSON.stringify(_OWNED_AT_REGISTER))
-	cfg.save("user://character_prefs.cfg")
-	SceneTransition.fade_to(LOGIN_SCENE)
+	if _selected_idx < 0:
+		return
+	_confirm_btn.disabled = true
+	var ok := await UserManager.select_initial_character_async(_selected_idx)
+	if ok:
+		if UserManager.is_logged_in():
+			SceneTransition.fade_to("res://scenes/garden/GardenScene.tscn")
+		else:
+			SceneTransition.fade_to(LOGIN_SCENE)
+	else:
+		_confirm_btn.disabled = false

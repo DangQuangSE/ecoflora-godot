@@ -1,6 +1,68 @@
-[gd_scene load_steps=2 format=3 uid="uid://b_charselect01"]
+[gd_scene load_steps=7 format=3 uid="uid://b_charselect01"]
 
 [ext_resource type="Script" path="res://scenes/auth/CharacterSelectScene.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+bg_color = Color(0.98, 0.92, 0.78, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 5
+border_color = Color(0.53, 0.35, 0.16, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0.16, 0.08, 0.02, 0.22)
+shadow_size = 6
+shadow_offset = Vector2(0, 4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_selected"]
+draw_center = false
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.28, 0.66, 0.22, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lock"]
+bg_color = Color(0.08, 0.05, 0.03, 0.42)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm"]
+bg_color = Color(0.42, 0.68, 0.28, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 5
+border_color = Color(0.21, 0.39, 0.13, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm_disabled"]
+bg_color = Color(0.42, 0.46, 0.36, 0.62)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.24, 0.27, 0.20, 0.72)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
 
 [node name="CharacterSelectScene" type="Control"]
 layout_mode = 3
@@ -19,18 +81,31 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.082, 0.22, 0.082, 1)
+color = Color(0.83, 0.91, 0.72, 1)
 
 [node name="Title" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 80.0
-offset_bottom = 130.0
+offset_top = 70.0
+offset_bottom = 120.0
 grow_horizontal = 2
 text = "Chọn Nhân Vật"
 horizontal_alignment = 1
-theme_override_font_sizes/font_size = 28
+theme_override_colors/font_color = Color(0.27, 0.17, 0.08, 1)
+theme_override_font_sizes/font_size = 32
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 122.0
+offset_bottom = 154.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.38, 0.25, 0.12, 0.82)
+theme_override_font_sizes/font_size = 16
+text = "Nhân vật sẽ được sử dụng khi bạn chính thức vào trò chơi"
+horizontal_alignment = 1
 
 [node name="CharacterGrid" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -38,87 +113,105 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -175.0
-offset_top = -170.0
-offset_right = 175.0
-offset_bottom = 70.0
+offset_left = -220.0
+offset_top = -165.0
+offset_right = 220.0
+offset_bottom = 145.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 34
 alignment = 1
 
 [node name="CharCard0" type="Panel" parent="CharacterGrid"]
-custom_minimum_size = Vector2(155, 220)
+custom_minimum_size = Vector2(190, 280)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+mouse_default_cursor_shape = 2
 
 [node name="Preview" type="AnimatedSprite2D" parent="CharacterGrid/CharCard0"]
-position = Vector2(77, 80)
-scale = Vector2(2.5, 2.5)
+position = Vector2(95, 118)
+scale = Vector2(0.42, 0.42)
 
 [node name="NameLabel" type="Label" parent="CharacterGrid/CharCard0"]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 145.0
-offset_right = 150.0
-offset_bottom = 168.0
+offset_left = 10.0
+offset_top = 204.0
+offset_right = 180.0
+offset_bottom = 230.0
 text = "Mặc định"
 horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.28, 0.17, 0.08, 1)
+theme_override_font_sizes/font_size = 17
 
 [node name="StatusLabel" type="Label" parent="CharacterGrid/CharCard0"]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 170.0
-offset_right = 150.0
-offset_bottom = 192.0
-text = "Miễn phí"
+offset_left = 10.0
+offset_top = 232.0
+offset_right = 180.0
+offset_bottom = 254.0
+text = "Sẵn sàng"
 horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.28, 0.56, 0.18, 1)
 theme_override_font_sizes/font_size = 12
 
 [node name="SelectedBorder" type="Panel" parent="CharacterGrid/CharCard0"]
 layout_mode = 0
-offset_right = 155.0
-offset_bottom = 220.0
-self_modulate = Color(0.2, 0.85, 0.2, 0.4)
+offset_right = 190.0
+offset_bottom = 280.0
 visible = false
 mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_selected")
 
 [node name="CharCard1" type="Panel" parent="CharacterGrid"]
-custom_minimum_size = Vector2(155, 220)
+custom_minimum_size = Vector2(190, 280)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+mouse_default_cursor_shape = 2
 
 [node name="Preview" type="AnimatedSprite2D" parent="CharacterGrid/CharCard1"]
-position = Vector2(77, 80)
-scale = Vector2(2.5, 2.5)
+position = Vector2(95, 118)
+scale = Vector2(0.42, 0.42)
 
 [node name="NameLabel" type="Label" parent="CharacterGrid/CharCard1"]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 145.0
-offset_right = 150.0
-offset_bottom = 168.0
+offset_left = 10.0
+offset_top = 204.0
+offset_right = 180.0
+offset_bottom = 230.0
 text = "Nhân vật 1"
 horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.28, 0.17, 0.08, 1)
+theme_override_font_sizes/font_size = 17
 
 [node name="StatusLabel" type="Label" parent="CharacterGrid/CharCard1"]
 layout_mode = 0
-offset_left = 5.0
-offset_top = 170.0
-offset_right = 150.0
-offset_bottom = 192.0
-text = "10,000 coin"
+offset_left = 10.0
+offset_top = 232.0
+offset_right = 180.0
+offset_bottom = 254.0
+text = "Sẵn sàng"
 horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.28, 0.56, 0.18, 1)
 theme_override_font_sizes/font_size = 12
+
+[node name="SelectedBorder" type="Panel" parent="CharacterGrid/CharCard1"]
+layout_mode = 0
+offset_right = 190.0
+offset_bottom = 280.0
+visible = false
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_selected")
 
 [node name="LockOverlay" type="Panel" parent="CharacterGrid/CharCard1"]
 layout_mode = 0
-offset_right = 155.0
-offset_bottom = 220.0
-self_modulate = Color(0, 0, 0, 0.6)
+offset_right = 190.0
+offset_bottom = 280.0
 mouse_filter = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_lock")
 
 [node name="ConfirmBtn" type="Button" parent="."]
 layout_mode = 1
@@ -126,11 +219,17 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -100.0
-offset_top = -130.0
-offset_right = 100.0
-offset_bottom = -80.0
+offset_left = -110.0
+offset_top = -118.0
+offset_right = 110.0
+offset_bottom = -66.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Bắt đầu"
+theme_override_colors/font_color = Color(1, 0.96, 0.82, 1)
+theme_override_colors/font_disabled_color = Color(1, 0.96, 0.82, 0.58)
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_confirm")
+theme_override_styles/hover = SubResource("StyleBoxFlat_confirm")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_confirm")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_confirm_disabled")

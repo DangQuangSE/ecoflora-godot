@@ -16,6 +16,7 @@ var total_xp_earned: int = 0
 var harvest_count: int = 0
 var login_streak: int = 0
 var avatar_index: int = 0
+var has_selected_initial_character: bool = true
 var join_date: String = ""
 var vitality_ready_at: int = 0  # unix timestamp; 0 = ready to claim
 

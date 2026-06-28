@@ -21,6 +21,8 @@ const _TERMS_URL := "https://eco-frontend-zeta.vercel.app/term?tab=terms"
 @onready var _terms_checkbox: CheckBox = $RegisterFrame/FormArea/FormContent/TermsRow/TermsCheckBox
 @onready var _terms_link: Button = $RegisterFrame/FormArea/FormContent/TermsRow/TermsLink
 
+var _registering_account: String = ""
+
 func _ready() -> void:
 	SceneTransition.force_clear()
 	WeatherManager.set_overlay_visible(false)
@@ -97,10 +99,11 @@ func _on_register_pressed() -> void:
 		return
 	_set_loading(true)
 	_error_label.visible = false
+	_registering_account = _account_input.strip_edges()
 	UserManager.register_async(
 		_first_name_input.strip_edges(),
 		_last_name_input.strip_edges(),
-		_account_input.strip_edges(),
+		_registering_account,
 		_password_input.text
 	)
 
@@ -120,6 +123,7 @@ func show_error(message: String) -> void:
 
 func on_register_success() -> void:
 	_set_loading(false)
+	UserManager.mark_initial_character_select_pending(_registering_account)
 	SceneTransition.fade_to(CHARACTER_SELECT_SCENE)
 
 func _show_error(msg: String) -> void:
