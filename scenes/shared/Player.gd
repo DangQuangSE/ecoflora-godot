@@ -1,6 +1,11 @@
 class_name Player
 extends CharacterBody2D
 
+const _CHARACTER_FRAME_PATHS: Array[String] = [
+	"res://assets/characters/char_0.tres",
+	"res://assets/characters/char_1.tres",
+]
+
 @export var speed: float = 200.0
 @export var camera_zoom: float = 1.0
 @export var sprite_scale: float = 0.4
@@ -19,6 +24,10 @@ func _ready() -> void:
 	motion_mode = MOTION_MODE_FLOATING
 	_camera.zoom = Vector2(camera_zoom, camera_zoom)
 	_sprite.scale = Vector2(sprite_scale, sprite_scale)
+	if UserManager.has_method("get_character_index"):
+		set_character(UserManager.get_character_index())
+	if not UserManager.character_changed.is_connected(set_character):
+		UserManager.character_changed.connect(set_character)
 
 	_footstep_player = AudioStreamPlayer2D.new()
 	_footstep_player.bus = "Master"
@@ -28,6 +37,21 @@ func _ready() -> void:
 		_footstep_player.stream = stream
 		_footstep_player.volume_db = AudioManager.get_footstep_volume_db()
 	AudioManager.volume_settings_changed.connect(_on_audio_volume_changed)
+
+func _exit_tree() -> void:
+	if UserManager.character_changed.is_connected(set_character):
+		UserManager.character_changed.disconnect(set_character)
+	if AudioManager.volume_settings_changed.is_connected(_on_audio_volume_changed):
+		AudioManager.volume_settings_changed.disconnect(_on_audio_volume_changed)
+
+func set_character(idx: int) -> void:
+	var clamped := clampi(idx, 0, _CHARACTER_FRAME_PATHS.size() - 1)
+	var path: String = _CHARACTER_FRAME_PATHS[clamped]
+	if not ResourceLoader.exists(path):
+		return
+	_sprite.sprite_frames = load(path)
+	if not _sprite.sprite_frames.has_animation(_sprite.animation):
+		_sprite.play("idle_down")
 
 func set_move_direction(dir: Vector2) -> void:
 	move_direction = dir

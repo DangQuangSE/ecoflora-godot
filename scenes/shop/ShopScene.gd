@@ -9,7 +9,7 @@ var _style_skeleton_card := StyleBoxFlat.new()
 var _style_skeleton_band := StyleBoxFlat.new()
 
 # Tab index → API category string ("" = no API call, "Coin" = local top-up packages, no API call)
-const _TAB_CATEGORIES := ["Seed", "Consumable", "Decoration", "Coin"]
+const _TAB_CATEGORIES := ["Seed", "Consumable", "Character", "Decoration", "Coin"]
 
 # Coin top-up packages — matches eco-backend's seeded CoinPackage rows
 # (10 coin = 1.000đ, no admin CRUD for MVP). Real purchase happens on the
@@ -23,26 +23,19 @@ const _COIN_PACKAGES := [
 	{"vnd": 200000, "coin": 2000},
 ]
 
-@onready var _grid: GridContainer        = $ShopPanel/ScrollContainer/GridContainer
-@onready var _bg_dimmer: ColorRect       = $BGDimmer
-@onready var _close_btn: Button          = $CloseButton
-@onready var _pagination_bar: Control    = $ShopPanel/PaginationBar
-@onready var _prev_btn: Button           = $ShopPanel/PaginationBar/HBox/PrevBtn
-@onready var _page_label: Label          = $ShopPanel/PaginationBar/HBox/PageLabel
-@onready var _next_btn: Button           = $ShopPanel/PaginationBar/HBox/NextBtn
-@onready var _confirm_overlay: ColorRect = $ConfirmOverlay
-@onready var _confirm_dialog: Control    = $ConfirmDialog
-@onready var _confirm_name: Label        = $ConfirmDialog/VBox/ItemNameLabel
-@onready var _confirm_desc: Label        = $ConfirmDialog/VBox/ItemDescLabel
-@onready var _confirm_price: Label       = $ConfirmDialog/VBox/PriceRow/PriceLabel
-@onready var _confirm_balance: Label     = $ConfirmDialog/VBox/PriceRow/BalanceHint
-@onready var _qty_minus: Button          = $ConfirmDialog/VBox/QuantityRow/MinusButton
-@onready var _qty_label: Label           = $ConfirmDialog/VBox/QuantityRow/QuantityLabel
-@onready var _qty_plus: Button           = $ConfirmDialog/VBox/QuantityRow/PlusButton
-@onready var _total_label: Label         = $ConfirmDialog/VBox/TotalRow/TotalLabel
-@onready var _confirm_btn: Button        = $ConfirmDialog/VBox/ButtonRow/ConfirmButton
-@onready var _cancel_btn: Button         = $ConfirmDialog/CancelButton
-@onready var _loading: Label             = $LoadingSpinner
+const _CHARACTER_CATALOG := [
+	{"id": "character:0", "name": "Mặc định",   "price": 10000, "preview": "res://assets/characters/char_0.tres"},
+	{"id": "character:1", "name": "Nhân vật 1", "price": 10000, "preview": "res://assets/characters/char_1.tres"},
+]
+
+@onready var _grid: GridContainer     = $ShopPanel/ScrollContainer/GridContainer
+@onready var _bg_dimmer: ColorRect    = $BGDimmer
+@onready var _close_btn: Button       = $CloseButton
+@onready var _pagination_bar: Control = $ShopPanel/PaginationBar
+@onready var _prev_btn: Button        = $ShopPanel/PaginationBar/HBox/PrevBtn
+@onready var _page_label: Label       = $ShopPanel/PaginationBar/HBox/PageLabel
+@onready var _next_btn: Button        = $ShopPanel/PaginationBar/HBox/NextBtn
+@onready var _loading: Label          = $LoadingSpinner
 
 const _ITEMS_PER_PAGE := 6
 
@@ -67,7 +60,6 @@ var _current_items: Array[ShopItem] = []
 var _current_page: int = 0
 var _current_tab: int = 0
 var _pending_item: ShopItem = null
-var _pending_qty: int = 1
 
 func _ready() -> void:
 	_build_tab_styles()
@@ -75,6 +67,7 @@ func _ready() -> void:
 	_tab_btns = [
 		$ShopPanel/ShopBg/TabGroup/HatGiongBtn,
 		$ShopPanel/ShopBg/TabGroup/CongCuBtn,
+		$ShopPanel/ShopBg/TabGroup/NhanVatBtn,
 		$ShopPanel/ShopBg/TabGroup/TrangTriBtn,
 		$ShopPanel/ShopBg/TabGroup/CoinBtn,
 	]
@@ -88,13 +81,6 @@ func _ready() -> void:
 	_bg_dimmer.gui_input.connect(_on_bg_dimmer_input)
 	_prev_btn.pressed.connect(_on_prev_page)
 	_next_btn.pressed.connect(_on_next_page)
-	_confirm_btn.pressed.connect(_on_confirm_purchase)
-	_cancel_btn.pressed.connect(_hide_dialog)
-	_confirm_overlay.gui_input.connect(_on_overlay_input)
-	_qty_minus.pressed.connect(_on_qty_minus)
-	_qty_plus.pressed.connect(_on_qty_plus)
-	_confirm_dialog.hide()
-	_confirm_overlay.hide()
 	_loading.hide()
 
 func _build_tab_styles() -> void:
@@ -159,6 +145,12 @@ func _on_tab_pressed(idx: int) -> void:
 	var filtered := _filter_known_seeds(items)
 	for item: ShopItem in filtered:
 		_localize_item(item)
+	if category == "Character":
+		if filtered.is_empty():
+			filtered = _build_character_items()
+		else:
+			for item: ShopItem in filtered:
+				_apply_character_metadata(item)
 	_current_items = filtered
 	_render_page()
 
@@ -176,6 +168,52 @@ func _build_coin_packages() -> Array[ShopItem]:
 		item.is_active = true
 		packages.append(item)
 	return packages
+
+func _build_character_items() -> Array[ShopItem]:
+	var items: Array[ShopItem] = []
+	for entry: Dictionary in _CHARACTER_CATALOG:
+		var idx: int = int((entry["id"] as String).split(":")[1])
+		var item := ShopItem.new()
+		item.id = entry["id"]
+		item.name = entry["name"]
+		item.description = "Nhân vật trang trí — đổi diện mạo trong Profile"
+		item.price = entry["price"]
+		item.category = "Character"
+		item.image_url = entry["preview"]
+		item.is_active = true
+		item.owned = UserManager.is_character_owned(idx)
+		items.append(item)
+	return items
+
+func _apply_character_metadata(item: ShopItem) -> void:
+	var idx := _get_character_index_from_id(item.id)
+	if idx < 0:
+		return
+	var fallback := _get_character_fallback(idx)
+	if fallback.is_empty():
+		return
+	if item.name.strip_edges().is_empty():
+		item.name = str(fallback.get("name", item.name))
+	item.description = "Nhân vật trang trí — đổi diện mạo trong Profile"
+	item.image_url = str(fallback.get("preview", item.image_url))
+	item.owned = UserManager.is_character_owned(idx)
+
+func _get_character_index_from_id(id: String) -> int:
+	var parts := id.split(":")
+	if parts.size() != 2:
+		return -1
+	return int(parts[1]) if parts[1].is_valid_int() else -1
+
+func _get_character_fallback(idx: int) -> Dictionary:
+	for entry: Dictionary in _CHARACTER_CATALOG:
+		if _get_character_index_from_id(str(entry.get("id", ""))) == idx:
+			return entry
+	return {}
+
+func _refresh_tab() -> void:
+	var category: String = _TAB_CATEGORIES[_current_tab]
+	if category == "Character":
+		await _on_tab_pressed(_current_tab)
 
 func _format_vnd(amount: int) -> String:
 	var digits := str(amount)
@@ -298,58 +336,27 @@ func _on_item_tapped(item: ShopItem) -> void:
 		_show_toast("Vui lòng truy cập trang web của game để nạp coin nhé!", true)
 		return
 	_pending_item = item
-	_pending_qty = 1
-	_confirm_name.text = item.name
-	_confirm_desc.text = item.description
-	_confirm_price.text = str(item.price)
-	_confirm_balance.text = " (số dư: %d)" % UserManager.get_profile().currency
-	_qty_label.text = "1"
-	_update_dialog_total()
-	_confirm_overlay.show()
-	_confirm_dialog.show()
-
-func _update_dialog_total() -> void:
-	if _pending_item == null:
+	var balance: int = UserManager.get_profile().currency
+	var msg := "%s\n\nGiá: %d xu  ·  Số dư: %d xu" % [item.description, item.price, balance]
+	var dialog := BaseDialog.show_confirm(self, "Xác nhận mua %s" % item.name, msg)
+	if dialog == null:
 		return
-	var total: int = _pending_item.price * _pending_qty
-	_total_label.text = "Tổng: %d" % total
-	_confirm_btn.disabled = UserManager.get_profile().currency < total
-
-func _on_qty_minus() -> void:
-	if _pending_qty <= 1:
-		return
-	_pending_qty -= 1
-	_qty_label.text = str(_pending_qty)
-	_update_dialog_total()
-
-func _on_qty_plus() -> void:
-	_pending_qty += 1
-	_qty_label.text = str(_pending_qty)
-	_update_dialog_total()
-
-func _hide_dialog() -> void:
-	_confirm_dialog.hide()
-	_confirm_overlay.hide()
-
-func _on_overlay_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
-		_hide_dialog()
+	dialog.confirmed.connect(_on_confirm_purchase)
 
 func _on_confirm_purchase() -> void:
-	if _pending_item == null:
-		return
 	var item := _pending_item
-	var qty  := _pending_qty
-	_hide_dialog()
-	_confirm_btn.disabled = true
-	var result: Dictionary = await UserManager.purchase_async(item.id, qty)
-	_confirm_btn.disabled = false
+	if item == null:
+		return
 	_pending_item = null
+	var result: Dictionary = await UserManager.purchase_async(item.id, 1)
 	if result.is_empty():
 		_show_toast("Mua thất bại!", false)
 	else:
 		AudioManager.play_sfx("res://sounds/buy-successfully.wav")
-		_show_toast("Đã mua %s ×%d!" % [item.name, qty], true)
+		_show_toast("Đã mua %s!" % item.name, true)
+		if item.category == "Character":
+			await _refresh_tab()
+			return
 		await InventoryManager.refresh_async()
 		_refresh_card_affordability()
 

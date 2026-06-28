@@ -3,6 +3,7 @@ extends CanvasLayer
 const ALLOWED_SCENES: Array[String] = [
 	"res://scenes/auth/LoginScene.tscn",
 	"res://scenes/auth/RegisterScene.tscn",
+	"res://scenes/auth/CharacterSelectScene.tscn",
 	"res://scenes/garden/GardenScene.tscn",
 	"res://scenes/school/SchoolScene.tscn",
 	"res://scenes/school/ClassroomScene.tscn",

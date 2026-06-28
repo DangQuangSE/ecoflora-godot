@@ -1,16 +1,10 @@
 [gd_scene format=3 uid="uid://shopscene001"]
 
 [ext_resource type="Script" uid="uid://dd8rmj3r1nq1d" path="res://scenes/shop/ShopScene.gd" id="1_shop"]
-[ext_resource type="Texture2D" path="res://assets/icon/coin.png" id="2_coin"]
 [ext_resource type="Texture2D" uid="uid://dhugu051tjq67" path="res://assets/shop/shop_bg.png" id="4_shopbg"]
 [ext_resource type="Texture2D" uid="uid://b7rf077bkwfcq" path="res://assets/shop/shop_frame.png" id="4_xu4g4"]
-[ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="5_primary_button"]
-[ext_resource type="Theme" path="res://themes/GlobalTheme.tres" id="6_global_theme"]
 [ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="7_primary_button_script"]
-[ext_resource type="Texture2D" path="res://assets/frame/dialog/dialog.png" id="8_dialog_bg"]
 [ext_resource type="Texture2D" path="res://assets/icon/close.png" id="9_close_icon"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_confirm_dialog"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_shopbg"]
 atlas = ExtResource("4_shopbg")
@@ -67,137 +61,6 @@ corner_radius_top_left = 14
 corner_radius_top_right = 14
 corner_radius_bottom_right = 14
 corner_radius_bottom_left = 14
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dialog"]
-bg_color = Color(0.96, 0.90, 0.78, 1)
-border_width_left = 5
-border_width_top = 5
-border_width_right = 5
-border_width_bottom = 5
-border_color = Color(0.32, 0.18, 0.06, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-shadow_color = Color(0, 0, 0, 0.38)
-shadow_size = 12
-shadow_offset = Vector2(2, 5)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_title_band"]
-bg_color = Color(0.80, 0.64, 0.40, 1)
-border_width_bottom = 3
-border_color = Color(0.32, 0.18, 0.06, 0.8)
-corner_radius_top_left = 14
-corner_radius_top_right = 14
-content_margin_left = 10.0
-content_margin_right = 10.0
-content_margin_top = 8.0
-content_margin_bottom = 10.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qty_btn"]
-bg_color = Color(0.52, 0.30, 0.10, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.72, 0.50, 0.22, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qty_btn_hover"]
-bg_color = Color(0.64, 0.40, 0.16, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.86, 0.62, 0.28, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm"]
-bg_color = Color(0.18, 0.50, 0.10, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.40, 0.80, 0.26, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_confirm_disabled"]
-bg_color = Color(0.40, 0.38, 0.32, 0.7)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cancel_normal"]
-bg_color = Color(0.82, 0.43, 0.35, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 4
-border_color = Color(0.58, 0.28, 0.22, 1)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
-content_margin_left = 14.0
-content_margin_top = 6.0
-content_margin_right = 14.0
-content_margin_bottom = 8.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cancel_hover"]
-bg_color = Color(0.88, 0.53, 0.45, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 4
-border_color = Color(0.64, 0.33, 0.26, 1)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
-content_margin_left = 14.0
-content_margin_top = 6.0
-content_margin_right = 14.0
-content_margin_bottom = 8.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cancel_pressed"]
-bg_color = Color(0.70, 0.34, 0.27, 1)
-border_width_left = 2
-border_width_top = 3
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.48, 0.22, 0.17, 1)
-corner_radius_top_left = 24
-corner_radius_top_right = 24
-corner_radius_bottom_right = 24
-corner_radius_bottom_left = 24
-content_margin_left = 14.0
-content_margin_top = 8.0
-content_margin_right = 14.0
-content_margin_bottom = 6.0
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_btn"]
-bg_color = Color(0.55, 0.12, 0.08, 0.92)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close_hover"]
-bg_color = Color(0.78, 0.18, 0.1, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
 
 [node name="ShopScene" type="Control" unique_id=1454812432]
 visible = false
@@ -272,6 +135,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 17
 text = "Công cụ"
+
+[node name="NhanVatBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=600000009]
+script = ExtResource("7_primary_button_script")
+custom_minimum_size = Vector2(0, 69)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 17
+text = "Nhân Vật"
 
 [node name="TrangTriBtn" type="Button" parent="ShopPanel/ShopBg/TabGroup" unique_id=600000010]
 script = ExtResource("7_primary_button_script")
@@ -366,193 +237,6 @@ theme_override_colors/font_color = Color(0.7, 0.9, 0.5, 1)
 theme_override_font_sizes/font_size = 17
 text = "Đang tải..."
 horizontal_alignment = 1
-
-[node name="ConfirmOverlay" type="ColorRect" parent="." unique_id=273627330]
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-color = Color(0.06, 0.03, 0.01, 0.68)
-
-[node name="ConfirmDialog" type="Panel" parent="." unique_id=219568629]
-visible = false
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -270.0
-offset_top = -240.0
-offset_right = 270.0
-offset_bottom = 240.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_confirm_dialog")
-
-[node name="DialogBg" type="TextureRect" parent="ConfirmDialog"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("8_dialog_bg")
-expand_mode = 1
-
-[node name="VBox" type="VBoxContainer" parent="ConfirmDialog" unique_id=173292691]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 68.0
-offset_top = 86.0
-offset_right = -68.0
-offset_bottom = -60.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 14
-
-[node name="ItemNameLabel" type="Label" parent="ConfirmDialog/VBox" unique_id=275522737]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.18, 0.09, 0.02, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 0.3)
-theme_override_constants/shadow_offset_x = 0
-theme_override_constants/shadow_offset_y = 1
-theme_override_font_sizes/font_size = 25
-text = "Tên sản phẩm"
-horizontal_alignment = 1
-autowrap_mode = 3
-
-[node name="ItemDescLabel" type="Label" parent="ConfirmDialog/VBox" unique_id=1682594468]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.38, 0.22, 0.08, 1)
-theme_override_font_sizes/font_size = 18
-horizontal_alignment = 1
-autowrap_mode = 3
-max_lines_visible = 2
-
-[node name="PriceRow" type="HBoxContainer" parent="ConfirmDialog/VBox" unique_id=1927850613]
-layout_mode = 2
-theme_override_constants/separation = 4
-alignment = 1
-size_flags_horizontal = 3
-
-[node name="PriceIcon" type="TextureRect" parent="ConfirmDialog/VBox/PriceRow" unique_id=151821867]
-custom_minimum_size = Vector2(40, 40)
-layout_mode = 2
-size_flags_vertical = 4
-mouse_filter = 2
-texture = ExtResource("2_coin")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="PriceLabel" type="Label" parent="ConfirmDialog/VBox/PriceRow" unique_id=1578511764]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.68, 0.42, 0.04, 1)
-theme_override_font_sizes/font_size = 20
-text = "0"
-
-[node name="BalanceHint" type="Label" parent="ConfirmDialog/VBox/PriceRow" unique_id=1462513168]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.38, 0.22, 0.08, 1)
-theme_override_font_sizes/font_size = 17
-text = " (số dư: 0)"
-
-[node name="QuantityRow" type="HBoxContainer" parent="ConfirmDialog/VBox" unique_id=842922223]
-layout_mode = 2
-theme_override_constants/separation = 18
-alignment = 1
-
-[node name="MinusButton" type="Button" parent="ConfirmDialog/VBox/QuantityRow" unique_id=1145555984]
-custom_minimum_size = Vector2(58, 50)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.95, 0.82, 1)
-theme_override_font_sizes/font_size = 27
-theme_override_styles/normal = SubResource("StyleBoxFlat_qty_btn")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_qty_btn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_qty_btn_hover")
-text = "−"
-
-[node name="QuantityLabel" type="Label" parent="ConfirmDialog/VBox/QuantityRow" unique_id=525353655]
-custom_minimum_size = Vector2(76, 0)
-layout_mode = 2
-theme_override_colors/font_color = Color(0.18, 0.09, 0.02, 1)
-theme_override_font_sizes/font_size = 27
-text = "1"
-horizontal_alignment = 1
-
-[node name="PlusButton" type="Button" parent="ConfirmDialog/VBox/QuantityRow" unique_id=1793482987]
-custom_minimum_size = Vector2(58, 50)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.95, 0.82, 1)
-theme_override_font_sizes/font_size = 27
-theme_override_styles/normal = SubResource("StyleBoxFlat_qty_btn")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_qty_btn")
-theme_override_styles/hover = SubResource("StyleBoxFlat_qty_btn_hover")
-text = "+"
-
-[node name="TotalRow" type="HBoxContainer" parent="ConfirmDialog/VBox" unique_id=611586756]
-layout_mode = 2
-theme_override_constants/separation = 4
-alignment = 1
-
-[node name="TotalIcon" type="TextureRect" parent="ConfirmDialog/VBox/TotalRow" unique_id=1670266736]
-custom_minimum_size = Vector2(34, 34)
-layout_mode = 2
-size_flags_vertical = 4
-mouse_filter = 2
-texture = ExtResource("2_coin")
-expand_mode = 1
-stretch_mode = 5
-
-[node name="TotalLabel" type="Label" parent="ConfirmDialog/VBox/TotalRow" unique_id=1353415082]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.62, 0.38, 0.04, 1)
-theme_override_font_sizes/font_size = 18
-text = "Tổng: 0"
-
-[node name="ButtonRow" type="VBoxContainer" parent="ConfirmDialog/VBox" unique_id=2126814058]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="ConfirmButton" parent="ConfirmDialog/VBox/ButtonRow" unique_id=1213796677 instance=ExtResource("5_primary_button")]
-custom_minimum_size = Vector2(230, 52)
-layout_mode = 2
-size_flags_horizontal = 4
-theme = ExtResource("6_global_theme")
-theme_override_font_sizes/font_size = 21
-text = "Mua ngay"
-
-[node name="CancelButton" type="Button" parent="ConfirmDialog" unique_id=1220137245]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -74.0
-offset_top = 38.0
-offset_right = -30.0
-offset_bottom = 82.0
-flat = true
-
-[node name="Icon" type="TextureRect" parent="ConfirmDialog/CancelButton"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 2.0
-offset_top = 2.0
-offset_right = -2.0
-offset_bottom = -2.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("9_close_icon")
-expand_mode = 1
-stretch_mode = 5
 
 [node name="ShopTitleLabel" type="Label" parent="." unique_id=500000030]
 layout_mode = 1

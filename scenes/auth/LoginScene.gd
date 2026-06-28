@@ -15,6 +15,7 @@ signal login_requested(account: String, password: String)
 
 const GARDEN_SCENE := "res://scenes/garden/GardenScene.tscn"
 const REGISTER_SCENE := "res://scenes/auth/RegisterScene.tscn"
+const CHARACTER_SELECT_SCENE := "res://scenes/auth/CharacterSelectScene.tscn"
 const LOGO_TOP_Y := 205.0
 func _ready() -> void:
 	SceneTransition.force_clear()
@@ -36,7 +37,7 @@ func _ready() -> void:
 		_set_loading(true)
 		_loading_label.text = "Đang tải..."
 		if await UserManager.resume_session_async():
-			SceneTransition.fade_to(GARDEN_SCENE)
+			SceneTransition.fade_to(_next_scene())
 		else:
 			_set_loading(false)
 		return
@@ -92,7 +93,14 @@ func show_error(message: String) -> void:
 
 func on_login_success() -> void:
 	_loading_label.text = "Đang tải..."
-	SceneTransition.fade_to(GARDEN_SCENE)
+	SceneTransition.fade_to(_next_scene())
+
+func _next_scene() -> String:
+	if UserManager.needs_initial_character_select() \
+			or UserManager.is_initial_character_select_pending(UserManager.get_last_login_account()) \
+			or UserManager.has_any_initial_character_select_pending():
+		return CHARACTER_SELECT_SCENE
+	return GARDEN_SCENE
 
 func _show_success(msg: String) -> void:
 	_error_label.visible = false

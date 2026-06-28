@@ -6,6 +6,15 @@ const _CARD_H_LARGE: float  = 1050.0
 const _CARD_W: float = 700.0
 const _OPEN_SLIDE_OFFSET: float = 20.0
 
+const _CHAR_THUMBS: Array[String] = [
+	"res://assets/characters/char_0_thumb.png",
+	"res://assets/characters/char_1_thumb.png",
+]
+const _CHAR_FRAME_PATHS: Array[String] = [
+	"res://assets/characters/char_0.tres",
+	"res://assets/characters/char_1.tres",
+]
+
 @onready var _dimmer: ColorRect             = $Dimmer
 @onready var _card: Panel                   = $Card
 @onready var _close_btn: Button             = $Card/CloseBtn
@@ -28,6 +37,8 @@ const _OPEN_SLIDE_OFFSET: float = 20.0
 @onready var _harvest_value: Label          = $Card/Content/RowHarvest/HarvestValue
 @onready var _streak_value: Label           = $Card/Content/RowStreak/StreakValue
 @onready var _flowers_value: Label          = $Card/Content/RowFlowers/FlowersValue
+@onready var _char_grid: HBoxContainer      = $Card/Content/CharacterSection/CharacterGrid
+@onready var _use_character_btn: Button     = $Card/Content/CharacterSection/UseCharacterBtn
 @onready var _avatar_picker: VBoxContainer  = $Card/AvatarPicker
 @onready var _picker_grid: GridContainer    = $Card/AvatarPicker/Grid
 @onready var _confirm_btn: Button           = $Card/AvatarPicker/ButtonRow/ConfirmBtn
@@ -35,6 +46,7 @@ const _OPEN_SLIDE_OFFSET: float = 20.0
 
 var _is_closing: bool = false
 var _pending_idx: int = -1
+var _selected_character_idx: int = -1
 
 func _ready() -> void:
 	visible = false
@@ -45,6 +57,7 @@ func _ready() -> void:
 	_confirm_btn.pressed.connect(_on_confirm_avatar)
 	_cancel_btn.pressed.connect(_collapse_card)
 	_edit_btn.pressed.connect(_enter_rename_mode)
+	_use_character_btn.pressed.connect(_on_use_character_pressed)
 	_rename_save_btn.pressed.connect(_on_rename_save)
 	_rename_cancel_btn.pressed.connect(_exit_rename_mode)
 	_rename_edit.text_submitted.connect(func(_t: String) -> void: _on_rename_save())
@@ -53,11 +66,15 @@ func _ready() -> void:
 		var btn := _picker_grid.get_child(i) as Button
 		if btn:
 			btn.pressed.connect(_on_avatar_selected.bind(i))
+	_load_char_buttons()
 	UserManager.profile_updated.connect(_refresh_data)
+	UserManager.character_changed.connect(_refresh_character_section)
 
 func _exit_tree() -> void:
 	if UserManager.profile_updated.is_connected(_refresh_data):
 		UserManager.profile_updated.disconnect(_refresh_data)
+	if UserManager.character_changed.is_connected(_refresh_character_section):
+		UserManager.character_changed.disconnect(_refresh_character_section)
 
 func open() -> void:
 	_is_closing = false
@@ -102,6 +119,7 @@ func _refresh_data() -> void:
 	_streak_value.text    = str(p.login_streak) + " ngày"
 	_flowers_value.text   = str(_count_flowers())
 	_refresh_avatar(p.avatar_index)
+	_refresh_character_section()
 
 func _refresh_avatar(idx: int) -> void:
 	var path := _avatar_path(idx)
@@ -117,6 +135,70 @@ func _count_flowers() -> int:
 		or item.category == InventoryItem.Category.HARVEST_PRODUCT:
 			count += item.quantity
 	return count
+
+func _load_char_buttons() -> void:
+	for i in _char_grid.get_child_count():
+		var btn := _char_grid.get_child(i) as Button
+		if not btn:
+			continue
+		var tex := btn.get_node_or_null("Tex") as TextureRect
+		if tex:
+			tex.texture = _character_thumb_texture(i)
+		btn.pressed.connect(_on_char_selected.bind(i))
+
+func _character_thumb_texture(idx: int) -> Texture2D:
+	if idx < _CHAR_THUMBS.size() and ResourceLoader.exists(_CHAR_THUMBS[idx]):
+		return load(_CHAR_THUMBS[idx]) as Texture2D
+	if idx >= _CHAR_FRAME_PATHS.size() or not ResourceLoader.exists(_CHAR_FRAME_PATHS[idx]):
+		return null
+	var frames := load(_CHAR_FRAME_PATHS[idx]) as SpriteFrames
+	if frames == null or not frames.has_animation(&"idle_down"):
+		return null
+	if frames.get_frame_count(&"idle_down") <= 0:
+		return null
+	return frames.get_frame_texture(&"idle_down", 0)
+
+func _refresh_character_section(_idx: int = -1) -> void:
+	var owned := UserManager.get_owned_characters()
+	var equipped := _idx if _idx >= 0 else UserManager.get_character_index()
+	for i in _char_grid.get_child_count():
+		var btn := _char_grid.get_child(i) as Button
+		if not btn:
+			continue
+		btn.disabled = not owned.has(i)
+		var badge := btn.get_node_or_null("EquippedBadge") as Label
+		if badge:
+			badge.visible = (i == equipped)
+	if _selected_character_idx == equipped or not owned.has(_selected_character_idx):
+		_selected_character_idx = -1
+	_update_use_character_button(equipped, owned)
+
+func _on_char_selected(idx: int) -> void:
+	if not UserManager.is_character_owned(idx):
+		return
+	_selected_character_idx = idx
+	_update_use_character_button()
+
+func _on_use_character_pressed() -> void:
+	if _selected_character_idx < 0:
+		return
+	if not UserManager.is_character_owned(_selected_character_idx):
+		return
+	if _selected_character_idx == UserManager.get_character_index():
+		return
+	_use_character_btn.disabled = true
+	UserManager.set_character_async(_selected_character_idx)
+
+func _update_use_character_button(equipped: int = -1, owned: Array[int] = []) -> void:
+	if equipped < 0:
+		equipped = UserManager.get_character_index()
+	if owned.is_empty():
+		owned = UserManager.get_owned_characters()
+	var can_use := _selected_character_idx >= 0 \
+			and owned.has(_selected_character_idx) \
+			and _selected_character_idx != equipped
+	_use_character_btn.visible = can_use
+	_use_character_btn.disabled = not can_use
 
 func _load_picker_icons() -> void:
 	for i in 7:

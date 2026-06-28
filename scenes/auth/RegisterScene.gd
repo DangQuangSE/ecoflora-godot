@@ -2,6 +2,7 @@ extends Control
 
 const LOGIN_SCENE := "res://scenes/auth/LoginScene.tscn"
 const GARDEN_SCENE := "res://scenes/garden/GardenScene.tscn"
+const CHARACTER_SELECT_SCENE := "res://scenes/auth/CharacterSelectScene.tscn"
 const LOGO_TOP_Y := 205.0
 const _TERMS_URL := "https://ecocham.xyz/term?tab=terms"
 
@@ -19,6 +20,8 @@ const _TERMS_URL := "https://ecocham.xyz/term?tab=terms"
 @onready var _logo: Sprite2D = $Logo
 @onready var _terms_checkbox: CheckBox = $RegisterFrame/FormArea/FormContent/TermsRow/TermsCheckBox
 @onready var _terms_link: Button = $RegisterFrame/FormArea/FormContent/TermsRow/TermsLink
+
+var _registering_account: String = ""
 
 func _ready() -> void:
 	SceneTransition.force_clear()
@@ -96,10 +99,11 @@ func _on_register_pressed() -> void:
 		return
 	_set_loading(true)
 	_error_label.visible = false
+	_registering_account = _account_input.strip_edges()
 	UserManager.register_async(
 		_first_name_input.strip_edges(),
 		_last_name_input.strip_edges(),
-		_account_input.strip_edges(),
+		_registering_account,
 		_password_input.text
 	)
 
@@ -119,7 +123,8 @@ func show_error(message: String) -> void:
 
 func on_register_success() -> void:
 	_set_loading(false)
-	SceneTransition.fade_to(LOGIN_SCENE)
+	UserManager.mark_initial_character_select_pending(_registering_account)
+	SceneTransition.fade_to(CHARACTER_SELECT_SCENE)
 
 func _show_error(msg: String) -> void:
 	_error_label.visible = false

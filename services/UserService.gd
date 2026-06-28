@@ -20,6 +20,7 @@ func parse_profile(data: Dictionary) -> UserProfile:
 	p.harvest_count   = int(data.get("harvestCount", 0))
 	p.login_streak    = int(data.get("loginStreak", 0))
 	p.avatar_index    = int(data.get("avatarIndex", 0))
+	p.has_selected_initial_character = bool(data.get("hasSelectedInitialCharacter", true))
 	p.join_date       = str(data.get("createdAt", ""))
 	var vitality_str: String = str(data.get("vitalityReadyAt", ""))
 	if vitality_str != "" and vitality_str != "null":
