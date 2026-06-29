@@ -4,7 +4,8 @@ extends CanvasLayer
 signal dismissed
 
 @onready var _panel: Panel = $Panel
-@onready var _label: Label = $Panel/Label
+@onready var _title_label: Label = $Panel/Content/TitleLabel
+@onready var _message_label: Label = $Panel/Content/MessageLabel
 @onready var _close_btn: Button = $Panel/CloseButton
 
 var _is_closing: bool = false
@@ -16,7 +17,8 @@ func _ready() -> void:
 func show_for_zone(zone_id: String) -> void:
 	_is_closing = false
 	var zone_num := zone_id.trim_prefix("zone_")
-	_label.text = "Khu vườn %s đã mở khóa!\nTap đám mây để xua tan." % zone_num
+	_title_label.text = "Khu vườn %s đã mở khóa!" % zone_num
+	_message_label.text = "Chạm vào đám mây để xua tan."
 	visible = true
 	_panel.modulate.a = 0.0
 	var tween := create_tween()

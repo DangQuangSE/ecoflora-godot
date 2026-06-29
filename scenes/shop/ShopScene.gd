@@ -2,6 +2,7 @@ class_name ShopScene
 extends Control
 
 const ShopItemCardScene := preload("res://scenes/shop/ShopItemCard.tscn")
+const CoinIcon := preload("res://assets/icon/coin.png")
 var _style_tab_normal  := StyleBoxFlat.new()
 var _style_tab_active  := StyleBoxFlat.new()
 var _style_tab_hover   := StyleBoxFlat.new()
@@ -60,6 +61,13 @@ var _current_items: Array[ShopItem] = []
 var _current_page: int = 0
 var _current_tab: int = 0
 var _pending_item: ShopItem = null
+var _pending_quantity: int = 1
+var _pending_quantity_label: Label = null
+var _pending_unit_price_label: Label = null
+var _pending_multiplier_label: Label = null
+var _pending_total_price_label: Label = null
+var _pending_balance_label: Label = null
+var _pending_confirm_btn: Button = null
 
 func _ready() -> void:
 	_build_tab_styles()
@@ -336,29 +344,223 @@ func _on_item_tapped(item: ShopItem) -> void:
 		_show_toast("Vui lòng truy cập trang web của game để nạp coin nhé!", true)
 		return
 	_pending_item = item
+	_pending_quantity = 1
 	var balance: int = UserManager.get_profile().currency
-	var msg := "%s\n\nGiá: %d xu  ·  Số dư: %d xu" % [item.description, item.price, balance]
+	var msg := _purchase_dialog_message(item)
 	var dialog := BaseDialog.show_confirm(self, "Xác nhận mua %s" % item.name, msg)
 	if dialog == null:
 		return
+	_setup_purchase_quantity_controls(dialog, item, balance)
 	dialog.confirmed.connect(_on_confirm_purchase)
+	dialog.cancelled.connect(_clear_pending_purchase)
 
 func _on_confirm_purchase() -> void:
 	var item := _pending_item
 	if item == null:
 		return
-	_pending_item = null
-	var result: Dictionary = await UserManager.purchase_async(item.id, 1)
+	var quantity := maxi(1, _pending_quantity)
+	var balance: int = UserManager.get_profile().currency
+	var total := item.price * quantity
+	if total > balance:
+		_show_toast("Không đủ xu!", false)
+		_clear_pending_purchase()
+		return
+	_clear_pending_purchase()
+	var result: Dictionary = await UserManager.purchase_async(item.id, quantity)
 	if result.is_empty():
 		_show_toast("Mua thất bại!", false)
 	else:
 		AudioManager.play_sfx("res://sounds/buy-successfully.wav")
-		_show_toast("Đã mua %s!" % item.name, true)
+		_show_toast("Đã mua %s x%d!" % [item.name, quantity], true)
 		if item.category == "Character":
 			await _refresh_tab()
 			return
 		await InventoryManager.refresh_async()
 		_refresh_card_affordability()
+
+func _clear_pending_purchase() -> void:
+	_pending_item = null
+	_pending_quantity = 1
+	_pending_quantity_label = null
+	_pending_unit_price_label = null
+	_pending_multiplier_label = null
+	_pending_total_price_label = null
+	_pending_balance_label = null
+	_pending_confirm_btn = null
+
+func _setup_purchase_quantity_controls(dialog: BaseDialog, item: ShopItem, balance: int) -> void:
+	dialog.title_label.add_theme_color_override("font_color", Color(0.34, 0.20, 0.10, 1))
+	dialog.message_label.add_theme_color_override("font_color", Color(0.42, 0.28, 0.16, 1))
+	dialog.message_label.add_theme_font_size_override("font_size", 16)
+
+	var layout := dialog.get_node_or_null("DialogBox/Content/Layout") as VBoxContainer
+	if layout == null:
+		return
+	var button_row := dialog.get_node_or_null("DialogBox/Content/Layout/ButtonRow") as HBoxContainer
+	_pending_confirm_btn = dialog.confirm_btn
+
+	var quantity_box := VBoxContainer.new()
+	quantity_box.add_theme_constant_override("separation", 8)
+	layout.add_child(quantity_box)
+	if button_row != null:
+		layout.move_child(quantity_box, button_row.get_index())
+
+	var price_row := HBoxContainer.new()
+	price_row.alignment = 1
+	price_row.add_theme_constant_override("separation", 5)
+	quantity_box.add_child(price_row)
+	price_row.add_child(_make_price_caption("Giá:"))
+	price_row.add_child(_make_coin_icon())
+	_pending_unit_price_label = _make_price_value_label()
+	price_row.add_child(_pending_unit_price_label)
+	_pending_multiplier_label = _make_price_caption("x 1 =")
+	price_row.add_child(_pending_multiplier_label)
+	price_row.add_child(_make_coin_icon())
+	_pending_total_price_label = _make_price_value_label()
+	price_row.add_child(_pending_total_price_label)
+
+	var balance_row := HBoxContainer.new()
+	balance_row.alignment = 1
+	balance_row.add_theme_constant_override("separation", 5)
+	quantity_box.add_child(balance_row)
+	balance_row.add_child(_make_price_caption("Số dư:"))
+	balance_row.add_child(_make_coin_icon())
+	_pending_balance_label = _make_price_value_label()
+	balance_row.add_child(_pending_balance_label)
+
+	var controls := HBoxContainer.new()
+	controls.alignment = 1
+	controls.add_theme_constant_override("separation", 8)
+	quantity_box.add_child(controls)
+
+	for delta in [-10, -1]:
+		controls.add_child(_make_quantity_button(delta))
+
+	_pending_quantity_label = Label.new()
+	_pending_quantity_label.custom_minimum_size = Vector2(84, 38)
+	_pending_quantity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_pending_quantity_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_pending_quantity_label.add_theme_font_size_override("font_size", 20)
+	_pending_quantity_label.add_theme_color_override("font_color", Color(0.30, 0.17, 0.08, 1))
+	controls.add_child(_pending_quantity_label)
+
+	for delta in [1, 10]:
+		controls.add_child(_make_quantity_button(delta))
+
+	_update_purchase_quantity_ui(item, balance)
+
+func _make_quantity_button(delta: int) -> Button:
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(58, 38)
+	btn.text = "+%d" % delta if delta > 0 else str(delta)
+	btn.add_theme_font_size_override("font_size", 17)
+	_apply_quantity_button_style(btn, delta > 0)
+	btn.pressed.connect(func() -> void:
+		_change_pending_quantity(delta)
+	)
+	return btn
+
+func _purchase_dialog_message(item: ShopItem) -> String:
+	match item.category:
+		"Seed":
+			return "Chọn số lượng hạt muốn mua."
+		"Consumable":
+			return "Chọn số lượng vật phẩm muốn mua."
+		"Character":
+			return "Mở khóa nhân vật này."
+	return "Chọn số lượng muốn mua."
+
+func _make_price_caption(text: String) -> Label:
+	var label := Label.new()
+	label.text = text
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 16)
+	label.add_theme_color_override("font_color", Color(0.34, 0.20, 0.10, 1))
+	return label
+
+func _make_price_value_label() -> Label:
+	var label := Label.new()
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 16)
+	label.add_theme_color_override("font_color", Color(0.30, 0.17, 0.08, 1))
+	return label
+
+func _make_coin_icon() -> TextureRect:
+	var icon := TextureRect.new()
+	icon.texture = CoinIcon
+	icon.custom_minimum_size = Vector2(18, 18)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return icon
+
+func _apply_quantity_button_style(btn: Button, is_increase: bool) -> void:
+	var normal := _make_quantity_button_style(
+		Color(0.42, 0.69, 0.28, 1) if is_increase else Color(0.83, 0.43, 0.30, 1),
+		Color(0.23, 0.47, 0.15, 1) if is_increase else Color(0.58, 0.23, 0.16, 1)
+	)
+	var hover := _make_quantity_button_style(
+		Color(0.52, 0.79, 0.35, 1) if is_increase else Color(0.91, 0.52, 0.38, 1),
+		Color(0.27, 0.52, 0.18, 1) if is_increase else Color(0.64, 0.28, 0.19, 1)
+	)
+	var pressed := _make_quantity_button_style(
+		Color(0.34, 0.59, 0.22, 1) if is_increase else Color(0.70, 0.34, 0.23, 1),
+		Color(0.18, 0.37, 0.12, 1) if is_increase else Color(0.49, 0.18, 0.13, 1)
+	)
+	btn.add_theme_stylebox_override("normal", normal)
+	btn.add_theme_stylebox_override("hover", hover)
+	btn.add_theme_stylebox_override("pressed", pressed)
+	var text_color := Color(0.08, 0.06, 0.03, 1)
+	var hover_text_color := Color(0.04, 0.03, 0.02, 1)
+	var pressed_text_color := Color(0.12, 0.08, 0.04, 1)
+	btn.add_theme_color_override("font_color", text_color)
+	btn.add_theme_color_override("font_hover_color", hover_text_color)
+	btn.add_theme_color_override("font_pressed_color", pressed_text_color)
+	btn.add_theme_constant_override("outline_size", 0)
+	btn.add_theme_color_override("font_outline_color", Color(0.12, 0.07, 0.03, 0.75))
+
+func _make_quantity_button_style(bg: Color, border: Color) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = bg
+	style.border_color = border
+	style.border_width_left = 2
+	style.border_width_top = 2
+	style.border_width_right = 2
+	style.border_width_bottom = 4
+	style.corner_radius_top_left = 20
+	style.corner_radius_top_right = 20
+	style.corner_radius_bottom_right = 20
+	style.corner_radius_bottom_left = 20
+	style.content_margin_left = 10
+	style.content_margin_right = 10
+	style.content_margin_top = 4
+	style.content_margin_bottom = 7
+	return style
+
+func _change_pending_quantity(delta: int) -> void:
+	if _pending_item == null:
+		return
+	var balance: int = UserManager.get_profile().currency
+	var max_affordable := 1
+	if _pending_item.price > 0:
+		max_affordable = maxi(1, int(floor(float(balance) / float(_pending_item.price))))
+	_pending_quantity = clampi(_pending_quantity + delta, 1, max_affordable)
+	_update_purchase_quantity_ui(_pending_item, balance)
+
+func _update_purchase_quantity_ui(item: ShopItem, balance: int) -> void:
+	var total := item.price * _pending_quantity
+	if _pending_quantity_label != null:
+		_pending_quantity_label.text = "x%d" % _pending_quantity
+	if _pending_unit_price_label != null:
+		_pending_unit_price_label.text = str(item.price)
+	if _pending_multiplier_label != null:
+		_pending_multiplier_label.text = "x %d =" % _pending_quantity
+	if _pending_total_price_label != null:
+		_pending_total_price_label.text = str(total)
+	if _pending_balance_label != null:
+		_pending_balance_label.text = str(balance)
+	if _pending_confirm_btn != null:
+		_pending_confirm_btn.disabled = total > balance
 
 func _show_toast(message: String, success: bool) -> void:
 	Toast.show_message(self, message, 2.0 if success else 2.4)
