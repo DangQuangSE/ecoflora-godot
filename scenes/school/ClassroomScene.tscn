@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bclassrm001"]
+[gd_scene load_steps=9 format=3 uid="uid://bclassrm001"]
 
 [ext_resource type="Script" uid="uid://bkyrpg3rtyprh" path="res://scenes/school/ClassroomScene.gd" id="1_class"]
 [ext_resource type="Texture2D" uid="uid://cuhkluuvr2p27" path="res://assets/school/class_bg.png" id="2_1eroe"]
@@ -6,19 +6,132 @@
 [ext_resource type="PackedScene" uid="uid://bhudscene001" path="res://scenes/hud/HUD.tscn" id="3_hud"]
 [ext_resource type="PackedScene" uid="uid://bportalsc001" path="res://scenes/shared/Portal.tscn" id="4_portal"]
 [ext_resource type="PackedScene" path="res://scenes/ui/components/button/PrimaryButton.tscn" id="5_primary_button"]
+[ext_resource type="Texture2D" path="res://assets/school/desk.png" id="6_desk"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_desk"]
+size = Vector2(300, 120)
 
 [node name="ClassroomScene" type="Node2D" unique_id=1810569524]
+y_sort_enabled = true
 script = ExtResource("1_class")
 
 [node name="ClassBg" type="Sprite2D" parent="." unique_id=1214930008]
-position = Vector2(304.00003, 622)
-scale = Vector2(3.0707965, 3.9942367)
+z_index = -1
+position = Vector2(304, 622)
+scale = Vector2(0.68, 0.68)
 texture = ExtResource("2_1eroe")
-region_enabled = true
-region_rect = Rect2(64.64996, 42.86498, 452.53998, 347.27002)
+
+[node name="Desk1" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(304, 660)
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="Desk1"]
+texture = ExtResource("6_desk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Desk1"]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_desk")
+
+[node name="Desk2" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(504, 760)
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="Desk2"]
+texture = ExtResource("6_desk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Desk2"]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_desk")
+
+[node name="Desk3" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(704, 860)
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="Desk3"]
+texture = ExtResource("6_desk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Desk3"]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_desk")
+
+[node name="Desk4" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(154, 780)
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="Desk4"]
+texture = ExtResource("6_desk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Desk4"]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_desk")
+
+[node name="Desk5" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(354, 880)
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="Desk5"]
+texture = ExtResource("6_desk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Desk5"]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_desk")
+
+[node name="Desk6" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(554, 980)
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="Desk6"]
+texture = ExtResource("6_desk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Desk6"]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_desk")
+
+[node name="Desk7" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(4, 900)
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="Desk7"]
+texture = ExtResource("6_desk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Desk7"]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_desk")
+
+[node name="Desk8" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(204, 1000)
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="Desk8"]
+texture = ExtResource("6_desk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Desk8"]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_desk")
+
+[node name="Desk9" type="StaticBody2D" parent="."]
+y_sort_enabled = true
+position = Vector2(404, 1100)
+scale = Vector2(0.35, 0.35)
+
+[node name="Sprite2D" type="Sprite2D" parent="Desk9"]
+texture = ExtResource("6_desk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Desk9"]
+position = Vector2(0, 100)
+shape = SubResource("RectangleShape2D_desk")
 
 [node name="Player" parent="." unique_id=1221276411 instance=ExtResource("2_player")]
-position = Vector2(360, 700)
+y_sort_enabled = true
+position = Vector2(0, 410)
 
 [node name="HUD" parent="." unique_id=1672678934 instance=ExtResource("3_hud")]
 
@@ -38,6 +151,7 @@ offset_bottom = -40.0
 text = "Bắt đầu học"
 
 [node name="PortalToSchool" parent="." unique_id=482869196 instance=ExtResource("4_portal")]
-position = Vector2(882, 280)
+visible = false
+position = Vector2(-100, 310)
 target_scene = "res://scenes/school/SchoolScene.tscn"
-spawn_offset = Vector2(-100, 100)
+spawn_offset = Vector2(100, 100)
