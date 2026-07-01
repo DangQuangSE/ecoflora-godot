@@ -115,17 +115,14 @@ func _fetch_one(url: String, auth_header: String) -> Array:
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
 	if not auth_header.is_empty():
 		headers.append(auth_header)
-	var error: int = _http_catalog.request(url, headers)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_catalog, url, HTTPClient.METHOD_GET, headers)
+	var error: int = raw[0]
 	if error != OK:
 		push_warning("GardenManager._fetch_one: request error %d for %s" % [error, url])
 		return []
-	var raw: Variant = await _http_catalog.request_completed
-	var http_result: int = raw[0]
 	var status_code: int  = raw[1]
 	var body: PackedByteArray = raw[3]
-	if http_result != HTTPRequest.RESULT_SUCCESS or status_code != 200:
-		if status_code == 401:
-			UserManager.handle_401()
+	if status_code != 200:
 		push_warning("GardenManager._fetch_one: HTTP %d for %s" % [status_code, url])
 		return []
 	var json := JSON.new()
@@ -216,19 +213,16 @@ func _fetch_garden() -> void:
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
 	if not auth_header.is_empty():
 		headers.append(auth_header)
-	var error: int = _http_garden.request(url, headers)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_garden, url, HTTPClient.METHOD_GET, headers)
+	var error: int = raw[0]
 	if error != OK:
 		_garden_in_flight = false
 		push_warning("GardenManager._fetch_garden: request error %d" % error)
 		return
-	var raw: Variant = await _http_garden.request_completed
 	_garden_in_flight = false
-	var http_result: int  = raw[0]
 	var status_code: int  = raw[1]
 	var body: PackedByteArray = raw[3]
-	if http_result != HTTPRequest.RESULT_SUCCESS or status_code != 200:
-		if status_code == 401:
-			UserManager.handle_401()
+	if status_code != 200:
 		push_warning("GardenManager._fetch_garden: HTTP %d" % status_code)
 		return  # keep mock-loaded plots on any error
 	var json := JSON.new()
@@ -386,13 +380,13 @@ func _care_action(plot_id: String, action_value: int, ref_id: String) -> void:
 	var http := HTTPRequest.new()
 	http.timeout = 15.0
 	add_child(http)
-	var err := http.request(url, headers, HTTPClient.METHOD_POST, JSON.stringify({"action": action_value}))
+	var raw: Array = await HttpHelper.request_with_retry_async(http, url, HTTPClient.METHOD_POST, headers, JSON.stringify({"action": action_value}))
+	var err: int = raw[0]
 	if err != OK:
 		http.queue_free()
 		_care_rollback(plot, snapshot_plot, snapshot_item_id, snapshot_item_qty)
 		_show_toast(_care_action_name(action_value) + " thất bại. Vui lòng thử lại.")
 		return
-	var raw: Variant = await http.request_completed
 	http.queue_free()
 
 	if _care_apply_server_response(plot, raw, action_value, snapshot_item_id):
@@ -419,16 +413,10 @@ func _care_apply_optimistic(plot: Plot, ref_id: String, base_xp: int, bonus: int
 	plots_updated.emit(_plots)
 
 func _care_apply_server_response(plot: Plot, raw: Variant, action_value: int, snapshot_item_id: String) -> bool:
-	var http_result: int       = raw[0]
 	var status: int            = raw[1]
 	var bytes: PackedByteArray = raw[3]
 	var body_text := bytes.get_string_from_utf8()
-	if http_result != HTTPRequest.RESULT_SUCCESS:
-		push_warning("GardenManager._care_apply_server_response: request result %d, HTTP %d, body=%s" % [http_result, status, body_text])
-		return false
 	if status != 200:
-		if status == 401:
-			UserManager.handle_401()
 		push_warning("GardenManager._care_apply_server_response: HTTP %d, body=%s" % [status, body_text])
 		return false
 	var json := JSON.new()
@@ -513,7 +501,8 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 	var headers := PackedStringArray(["Content-Type: application/json", UserManager.get_auth_header()])
 	var body := JSON.stringify({ "flowerTemplateId": flower_template_id })
 	_plant_in_flight = true
-	var err := _http_plant.request(url, headers, HTTPClient.METHOD_POST, body)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_plant, url, HTTPClient.METHOD_POST, headers, body)
+	var err: int = raw[0]
 	if err != OK:
 		_plant_in_flight = false
 		InventoryManager.restore_item(snapshot_seed_id, snapshot_seed_qty)
@@ -523,8 +512,6 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 		plots_updated.emit(_plots)
 		_show_toast("Trồng hoa thất bại. Vui lòng thử lại.")
 		return
-
-	var raw: Variant = await _http_plant.request_completed
 	_plant_in_flight = false
 	var status: int        = raw[1]
 	var bytes: PackedByteArray = raw[3]
@@ -540,8 +527,6 @@ func plant(plot_id: String, flower_template_id: String) -> void:
 					plot.plant(auth_plot.current_plant)
 		_show_toast("Đã trồng %s." % _flower_display_name(template))
 	else:
-		if status == 401:
-			UserManager.handle_401()
 		InventoryManager.restore_item(snapshot_seed_id, snapshot_seed_qty)
 		plot.clear()
 		plant_failed.emit(plot_id, "be_error_%d" % status)
@@ -603,7 +588,8 @@ func harvest(plot_id: String) -> void:
 	var url := UserManager.base_url + "/api/garden/plots/%s/harvest" % plot_id
 	var headers := PackedStringArray(["Content-Type: application/json", UserManager.get_auth_header()])
 	_harvest_in_flight = true
-	var err := _http_harvest.request(url, headers, HTTPClient.METHOD_POST, "")
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_harvest, url, HTTPClient.METHOD_POST, headers, "")
+	var err: int = raw[0]
 	if err != OK:
 		_harvest_in_flight = false
 		plot.plant(snapshot_flower)
@@ -611,8 +597,6 @@ func harvest(plot_id: String) -> void:
 		plots_updated.emit(_plots)
 		_show_toast("Thu hoạch thất bại. Vui lòng thử lại.")
 		return
-
-	var raw: Variant = await _http_harvest.request_completed
 	_harvest_in_flight = false
 	var status: int        = raw[1]
 	var bytes: PackedByteArray = raw[3]
@@ -669,7 +653,8 @@ func dig_up(plot_id: String) -> void:
 	var url := UserManager.base_url + "/api/garden/plots/%s/dig-up" % plot_id
 	var headers := PackedStringArray(["Content-Type: application/json", UserManager.get_auth_header()])
 	_dig_up_in_flight = true
-	var err := _http_dig_up.request(url, headers, HTTPClient.METHOD_POST, "")
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_dig_up, url, HTTPClient.METHOD_POST, headers, "")
+	var err: int = raw[0]
 	if err != OK:
 		_dig_up_in_flight = false
 		plot.plant(snapshot_flower)
@@ -677,8 +662,6 @@ func dig_up(plot_id: String) -> void:
 		plots_updated.emit(_plots)
 		_show_toast("Xúc cây thất bại. Vui lòng thử lại.")
 		return
-
-	var raw: Variant = await _http_dig_up.request_completed
 	_dig_up_in_flight = false
 	var status: int = raw[1]
 
@@ -686,8 +669,6 @@ func dig_up(plot_id: String) -> void:
 		InventoryManager.restore_seed(flower_template_id)
 		_show_toast("Xúc cây thành công.")
 	else:
-		if status == 401:
-			UserManager.handle_401()
 		plot.plant(snapshot_flower)
 		_show_toast("Xúc cây thất bại. Vui lòng thử lại.")
 
