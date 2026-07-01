@@ -9,12 +9,11 @@ func redeem_async(http: HTTPRequest, base_url: String, token: String, code: Stri
 	var url := "%s/api/gift-codes/redeem" % base_url
 	var headers := HttpHelper.make_headers(token)
 	var body := HttpHelper.encode_body({"code": code})
-	var err := http.request(url, headers, HTTPClient.METHOD_POST, body)
+	var raw: Array = await HttpHelper.request_with_retry_async(http, url, HTTPClient.METHOD_POST, headers, body)
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("GiftCodeService.redeem_async: request error %d" % err)
 		return _network_error_result()
-
-	var raw: Variant = await http.request_completed
 	var http_result: int = raw[0]
 	if http_result != HTTPRequest.RESULT_SUCCESS:
 		push_warning("GiftCodeService.redeem_async: connection failure %d" % http_result)

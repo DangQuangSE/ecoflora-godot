@@ -14,11 +14,11 @@ func _init(http_get: HTTPRequest, http_place: HTTPRequest, http_batch_move: HTTP
 
 func get_placements_async(base_url: String, token: String, scene_name: String) -> Array:
 	var url := "%s/api/deco-placements?scene=%s" % [base_url, scene_name]
-	var err := _http_get.request(url, HttpHelper.make_headers(token))
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_get, url, HTTPClient.METHOD_GET, HttpHelper.make_headers(token))
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("RealDecoService.get_placements_async: request error %d" % err)
 		return []
-	var raw: Variant = await _http_get.request_completed
 	var data: Variant = _parse(raw, "get_placements_async")
 	if not data is Array:
 		return []
@@ -36,11 +36,11 @@ func place_deco_async(base_url: String, token: String, inventory_item_id: String
 		"y": y,
 	})
 	var headers := HttpHelper.make_headers(token)
-	var err := _http_place.request(base_url + "/api/deco-placements", headers, HTTPClient.METHOD_POST, body)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_place, base_url + "/api/deco-placements", HTTPClient.METHOD_POST, headers, body)
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("RealDecoService.place_deco_async: request error %d" % err)
 		return DecoPlacement.new()
-	var raw: Variant = await _http_place.request_completed
 	var status_code: int = raw[1]
 	var data: Variant = _parse(raw, "place_deco_async")
 	if (status_code != 200 and status_code != 201) or not data is Dictionary:
@@ -54,21 +54,21 @@ func batch_move_async(base_url: String, token: String, moves: Array) -> bool:
 			entries.append(m)
 	var body := HttpHelper.encode_body({"moves": entries})
 	var headers := HttpHelper.make_headers(token)
-	var err := _http_batch_move.request(base_url + "/api/deco-placements/batch-move", headers, HTTPClient.METHOD_PATCH, body)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_batch_move, base_url + "/api/deco-placements/batch-move", HTTPClient.METHOD_PATCH, headers, body)
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("RealDecoService.batch_move_async: request error %d" % err)
 		return false
-	var raw: Variant = await _http_batch_move.request_completed
 	var status_code: int = raw[1]
 	return status_code == 200
 
 func recall_deco_async(base_url: String, token: String, placement_id: String) -> bool:
 	var url := "%s/api/deco-placements/%s" % [base_url, placement_id]
-	var err := _http_recall.request(url, HttpHelper.make_headers(token), HTTPClient.METHOD_DELETE)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_recall, url, HTTPClient.METHOD_DELETE, HttpHelper.make_headers(token))
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("RealDecoService.recall_deco_async: request error %d" % err)
 		return false
-	var raw: Variant = await _http_recall.request_completed
 	var status_code: int = raw[1]
 	return status_code == 200
 

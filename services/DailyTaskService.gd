@@ -36,15 +36,15 @@ func fetch_async(http: HTTPRequest, base_url: String, token: String) -> Dictiona
 		"Content-Type: application/json",
 		"Authorization: Bearer %s" % token,
 	])
-	var err := http.request(base_url + "/api/daily-tasks", headers)
+	var raw: Array = await HttpHelper.request_with_retry_async(http, base_url + "/api/daily-tasks", HTTPClient.METHOD_GET, headers)
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("DailyTaskService.fetch_async: request error %d" % err)
 		return {}
-	var raw: Variant = await http.request_completed
 	var status: int            = raw[1]
 	var bytes: PackedByteArray = raw[3]
 	if status == 401:
-		push_warning("DailyTaskService.fetch_async: 401 — caller should handle_401()")
+		push_warning("DailyTaskService.fetch_async: 401 after retry — giving up")
 		return {}
 	if status != 200:
 		push_warning("DailyTaskService.fetch_async: HTTP %d" % status)
@@ -79,15 +79,15 @@ func claim_async(http: HTTPRequest, base_url: String, token: String, task_id: St
 		"Content-Type: application/json",
 		"Authorization: Bearer %s" % token,
 	])
-	var err := http.request(url, headers, HTTPClient.METHOD_POST, "")
+	var raw: Array = await HttpHelper.request_with_retry_async(http, url, HTTPClient.METHOD_POST, headers, "")
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("DailyTaskService.claim_async: request error %d" % err)
 		return {}
-	var raw: Variant = await http.request_completed
 	var status: int            = raw[1]
 	var bytes: PackedByteArray = raw[3]
 	if status == 401:
-		push_warning("DailyTaskService.claim_async: 401")
+		push_warning("DailyTaskService.claim_async: 401 after retry")
 		return {}
 	if status != 200:
 		push_warning("DailyTaskService.claim_async: HTTP %d" % status)
@@ -112,11 +112,11 @@ func record_online_time_async(http: HTTPRequest, base_url: String, token: String
 		"Authorization: Bearer %s" % token,
 	])
 	var body := JSON.stringify({"minutes": minutes})
-	var err := http.request(base_url + "/api/daily-tasks/online-heartbeat", headers, HTTPClient.METHOD_POST, body)
+	var raw: Array = await HttpHelper.request_with_retry_async(http, base_url + "/api/daily-tasks/online-heartbeat", HTTPClient.METHOD_POST, headers, body)
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("DailyTaskService.record_online_time_async: request error %d" % err)
 		return false
-	var raw: Variant = await http.request_completed
 	var status: int = raw[1]
 	if status != 200:
 		push_warning("DailyTaskService.record_online_time_async: HTTP %d" % status)
