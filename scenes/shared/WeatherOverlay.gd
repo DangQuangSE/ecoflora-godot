@@ -181,7 +181,7 @@ func apply_state(state: WeatherState) -> void:
 
 	match state.condition:
 		WeatherState.Condition.SUNNY:
-			_transition_overlay(Color(0.95, 0.85, 0.7, 0.03 if state.is_day else 0.55))
+			_transition_overlay(Color(0.95, 0.85, 0.7, 0.0 if state.is_day else 0.35))
 			_transition_sunbeams(state.is_day)
 			_transition_particles(_pollen, true, 0.7)
 			_transition_particles(_clouds, false)
@@ -190,7 +190,7 @@ func apply_state(state: WeatherState) -> void:
 			_transition_particles(_splashes, false)
 
 		WeatherState.Condition.CLOUDY:
-			var bg_color := Color(0.24, 0.26, 0.32, 0.32 if state.is_day else 0.65)
+			var bg_color := Color(0.24, 0.26, 0.32, 0.15 if state.is_day else 0.42)
 			_transition_overlay(bg_color)
 			_transition_sunbeams(false)
 			_transition_particles(_pollen, false)
@@ -206,7 +206,7 @@ func apply_state(state: WeatherState) -> void:
 			_transition_particles(_splashes, false)
 
 		WeatherState.Condition.RAINY:
-			var bg_color := Color(0.16, 0.2, 0.28, 0.4 if state.is_day else 0.7)
+			var bg_color := Color(0.16, 0.2, 0.28, 0.22 if state.is_day else 0.48)
 			_transition_overlay(bg_color)
 			_transition_sunbeams(false)
 			_transition_particles(_pollen, false)
@@ -227,7 +227,7 @@ func apply_state(state: WeatherState) -> void:
 			_transition_particles(_splashes, true, 0.8)
 
 		WeatherState.Condition.STORM:
-			var bg_color := Color(0.08, 0.09, 0.14, 0.6 if state.is_day else 0.8)
+			var bg_color := Color(0.08, 0.09, 0.14, 0.35 if state.is_day else 0.58)
 			_transition_overlay(bg_color)
 			_transition_sunbeams(false)
 			_transition_particles(_pollen, false)
