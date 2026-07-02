@@ -61,7 +61,6 @@ func _ready() -> void:
 
 	_http = HTTPRequest.new()
 	_http.timeout = 5.0
-	_http.request_completed.connect(_on_request_completed)
 	add_child(_http)
 
 	_overlay = OVERLAY_SCENE.instantiate()
@@ -111,6 +110,9 @@ func _resolve_weather_endpoint() -> String:
 	return UserManager.base_url + "/api/weather/current"
 
 func _on_timer_timeout() -> void:
+	_poll_weather_async()
+
+func _poll_weather_async() -> void:
 	if use_mock:
 		_mock_service.mock_condition = mock_condition
 		_mock_service.mock_is_day = mock_is_day
@@ -125,35 +127,35 @@ func _on_timer_timeout() -> void:
 		var auth := UserManager.get_auth_header()
 		if not auth.is_empty():
 			headers.append(auth)
-		var error := _http.request(_weather_service.endpoint, headers)
-		if error != OK:
-			push_warning("WeatherManager: HTTPRequest.request() failed with error %d" % error)
-			return
 		_request_in_flight = true
-
-func _on_request_completed(result: int, code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
-	_request_in_flight = false
-	if result != HTTPRequest.RESULT_SUCCESS:
-		push_warning("WeatherManager: HTTP request failed, result=%d — keeping current state" % result)
-		return
-	if code != 200:
-		push_warning("WeatherManager: HTTP status %d — keeping current state" % code)
-		return
-	var json := JSON.new()
-	var parse_error := json.parse(body.get_string_from_utf8())
-	if parse_error != OK:
-		push_warning("WeatherManager: JSON parse error — keeping current state")
-		return
-	var data: Variant = json.get_data()
-	if not data is Dictionary:
-		push_warning("WeatherManager: JSON root is not a Dictionary — keeping current state")
-		return
-	var typed_data: Dictionary = data
-	var new_state: WeatherState = _weather_service.parse_response(typed_data)
-	if new_state == null:
-		push_warning("WeatherManager: parse_response returned null — keeping current state")
-		return
-	_apply_new_state(new_state)
+		var raw: Array = await HttpHelper.request_with_retry_async(_http, _weather_service.endpoint, HTTPClient.METHOD_GET, headers)
+		_request_in_flight = false
+		
+		var error: int = raw[0]
+		if error != OK:
+			push_warning("WeatherManager: HTTP request failed with error %d" % error)
+			return
+			
+		var code: int = raw[1]
+		var body: PackedByteArray = raw[3]
+		if code != 200:
+			push_warning("WeatherManager: HTTP status %d — keeping current state" % code)
+			return
+		var json := JSON.new()
+		var parse_error := json.parse(body.get_string_from_utf8())
+		if parse_error != OK:
+			push_warning("WeatherManager: JSON parse error — keeping current state")
+			return
+		var data: Variant = json.get_data()
+		if not data is Dictionary:
+			push_warning("WeatherManager: JSON root is not a Dictionary — keeping current state")
+			return
+		var typed_data: Dictionary = data
+		var new_state: WeatherState = _weather_service.parse_response(typed_data)
+		if new_state == null:
+			push_warning("WeatherManager: parse_response returned null — keeping current state")
+			return
+		_apply_new_state(new_state)
 
 func _apply_new_state(new_state: WeatherState) -> void:
 	if _current_state != null and _current_state.equals(new_state):

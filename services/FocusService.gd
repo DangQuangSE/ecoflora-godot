@@ -1,4 +1,4 @@
-﻿class_name FocusService
+class_name FocusService
 extends RefCounted
 
 var _http_create: HTTPRequest
@@ -11,16 +11,14 @@ func _init(http_create: HTTPRequest, http_terminal: HTTPRequest) -> void:
 func create_async(base_url: String, access_token: String, target_duration_minutes: int) -> Dictionary:
 	var headers: PackedStringArray = HttpHelper.make_headers(access_token)
 	var body: String = HttpHelper.encode_body({"targetDuration": target_duration_minutes})
-	var error: int = _http_create.request(
-		base_url + "/api/focus-sessions", headers, HTTPClient.METHOD_POST, body)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_create, base_url + "/api/focus-sessions", HTTPClient.METHOD_POST, headers, body)
+	var error: int                 = raw[0]
 	if error != OK:
 		push_warning("FocusService.create_async: request error %d" % error)
 		return {}
-	var raw: Variant = await _http_create.request_completed
-	var http_result: int           = raw[0]
 	var status_code: int           = raw[1]
 	var response_body: PackedByteArray = raw[3]
-	if http_result != HTTPRequest.RESULT_SUCCESS or status_code not in [200, 201]:
+	if status_code not in [200, 201]:
 		push_warning("FocusService.create_async: HTTP %d" % status_code)
 		return {}
 	var json := JSON.new()
@@ -44,15 +42,14 @@ func _patch_terminal(base_url: String, access_token: String, session_id: String,
 	var url: String = "%s/api/focus-sessions/%s/%s" % [base_url, session_id, action]
 	var headers: PackedStringArray = HttpHelper.make_headers(access_token)
 	var body: String = HttpHelper.encode_body({"strikes": strikes})
-	var error: int = _http_terminal.request(url, headers, HTTPClient.METHOD_PATCH, body)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_terminal, url, HTTPClient.METHOD_PATCH, headers, body)
+	var error: int                 = raw[0]
 	if error != OK:
 		push_warning("FocusService.%s_async: request error %d" % [action, error])
 		return {}
-	var raw: Variant = await _http_terminal.request_completed
-	var http_result: int               = raw[0]
 	var status_code: int               = raw[1]
 	var response_body: PackedByteArray = raw[3]
-	if http_result != HTTPRequest.RESULT_SUCCESS or status_code != 200:
+	if status_code != 200:
 		push_warning("FocusService.%s_async: HTTP %d" % [action, status_code])
 		return {}
 	var json := JSON.new()
