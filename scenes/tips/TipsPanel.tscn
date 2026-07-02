@@ -1,27 +1,48 @@
-[gd_scene load_steps=6 format=3 uid="uid://btipspanel01"]
+[gd_scene load_steps=8 format=3 uid="uid://btipspanel01"]
 
 [ext_resource type="Script" path="res://scenes/tips/TipsPanel.gd" id="1_panel"]
 [ext_resource type="Script" path="res://scenes/ui/components/button/PrimaryButton.gd" id="2_primary_button"]
-[ext_resource type="Texture2D" uid="uid://dotxp8r8cl8h0" path="res://assets/inventory/invenotry_bg.png" id="3_invbg"]
-[ext_resource type="Texture2D" uid="uid://cwb5wei1qbvse" path="res://assets/inventory/inventory_frame.png" id="4_frame"]
-[ext_resource type="Texture2D" path="res://assets/icon/close.png" id="5_close_icon"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_invbg"]
-atlas = ExtResource("3_invbg")
-region = Rect2(252, 55, 526, 774)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0, 0, 0, 0)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_close"]
-bg_color = Color(0.55, 0.18, 0.18, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+[ext_resource type="Texture2D" path="res://assets/frame/dialog/dialog-big.png" id="3_dialog_bg"]
+[ext_resource type="Texture2D" path="res://assets/icon/close.png" id="4_close_icon"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scroll"]
 bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_normal"]
+bg_color = Color(0.94, 0.66, 0.25, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.48, 0.27, 0.09, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_hover"]
+bg_color = Color(1, 0.76, 0.34, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 4
+border_color = Color(0.56, 0.33, 0.12, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nav_pressed"]
+bg_color = Color(0.82, 0.50, 0.17, 1)
+border_width_left = 2
+border_width_top = 4
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.38, 0.20, 0.07, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
 
 [node name="TipsPanel" type="Control"]
 layout_mode = 3
@@ -41,125 +62,140 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.55)
 
-[node name="InvBg" type="TextureRect" parent="."]
+[node name="DialogBox" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -320.0
-offset_top = -258.0
-offset_right = 320.0
-offset_bottom = 258.0
+offset_left = -285.0
+offset_top = -350.0
+offset_right = 285.0
+offset_bottom = 350.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("AtlasTexture_invbg")
-expand_mode = 1
+pivot_offset = Vector2(285, 350)
 
-[node name="PanelRoot" type="Panel" parent="."]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -320.0
-offset_top = -258.0
-offset_right = 320.0
-offset_bottom = 258.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
-
-[node name="VBox" type="VBoxContainer" parent="PanelRoot"]
+[node name="Background" type="TextureRect" parent="DialogBox"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 12.0
-offset_right = -16.0
-offset_bottom = -14.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 8
-
-[node name="TitleBar" type="HBoxContainer" parent="PanelRoot/VBox"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-theme_override_constants/separation = 6
-
-[node name="TitleSpacer" type="Control" parent="PanelRoot/VBox/TitleBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="CloseBtn" type="Button" parent="PanelRoot/VBox/TitleBar"]
-script = ExtResource("2_primary_button")
-custom_minimum_size = Vector2(46, 46)
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_close")
-flat = true
-
-[node name="Icon" type="TextureRect" parent="PanelRoot/VBox/TitleBar/CloseBtn"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 4.0
-offset_top = 4.0
-offset_right = -4.0
-offset_bottom = -4.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-texture = ExtResource("5_close_icon")
+texture = ExtResource("3_dialog_bg")
 expand_mode = 1
-stretch_mode = 5
 
-[node name="Divider" type="HSeparator" parent="PanelRoot/VBox"]
-modulate = Color(0.38, 0.52, 0.28, 0.5)
-layout_mode = 2
-
-[node name="Tabs" type="HBoxContainer" parent="PanelRoot/VBox"]
-custom_minimum_size = Vector2(0, 60)
-layout_mode = 2
-theme_override_constants/separation = 0
-
-[node name="Scroll" type="ScrollContainer" parent="PanelRoot/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_scroll")
-
-[node name="TipsList" type="VBoxContainer" parent="PanelRoot/VBox/Scroll"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 8
-
-[node name="InventoryFrame" type="Sprite2D" parent="InvBg"]
-position = Vector2(320, 308)
-scale = Vector2(1.22, 0.7609398)
-texture = ExtResource("4_frame")
-region_enabled = true
-region_rect = Rect2(256.50854, 268.4707, 513.2384, 521.45996)
-
-[node name="TipsTitleLabel" type="Label" parent="InvBg"]
+[node name="HeaderBox" type="HBoxContainer" parent="DialogBox"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -150.0
-offset_top = 12.0
-offset_right = 150.0
-offset_bottom = 60.0
+offset_left = -210.0
+offset_top = 34.0
+offset_right = 210.0
+offset_bottom = 74.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(1, 0.95, 0.8, 1)
-theme_override_colors/font_shadow_color = Color(0.18, 0.08, 0.02, 0.7)
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="PrevBtn" type="Button" parent="DialogBox/HeaderBox"]
+custom_minimum_size = Vector2(34, 30)
+script = ExtResource("2_primary_button")
+layout_mode = 2
+theme_override_colors/font_color = Color(0.33, 0.18, 0.06, 1)
+theme_override_colors/font_hover_color = Color(0.25, 0.12, 0.03, 1)
+theme_override_colors/font_pressed_color = Color(0.25, 0.12, 0.03, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nav_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nav_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_nav_hover")
+text = "<"
+
+[node name="TitleLabel" type="Label" parent="DialogBox/HeaderBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.52, 0.34, 0.18, 1)
+theme_override_colors/font_shadow_color = Color(1, 0.96, 0.82, 0.55)
+theme_override_colors/font_outline_color = Color(1, 0.94, 0.76, 0.75)
 theme_override_constants/shadow_offset_x = 1
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 29
-text = "Mẹo Chơi"
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 1
+theme_override_font_sizes/font_size = 22
+text = "Hướng Dẫn Nhanh"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="NextBtn" type="Button" parent="DialogBox/HeaderBox"]
+custom_minimum_size = Vector2(34, 30)
+script = ExtResource("2_primary_button")
+layout_mode = 2
+theme_override_colors/font_color = Color(0.33, 0.18, 0.06, 1)
+theme_override_colors/font_hover_color = Color(0.25, 0.12, 0.03, 1)
+theme_override_colors/font_pressed_color = Color(0.25, 0.12, 0.03, 1)
+theme_override_constants/outline_size = 0
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_nav_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_nav_hover")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nav_pressed")
+theme_override_styles/focus = SubResource("StyleBoxFlat_nav_hover")
+text = ">"
+
+[node name="CloseBtn" type="Button" parent="DialogBox"]
+script = ExtResource("2_primary_button")
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -78.0
+offset_top = 28.0
+offset_right = -36.0
+offset_bottom = 70.0
+flat = true
+
+[node name="Icon" type="TextureRect" parent="DialogBox/CloseBtn"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("4_close_icon")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Content" type="MarginContainer" parent="DialogBox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 62
+theme_override_constants/margin_top = 112
+theme_override_constants/margin_right = 62
+theme_override_constants/margin_bottom = 74
+
+[node name="BodyHBox" type="HBoxContainer" parent="DialogBox/Content"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ContentScroll" type="ScrollContainer" parent="DialogBox/Content/BodyHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_scroll")
+
+[node name="TipsList" type="VBoxContainer" parent="DialogBox/Content/BodyHBox/ContentScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 4

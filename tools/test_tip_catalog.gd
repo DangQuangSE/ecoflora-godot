@@ -29,7 +29,7 @@ func _assert_true(condition: bool, label: String) -> void:
 
 func _test_tip_catalog() -> void:
 	var tips := TipCatalogScript.build_offline_fallback()
-	_assert_eq(tips.size(), 6, "fallback tip count")
+	_assert_eq(tips.size(), 7, "fallback tip count")
 	_assert_true(not tips[0].title.is_empty(), "tip title")
 	_assert_true(not tips[0].content.is_empty(), "tip content")
-	_assert_eq(tips[0].title, "Chăm Sóc Vườn", "first tip title")
+	_assert_eq(tips[0].title, "Hướng Dẫn Nhanh", "first tip title")

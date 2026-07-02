@@ -1,6 +1,7 @@
 class_name TipCatalog
 extends RefCounted
 
+const OFFLINE_QUICKSTART_ID: String = "offline_quickstart"
 const OFFLINE_GARDEN_ID: String = "offline_garden"
 const OFFLINE_FOCUS_ID: String = "offline_focus"
 const OFFLINE_SHOP_ID: String = "offline_shop"
@@ -11,6 +12,19 @@ const OFFLINE_WEATHER_ID: String = "offline_weather"
 
 static func build_offline_fallback() -> Array[GameTip]:
 	var tips: Array[GameTip] = []
+	
+	tips.append(GameTip.new(
+		OFFLINE_QUICKSTART_ID,
+		"Hướng Dẫn Nhanh",
+		"Chào mừng bạn đến với Flow Flora! Dưới đây là các bước nhanh giúp bạn bắt đầu khu vườn tri thức:\n\n" +
+		"1. Di chuyển nhân vật của bạn bằng Joystick trên màn hình (hoặc các phím WASD / phím mũi tên trên máy tính).\n" +
+		"2. Mở Túi đồ (Inventory) để gieo hạt giống hoa đầu tiên của bạn vào ô đất trống.\n" +
+		"3. Tưới nước, bón phân hoặc diệt sâu để giúp hoa lớn lên và nhận điểm kinh nghiệm (XP).\n" +
+		"4. Thu hoạch hoa khi đạt cấp trưởng thành (Level 7) để nhận lượng lớn XP nâng cấp nhân vật.\n" +
+		"5. Khi cần học tập, di chuyển nhân vật đến khu vực Trường học (Đại học FPT) để kích hoạt Chế độ tập trung và nhận những phần thưởng giá trị.\n" +
+		"6. Điểm danh mỗi ngày để nhận các lượt Tăng tốc chăm sóc miễn phí và mua thêm hạt giống mới tại Cửa Hàng!",
+		5
+	))
 	
 	tips.append(GameTip.new(
 		OFFLINE_GARDEN_ID,

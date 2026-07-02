@@ -16,6 +16,7 @@ var _fetch_in_flight: bool = false
 func _ready() -> void:
 	_svc = _TipServiceScript.new()
 	_load_cache()
+	_tips = _merge_tips(TipCatalog.build_offline_fallback(), _tips)
 	if not use_mock:
 		_http = HTTPRequest.new()
 		_http.timeout = 15.0
@@ -35,29 +36,37 @@ func refresh_async() -> void:
 	if _fetch_in_flight:
 		return
 	if use_mock:
-		if _tips.is_empty():
-			_tips = TipCatalog.build_offline_fallback()
+		_tips = TipCatalog.build_offline_fallback()
 		tips_updated.emit(_tips)
 		return
 	if _http == null:
-		_apply_fallback_if_empty()
+		_tips = TipCatalog.build_offline_fallback()
 		tips_updated.emit(_tips)
 		return
 	_fetch_in_flight = true
 	var fetched := await _svc.fetch_tips_async(_http, UserManager.base_url)
 	_fetch_in_flight = false
+	
+	var base_tips := TipCatalog.build_offline_fallback()
 	if not fetched.is_empty():
-		_tips = fetched
+		_tips = _merge_tips(base_tips, fetched)
 		_save_cache()
 	else:
 		_load_cache()
-		_apply_fallback_if_empty()
+		_tips = _merge_tips(base_tips, _tips)
 	tips_updated.emit(_tips)
 
 
-func _apply_fallback_if_empty() -> void:
-	if _tips.is_empty():
-		_tips = TipCatalog.build_offline_fallback()
+func _merge_tips(local: Array[GameTip], remote: Array[GameTip]) -> Array[GameTip]:
+	var result: Array[GameTip] = local.duplicate()
+	var local_ids := {}
+	for tip in local:
+		local_ids[tip.id] = true
+	
+	for tip in remote:
+		if not local_ids.has(tip.id):
+			result.append(tip)
+	return result
 
 
 func _save_cache() -> void:
