@@ -13,11 +13,11 @@ func get_catalog_async(base_url: String, token: String, category: String = "") -
 	if category != "":
 		url += "?category=" + category
 	var headers := HttpHelper.make_headers(token)
-	var err := _http_catalog.request(url, headers)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_catalog, url, HTTPClient.METHOD_GET, headers)
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("ShopService.get_catalog_async: request error %d" % err)
 		return []
-	var raw: Variant = await _http_catalog.request_completed
 	var status_code: int = raw[1]
 	var body: PackedByteArray = raw[3]
 	if status_code != 200:
@@ -50,11 +50,11 @@ func purchase_async(base_url: String, token: String, prefixed_id: String, quanti
 	var headers := HttpHelper.make_headers(token)
 	headers.append("Content-Type: application/json")
 	var body_str := HttpHelper.encode_body({"itemId": prefixed_id, "quantity": quantity})
-	var err := _http_purchase.request(base_url + "/api/shop/purchase", headers, HTTPClient.METHOD_POST, body_str)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_purchase, base_url + "/api/shop/purchase", HTTPClient.METHOD_POST, headers, body_str)
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("ShopService.purchase_async: request error %d" % err)
 		return {}
-	var raw: Variant = await _http_purchase.request_completed
 	var status_code: int = raw[1]
 	var body: PackedByteArray = raw[3]
 	if status_code != 200:

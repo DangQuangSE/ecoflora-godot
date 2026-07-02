@@ -10,11 +10,11 @@ func _init(http_status: HTTPRequest, http_claim: HTTPRequest) -> void:
 
 func get_status_async(base_url: String, token: String) -> Dictionary:
 	var headers := HttpHelper.make_headers(token)
-	var err := _http_status.request(base_url + "/api/vitality/status", headers)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_status, base_url + "/api/vitality/status", HTTPClient.METHOD_GET, headers)
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("VitalityService.get_status_async: request error %d" % err)
 		return {}
-	var raw: Variant = await _http_status.request_completed
 	var status_code: int = raw[1]
 	var body: PackedByteArray = raw[3]
 	if status_code != 200:
@@ -32,11 +32,11 @@ func get_status_async(base_url: String, token: String) -> Dictionary:
 func claim_async(base_url: String, token: String) -> Dictionary:
 	var headers := HttpHelper.make_headers(token)
 	headers.append("Content-Type: application/json")
-	var err := _http_claim.request(base_url + "/api/vitality/claim", headers, HTTPClient.METHOD_POST, "")
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_claim, base_url + "/api/vitality/claim", HTTPClient.METHOD_POST, headers, "")
+	var err: int = raw[0]
 	if err != OK:
 		push_warning("VitalityService.claim_async: request error %d" % err)
 		return {}
-	var raw: Variant = await _http_claim.request_completed
 	var status_code: int = raw[1]
 	var body: PackedByteArray = raw[3]
 	if status_code == 409:

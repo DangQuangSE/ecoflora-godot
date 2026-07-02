@@ -18,6 +18,7 @@ signal register_succeeded
 signal register_failed(reason: String)
 signal profile_updated
 signal character_changed(idx: int)
+signal token_refresh_completed(success: bool)
 
 @export var use_mock: bool = false
 @export var mock_character_index: int = 0
@@ -390,12 +391,12 @@ func fetch_profile_async() -> void:
 	_profile_in_flight = true
 	var headers: PackedStringArray = HttpHelper.make_headers(
 		_token_store.access_token if _token_store else "")
-	var error: int = _http_profile.request(base_url + "/api/auth/profile", headers)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http_profile, base_url + "/api/auth/profile", HTTPClient.METHOD_GET, headers)
+	var error: int = raw[0]
 	if error != OK:
 		_profile_in_flight = false
 		push_warning("UserManager.fetch_profile_async: request error %d" % error)
 		return
-	var raw: Variant = await _http_profile.request_completed
 	_profile_in_flight = false
 	var decoded := _decode_raw(raw, "fetch_profile_async")
 	if decoded.is_empty():
@@ -403,7 +404,7 @@ func fetch_profile_async() -> void:
 	var status_code: int      = decoded["status"]
 	var body: PackedByteArray = decoded["bytes"]
 	if status_code == 401:
-		handle_401()
+		push_warning("UserManager.fetch_profile_async: 401 after retry")
 		return
 	if status_code != 200:
 		push_warning("UserManager.fetch_profile_async: HTTP %d" % status_code)
@@ -447,27 +448,23 @@ func fetch_profile_async() -> void:
 	profile_updated.emit()
 
 ## Khi gap 401, thu refresh token truoc.
-## Neu refresh thanh cong -> giu phien, khong da nguoi dung ra.
-## Neu refresh that bai -> xoa token va ve man hinh login.
-func handle_401() -> void:
+## Dam bao refresh token.
+## Tra ve true neu refresh thanh cong, false neu that bai (se tu dong logout).
+func ensure_refresh_async() -> bool:
 	if use_mock:
-		return
+		return true
 	if _refresh_in_flight:
-		# Dang refresh roi, cho ket qua — khong lam gi them.
-		return
-	_refresh_access_token_async()
+		var success: bool = await token_refresh_completed
+		return success
 
-func _refresh_access_token_async() -> void:
 	var refresh_token: String = _token_store.load_refresh_token()
 	if refresh_token.is_empty():
-		push_warning("UserManager._refresh_access_token_async: no refresh token stored — forcing logout")
+		push_warning("UserManager.ensure_refresh_async: no refresh token stored — forcing logout")
 		_force_logout()
-		return
+		token_refresh_completed.emit(false)
+		return false
 
-	if _refresh_in_flight:
-		return
 	_refresh_in_flight = true
-
 	var body := JSON.stringify({"refreshToken": refresh_token})
 	var headers := PackedStringArray(["Content-Type: application/json"])
 	var err := _refresh_http.request(
@@ -478,38 +475,45 @@ func _refresh_access_token_async() -> void:
 	)
 	if err != OK:
 		_refresh_in_flight = false
-		push_warning("UserManager._refresh_access_token_async: request error %d — forcing logout" % err)
+		push_warning("UserManager.ensure_refresh_async: request error %d — forcing logout" % err)
 		_force_logout()
-		return
+		token_refresh_completed.emit(false)
+		return false
 
 	var raw: Variant = await _refresh_http.request_completed
 	_refresh_in_flight = false
 
-	var decoded := _decode_raw(raw, "_refresh_access_token_async")
+	var decoded := _decode_raw(raw, "ensure_refresh_async")
 	if decoded.is_empty():
 		_force_logout()
-		return
+		token_refresh_completed.emit(false)
+		return false
 	var status_code: int            = decoded["status"]
 	var body_bytes: PackedByteArray = decoded["bytes"]
 	if status_code != 200:
-		push_warning("UserManager._refresh_access_token_async: refresh failed HTTP %d — forcing logout" % status_code)
+		push_warning("UserManager.ensure_refresh_async: refresh failed HTTP %d — forcing logout" % status_code)
 		_force_logout()
-		return
+		token_refresh_completed.emit(false)
+		return false
 
-	var data: Variant = _parse_json_body(body_bytes, "_refresh_access_token_async")
+	var data: Variant = _parse_json_body(body_bytes, "ensure_refresh_async")
 	if data == null:
 		_force_logout()
-		return
+		token_refresh_completed.emit(false)
+		return false
 
 	var tokens: Dictionary = _auth_service.parse_login_response(data)
 	if tokens.is_empty():
-		push_warning("UserManager._refresh_access_token_async: could not parse new tokens — forcing logout")
+		push_warning("UserManager.ensure_refresh_async: could not parse new tokens — forcing logout")
 		_force_logout()
-		return
+		token_refresh_completed.emit(false)
+		return false
 
 	_token_store.access_token = tokens["accessToken"]
 	_token_store.save_refresh_token(tokens["refreshToken"])
-	push_warning("UserManager._refresh_access_token_async: token refreshed successfully")
+	push_warning("UserManager.ensure_refresh_async: token refreshed successfully")
+	token_refresh_completed.emit(true)
+	return true
 
 func _force_logout() -> void:
 	_token_store.access_token = ""
@@ -705,13 +709,12 @@ func select_initial_character_async(idx: int) -> bool:
 	var body := JSON.stringify({"characterIndex": idx})
 	var headers := HttpHelper.make_headers(_token_store.access_token)
 	headers.append("Content-Type: application/json")
-	var err := _character_http.request(
-		base_url + "/api/auth/initial-character", headers, HTTPClient.METHOD_POST, body)
+	var raw: Array = await HttpHelper.request_with_retry_async(_character_http, base_url + "/api/auth/initial-character", HTTPClient.METHOD_POST, headers, body)
+	var err: int = raw[0]
 	if err != OK:
 		_initial_character_in_flight = false
 		push_warning("UserManager.select_initial_character_async: request error %d" % err)
 		return false
-	var raw: Variant = await _character_http.request_completed
 	_initial_character_in_flight = false
 	var decoded := _decode_raw(raw, "select_initial_character_async")
 	if decoded.is_empty():
@@ -782,8 +785,8 @@ func set_character_async(idx: int) -> void:
 	var body := JSON.stringify({"characterIndex": idx})
 	var headers := HttpHelper.make_headers(_token_store.access_token if _token_store else "")
 	headers.append("Content-Type: application/json")
-	var err := _character_http.request(
-		base_url + "/api/auth/character", headers, HTTPClient.METHOD_PUT, body)
+	var raw: Array = await HttpHelper.request_with_retry_async(_character_http, base_url + "/api/auth/character", HTTPClient.METHOD_PUT, headers, body)
+	var err: int = raw[0]
 	if err != OK:
 		_character_index = prev
 		save_character_prefs()
@@ -791,7 +794,6 @@ func set_character_async(idx: int) -> void:
 		_character_in_flight = false
 		push_warning("UserManager.set_character_async: request error %d" % err)
 		return
-	var raw: Variant = await _character_http.request_completed
 	_character_in_flight = false
 	var status_code: int = raw[1]
 	if status_code != 200:

@@ -39,19 +39,16 @@ func _fetch_inventory() -> void:
 	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
 	if not auth_header.is_empty():
 		headers.append(auth_header)
-	var error: int = _http.request(url, headers)
+	var raw: Array = await HttpHelper.request_with_retry_async(_http, url, HTTPClient.METHOD_GET, headers)
+	var error: int = raw[0]
 	if error != OK:
 		_request_in_flight = false
 		push_warning("InventoryManager._fetch_inventory: request error %d" % error)
 		return
-	var raw: Variant = await _http.request_completed
 	_request_in_flight = false
-	var http_result: int      = raw[0]
 	var status_code: int      = raw[1]
 	var body: PackedByteArray = raw[3]
-	if http_result != HTTPRequest.RESULT_SUCCESS or status_code != 200:
-		if status_code == 401:
-			UserManager.handle_401()
+	if status_code != 200:
 		push_warning("InventoryManager._fetch_inventory: HTTP %d" % status_code)
 		return  # keep mock inventory on any error
 	var json := JSON.new()
