@@ -1,18 +1,81 @@
 class_name TipCatalog
 extends RefCounted
 
+const OFFLINE_QUICKSTART_ID: String = "offline_quickstart"
+const OFFLINE_GARDEN_ID: String = "offline_garden"
+const OFFLINE_FOCUS_ID: String = "offline_focus"
+const OFFLINE_SHOP_ID: String = "offline_shop"
 const OFFLINE_SYNERGY_ID: String = "offline_synergy"
+const OFFLINE_TASKS_ID: String = "offline_tasks"
+const OFFLINE_WEATHER_ID: String = "offline_weather"
 
 
 static func build_offline_fallback() -> Array[GameTip]:
 	var tips: Array[GameTip] = []
+	
+	tips.append(GameTip.new(
+		OFFLINE_QUICKSTART_ID,
+		"Hướng Dẫn Nhanh",
+		"Chào mừng bạn đến với Flow Flora! Dưới đây là các bước nhanh giúp bạn bắt đầu khu vườn tri thức:\n\n" +
+		"1. Di chuyển nhân vật của bạn bằng Joystick trên màn hình (hoặc các phím WASD / phím mũi tên trên máy tính).\n" +
+		"2. Mở Túi đồ (Inventory) để gieo hạt giống hoa đầu tiên của bạn vào ô đất trống.\n" +
+		"3. Tưới nước, bón phân hoặc diệt sâu để giúp hoa lớn lên và nhận điểm kinh nghiệm (XP).\n" +
+		"4. Thu hoạch hoa khi đạt cấp trưởng thành (Level 7) để nhận lượng lớn XP nâng cấp nhân vật.\n" +
+		"5. Khi cần học tập, di chuyển nhân vật đến khu vực Trường học (Đại học FPT) để kích hoạt Chế độ tập trung và nhận những phần thưởng giá trị.\n" +
+		"6. Điểm danh mỗi ngày để nhận các lượt Tăng tốc chăm sóc miễn phí và mua thêm hạt giống mới tại Cửa Hàng!",
+		5
+	))
+	
+	tips.append(GameTip.new(
+		OFFLINE_GARDEN_ID,
+		"Chăm Sóc Vườn",
+		"Sử dụng các công cụ trong túi để gieo hạt, tưới nước (+20 XP), bón phân (+50 XP) hoặc diệt sâu bọ (+50 XP) cho hoa. " +
+		"Mỗi hành động chăm sóc có thời gian hồi chiêu (cooldown) riêng biệt cho từng cây. " +
+		"Khi hoa đạt Level 7 (Trưởng thành), bạn có thể tiến hành thu hoạch để nhận lượng lớn XP nâng cấp cho nhân vật.",
+		10
+	))
+	
+	tips.append(GameTip.new(
+		OFFLINE_FOCUS_ID,
+		"Chế Độ Tập Trung",
+		"Di chuyển nhân vật của bạn đến khu vực trường học (thiết kế phỏng theo Đại học FPT) và bước vào lớp học để kích hoạt Chế độ tập trung (Hẹn giờ Pomodoro). " +
+		"Gieo 'Cây Tri Thức' và thiết lập thời gian học tập. Trong thời gian này, nếu bạn thoát game hoặc mở ứng dụng khác quá số lần quy định, cây sẽ bị héo hoặc giảm kinh nghiệm. " +
+		"Hoàn thành buổi học để nhận Vitality và các phần quà giá trị!",
+		20
+	))
+	
+	tips.append(GameTip.new(
+		OFFLINE_SHOP_ID,
+		"Cửa Hàng & Túi Đồ",
+		"Dùng tiền xu tích lũy được từ các nhiệm vụ và việc đổi Vitality để mua các loại Hạt giống hoa mới, Phân bón tăng tốc hoặc đồ trang trí (Decor) trong Cửa Hàng (Shop). " +
+		"Túi đồ (Inventory) chứa toàn bộ hạt giống và vật phẩm bạn đã mua, cho phép kéo thả sử dụng trực tiếp để trang trí hoặc trồng trong khu vườn.",
+		30
+	))
+	
 	tips.append(GameTip.new(
 		OFFLINE_SYNERGY_ID,
-		"Hệ Sinh Thái",
-		"Vườn của bạn chia thành nhiều zone. Khi trong cùng một zone có từ 2 cây trở lên thuộc cùng nhóm Synergy (ô trống không tính), zone được coi là \"thuần\" và kích hoạt bonus XP. " +
-		"Khi synergy đang active, tưới nước hoặc bón phân trên bất kỳ cây nào trong zone đều cộng thêm XP. " +
-		"Zone đang có synergy sẽ hiện hiệu ứng lấp lánh; khi chăm sóc bạn thấy nhãn +XP và +🌿 bonus. " +
-		"Bonus mất khi trộn hai nhóm Synergy, trồng cây không có Synergy, hoặc sau thu hoạch còn dưới 2 cây.",
-		0
+		"Hệ Sinh Thái (Synergy)",
+		"Khu vườn được chia thành nhiều khu vực (Zone). Khi bạn trồng từ 2 cây hoa trở lên cùng nhóm Synergy trong một Zone, hệ sinh thái sẽ được kích hoạt (có hiệu ứng lấp lánh). " +
+		"Lúc này, mọi hành động chăm sóc như tưới nước hay bón phân trong Zone đó đều được cộng thêm điểm kinh nghiệm và năng lượng Vitality. " +
+		"Hãy trồng hoa theo nhóm để tối đa hóa hiệu quả!",
+		40
 	))
+	
+	tips.append(GameTip.new(
+		OFFLINE_TASKS_ID,
+		"Nhiệm Vụ Hàng Ngày",
+		"Hoàn thành các nhiệm vụ hàng ngày như Điểm danh để nhận các lượt Tăng tốc (tưới nước/bón phân miễn phí không cần thời gian chờ). " +
+		"Ngoài ra còn có các nhiệm vụ ngày (ví dụ: tưới nước 3 lần) và nhiệm vụ hệ thống (sở hữu hoa hướng dương đạt cấp nhất định) giúp bạn nhận thêm nhiều tài nguyên nâng cấp vườn hoa.",
+		50
+	))
+	
+	tips.append(GameTip.new(
+		OFFLINE_WEATHER_ID,
+		"Thời Tiết Thực Tế",
+		"Thế giới trong game được đồng bộ hóa với thời tiết và thời gian thực tế ngoài đời. " +
+		"Nắng quá gắt có thể làm đất khô cằn và hoa bị héo, trong khi mưa quá lớn có thể khiến cây bị úng nước. " +
+		"Hãy chú ý theo dõi các thông báo cảnh báo thời tiết để chăm sóc và bảo vệ vườn hoa của mình một cách kịp thời nhé!",
+		60
+	))
+	
 	return tips

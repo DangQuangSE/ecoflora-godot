@@ -48,6 +48,7 @@ func _ready() -> void:
 	DecoManager.deco_recalled.connect(_on_deco_recalled)
 	DecoManager.batch_save_failed.connect(_on_batch_save_failed)
 	DecoManager.init_scene("garden")
+	call_deferred("_check_first_time_guide")
 
 func _setup_camera() -> void:
 	_player.setup_camera_world_limits(_boundary_rect)
@@ -253,6 +254,35 @@ func _exit_tree() -> void:
 	if DecoManager.batch_save_failed.is_connected(_on_batch_save_failed):
 		DecoManager.batch_save_failed.disconnect(_on_batch_save_failed)
 	DecoManager.exit_scene()
+
+func _check_first_time_guide() -> void:
+	var username := "guest"
+	if UserManager != null and UserManager.get_profile() != null:
+		var profile_username := UserManager.get_profile().username
+		if not profile_username.is_empty():
+			username = profile_username
+
+	var config_path := "user://guide_prefs.cfg"
+	var cfg := ConfigFile.new()
+	var has_read := false
+	if cfg.load(config_path) == OK:
+		has_read = cfg.get_value("guide", username, false)
+
+	if not has_read:
+		cfg.set_value("guide", username, true)
+		cfg.save(config_path)
+		
+		var dialog := BaseDialog.show_alert(
+			self,
+			"Thông báo",
+			"Chào mừng bạn đến với Flow Flora! Vui lòng đọc hướng dẫn chơi trước khi bắt đầu.",
+			"Đọc hướng dẫn"
+		)
+		if dialog != null:
+			dialog.confirmed.connect(func() -> void:
+				if _hud != null and _hud.has_method("open_tips"):
+					_hud.open_tips()
+			)
 
 func _compute_boundary() -> Rect2:
 	var bg := get_node_or_null("Background") as Sprite2D

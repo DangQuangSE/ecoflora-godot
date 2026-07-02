@@ -86,10 +86,24 @@ func setup_camera_limits(used_rect: Rect2i, tile_size: Vector2i) -> void:
 	_camera.limit_bottom = used_rect.end.y * tile_size.y
 
 func _physics_process(_delta: float) -> void:
-	velocity = move_direction.normalized() * speed if move_direction.length() > 0.1 else Vector2.ZERO
+	var keyboard_dir := Vector2.ZERO
+	if Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP):
+		keyboard_dir.y -= 1.0
+	if Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN):
+		keyboard_dir.y += 1.0
+	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
+		keyboard_dir.x -= 1.0
+	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
+		keyboard_dir.x += 1.0
+
+	var dir := move_direction
+	if keyboard_dir != Vector2.ZERO:
+		dir = keyboard_dir.normalized()
+
+	velocity = dir * speed if dir.length() > 0.1 else Vector2.ZERO
 	move_and_slide()
 	_clamp_to_movement_bounds()
-	_update_animation()
+	_update_animation(dir)
 	_handle_footsteps()
 
 func _clamp_to_movement_bounds() -> void:
@@ -102,13 +116,13 @@ func _clamp_to_movement_bounds() -> void:
 		clampf(global_position.y, min_pos.y, max_pos.y)
 	)
 
-func _update_animation() -> void:
-	if move_direction.length() < 0.1:
+func _update_animation(dir: Vector2) -> void:
+	if dir.length() < 0.1:
 		var idle := "idle_down" if _last_facing != "up" else "idle_up"
 		if _sprite.animation != idle:
 			_sprite.play(idle)
 		return
-	var angle := move_direction.angle()
+	var angle := dir.angle()
 	if abs(angle) < PI / 4.0:
 		_last_facing = "right"
 		_sprite.play("walk_right")

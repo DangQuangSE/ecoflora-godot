@@ -109,11 +109,17 @@ func _toggle_tips() -> void:
 		else:
 			_tips_panel.hide()
 	else:
-		_hide_inventory_if_visible()
-		_hide_shop_if_visible()
-		_hide_tasks_if_visible()
-		_hide_settings_if_visible()
-		_tips_panel.show_panel()
+		open_tips()
+
+
+func open_tips() -> void:
+	if _tips_panel == null:
+		return
+	_hide_inventory_if_visible()
+	_hide_shop_if_visible()
+	_hide_tasks_if_visible()
+	_hide_settings_if_visible()
+	_tips_panel.show_panel()
 
 
 func _hide_tips_if_visible() -> void:

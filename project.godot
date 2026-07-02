@@ -40,6 +40,8 @@ GiftCodeManager="*res://autoloads/GiftCodeManager.gd"
 
 window/size/viewport_width=700
 window/size/viewport_height=1000
+window/size/window_width_override=530
+window/size/window_height_override=1000
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 window/handheld/orientation=1
