@@ -1,7 +1,6 @@
 extends Control
 
 @onready var status_label: Label = $VBoxContainer/StatusLabel
-@onready var progress_bar: ProgressBar = $VBoxContainer/ProgressBar
 @onready var retry_button: Button = $VBoxContainer/RetryButton
 @onready var version_request: HTTPRequest = $VersionRequest
 @onready var download_request: HTTPRequest = $DownloadRequest
@@ -20,6 +19,9 @@ var latest_pck_url: String = ""
 var is_downloading: bool = false
 
 func _ready() -> void:
+	hide() # Ẩn DownloadManager
+	LoadingScreen.show_loading() # Hiện LoadingScreen ngay từ đầu
+	
 	retry_button.hide()
 	retry_button.pressed.connect(_on_retry_pressed)
 	version_request.request_completed.connect(_on_version_request_completed)
@@ -33,12 +35,11 @@ func _process(_delta: float) -> void:
 	if is_downloading and download_request.get_body_size() > 0:
 		var downloaded = download_request.get_downloaded_bytes()
 		var total = download_request.get_body_size()
-		progress_bar.max_value = total
-		progress_bar.value = downloaded
+		var progress_value = float(downloaded) / float(total)
+		LoadingScreen.set_progress(progress_value)
 
 func check_version() -> void:
 	status_label.text = "Đang kiểm tra dữ liệu hệ thống..."
-	progress_bar.hide()
 	retry_button.hide()
 	
 	var error = version_request.request(VERSION_URL)
@@ -80,9 +81,6 @@ func _get_local_version() -> int:
 	return 0
 
 func _start_download() -> void:
-	status_label.text = "Đang tải dữ liệu đồ họa (PCK)..."
-	progress_bar.show()
-	progress_bar.value = 0
 	is_downloading = true
 	
 	# Xóa file PCK cũ hoặc lỗi trước khi tải mới
@@ -97,14 +95,12 @@ func _start_download() -> void:
 func _on_download_request_completed(result: int, response_code: int, headers: PackedStringArray, body: PackedByteArray) -> void:
 	is_downloading = false
 	if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
-		_show_error("Lỗi tải dữ liệu. Vui lòng thử lại.")
+		_show_error("Tải tài nguyên game thất bại do internet.")
 		# Xóa file rác tải dở
 		if FileAccess.file_exists(PCK_LOCAL_PATH):
 			DirAccess.remove_absolute(PCK_LOCAL_PATH)
 		return
 		
-	status_label.text = "Tải hoàn tất!"
-	
 	# Tải thành công mới cập nhật version.json dưới máy
 	var file = FileAccess.open(VERSION_LOCAL_PATH, FileAccess.WRITE)
 	if file:
@@ -116,6 +112,9 @@ func _on_download_request_completed(result: int, response_code: int, headers: Pa
 
 func _mount_and_start() -> void:
 	status_label.text = "Đang nạp vào hệ thống..."
+	
+	# Cứ để LoadingScreen hiển thị, không cần ẩn đi.
+	# Scene tiếp theo (SplashScene) sẽ tiếp quản việc sử dụng LoadingScreen này một cách liền mạch.
 	
 	if FileAccess.file_exists(PCK_LOCAL_PATH):
 		var success = ProjectSettings.load_resource_pack(PCK_LOCAL_PATH)
@@ -132,9 +131,12 @@ func _mount_and_start() -> void:
 	get_tree().change_scene_to_file(MAIN_SCENE)
 
 func _show_error(msg: String) -> void:
+	await LoadingScreen.hide_loading()
+	show() # Hiện lại DownloadManager để báo lỗi
 	status_label.text = msg
-	progress_bar.hide()
 	retry_button.show()
 
 func _on_retry_pressed() -> void:
+	hide()
+	LoadingScreen.show_loading()
 	check_version()
