@@ -8,7 +8,8 @@ extends Control
 
 # URL trỏ tới file version.json trên GitHub (có thể dùng GitHub Pages hoặc raw URL)
 # Ví dụ: "https://raw.githubusercontent.com/YourName/YourRepo/main/version.json"
-const VERSION_URL = "https://raw.githubusercontent.com/DangQuangSE/ecoflora-godot/refs/heads/feat/loading-asset/version.json" 
+# const VERSION_URL = "https://raw.githubusercontent.com/DangQuangSE/ecoflora-godot/refs/heads/feat/loading-asset/version.json" 
+const VERSION_URL = "https://raw.githubusercontent.com/DangQuangSE/ecoflora-godot/refs/heads/main/version.json"
 
 const PCK_LOCAL_PATH = "user://assets.pck"
 const VERSION_LOCAL_PATH = "user://version.json"
@@ -123,6 +124,10 @@ func _mount_and_start() -> void:
 			if FileAccess.file_exists(PCK_LOCAL_PATH):
 				DirAccess.remove_absolute(PCK_LOCAL_PATH)
 			return
+			
+	# Khởi tạo lại các icon sau khi gói tài nguyên được gắn thành công
+	if ItemIconRegistry.has_method("init_icons"):
+		ItemIconRegistry.init_icons()
 			
 	get_tree().change_scene_to_file(MAIN_SCENE)
 

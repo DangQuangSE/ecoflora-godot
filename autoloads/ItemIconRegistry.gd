@@ -5,6 +5,9 @@ var _plant_name_by_id: Dictionary = {}  # template_id → asset folder name (for
 var _fallback: Texture2D
 
 func _ready() -> void:
+	init_icons()
+
+func init_icons() -> void:
 	_fallback = load("res://assets/icon/bag.png")
 	_try_register("lotus",        "res://assets/flowers/lotus/lotus 3.png")
 	_try_register("rose",         "res://assets/flowers/rose/rose 3.png")
