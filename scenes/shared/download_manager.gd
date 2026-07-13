@@ -8,7 +8,7 @@ extends Control
 
 # URL trỏ tới file version.json trên GitHub (có thể dùng GitHub Pages hoặc raw URL)
 # Ví dụ: "https://raw.githubusercontent.com/YourName/YourRepo/main/version.json"
-const VERSION_URL = "https://raw.githubusercontent.com/YOUR_ACCOUNT/YOUR_REPO/main/version.json" 
+const VERSION_URL = "https://raw.githubusercontent.com/DangQuangSE/ecoflora-godot/refs/heads/feat/loading-asset/version.json" 
 
 const PCK_LOCAL_PATH = "user://assets.pck"
 const VERSION_LOCAL_PATH = "user://version.json"
