@@ -94,8 +94,12 @@ func show_loading() -> void:
 	set_progress(0.0)
 	percent_label.text = "..."
 	_show_random_tip()
-	visible = true
 	
+	if visible and main_container.modulate.a >= 0.99:
+		_tip_timer.start()
+		return
+		
+	visible = true
 	if _fade_tween and _fade_tween.is_valid():
 		_fade_tween.kill()
 		
@@ -121,15 +125,16 @@ func load_scene_async(scene_path: String) -> void:
 	_progress_array.clear()
 	set_progress(0.0)
 	_show_random_tip()
-	visible = true
 	
-	if _fade_tween and _fade_tween.is_valid():
-		_fade_tween.kill()
-		
-	_fade_tween = create_tween()
-	main_container.modulate.a = 0.0
-	_fade_tween.tween_property(main_container, "modulate:a", 1.0, 0.25)
-	await _fade_tween.finished
+	if not visible or main_container.modulate.a < 0.99:
+		visible = true
+		if _fade_tween and _fade_tween.is_valid():
+			_fade_tween.kill()
+			
+		_fade_tween = create_tween()
+		main_container.modulate.a = 0.0
+		_fade_tween.tween_property(main_container, "modulate:a", 1.0, 0.25)
+		await _fade_tween.finished
 	
 	var err := ResourceLoader.load_threaded_request(scene_path)
 	if err != OK:
