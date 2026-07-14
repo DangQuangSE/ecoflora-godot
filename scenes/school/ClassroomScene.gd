@@ -10,6 +10,7 @@ var _timer_ui: CanvasLayer = null
 var _boundary_rect: Rect2 = Rect2()
 
 func _ready() -> void:
+	WeatherManager.set_overlay_visible(false)
 	_connect_hud_joystick()
 	_boundary_rect = _compute_boundary()
 	_player.setup_camera_world_limits(_boundary_rect)
