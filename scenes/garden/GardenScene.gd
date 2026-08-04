@@ -29,7 +29,7 @@ var _last_shown_weather_condition: int = -1
 # DEBUG: toggle true in Inspector (Remote tab, while running) to force-show the weather NPC
 # bubble immediately, bypassing WeatherManager.weather_changed — isolates scene bugs from
 # signal-wiring bugs. Remove once weather-npc-reminder is confirmed working end-to-end.
-@export var debug_force_show_weather_npc: bool = true:
+@export var debug_force_show_weather_npc: bool = false:
 	set(value):
 		debug_force_show_weather_npc = false
 		if value and is_inside_tree():
