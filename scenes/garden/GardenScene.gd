@@ -4,6 +4,7 @@ const PlotScene           := preload("res://scenes/garden/Plot.tscn")
 const FlowerInfoCardScene := preload("res://scenes/garden/FlowerInfoCard.tscn")
 const CloudOverlayScene   := preload("res://scenes/garden/CloudOverlay.tscn")
 const UnlockBannerScene   := preload("res://scenes/garden/UnlockBanner.tscn")
+const WeatherNpcBubbleScene := preload("res://scenes/garden/WeatherNpcBubble.tscn")
 const DecoNodeScene       := preload("res://scenes/shared/DecoNode.tscn")
 const SynergyIndicatorScene := preload("res://scenes/garden/SynergyZoneIndicator.tscn")
 
@@ -21,6 +22,18 @@ var _drag_applied: Dictionary = {}
 var _boundary_rect: Rect2 = Rect2()
 var _synergy_indicators: Dictionary = {}
 var _plot_anchors_flat: Array[Node] = []
+var _active_weather_bubble: WeatherNpcBubble = null
+# -1 sentinel: no condition shown yet this session (valid while Condition enum is SUNNY=0..STORM=3)
+var _last_shown_weather_condition: int = -1
+
+# DEBUG: toggle true in Inspector (Remote tab, while running) to force-show the weather NPC
+# bubble immediately, bypassing WeatherManager.weather_changed — isolates scene bugs from
+# signal-wiring bugs. Remove once weather-npc-reminder is confirmed working end-to-end.
+@export var debug_force_show_weather_npc: bool = true:
+	set(value):
+		debug_force_show_weather_npc = false
+		if value and is_inside_tree():
+			_debug_show_weather_npc_now()
 
 func _ready() -> void:
 	WeatherManager.set_overlay_visible(true)
@@ -49,6 +62,9 @@ func _ready() -> void:
 	DecoManager.batch_save_failed.connect(_on_batch_save_failed)
 	DecoManager.init_scene("garden")
 	call_deferred("_check_first_time_guide")
+	WeatherManager.weather_changed.connect(_on_weather_changed)
+	if debug_force_show_weather_npc:
+		_debug_show_weather_npc_now()
 
 func _setup_camera() -> void:
 	_player.setup_camera_world_limits(_boundary_rect)
@@ -224,6 +240,31 @@ func _on_banner_dismissed() -> void:
 	_active_banner_zone_id = ""
 	_flush_notification_queue()
 
+func _on_weather_changed(new_state: WeatherState) -> void:
+	if new_state == null:
+		return
+	if new_state.condition == _last_shown_weather_condition:
+		return
+	_last_shown_weather_condition = new_state.condition
+	_spawn_weather_npc_bubble(new_state.condition)
+
+func _debug_show_weather_npc_now() -> void:
+	_spawn_weather_npc_bubble(WeatherManager.get_current_state().condition)
+
+func _spawn_weather_npc_bubble(condition: WeatherState.Condition) -> void:
+	if _active_weather_bubble != null and is_instance_valid(_active_weather_bubble):
+		_active_weather_bubble.queue_free()
+		_active_weather_bubble = null
+	var message := WeatherNpcMessageCatalog.get_random_message(condition)
+	push_warning("WeatherNpcBubble: spawning for condition=%s msg=%s" % [condition, message])
+	_active_weather_bubble = WeatherNpcBubbleScene.instantiate()
+	get_tree().root.add_child(_active_weather_bubble)
+	_active_weather_bubble.dismissed.connect(_on_weather_bubble_dismissed)
+	_active_weather_bubble.show_message(message)
+
+func _on_weather_bubble_dismissed() -> void:
+	_active_weather_bubble = null
+
 func _show_recovery_toast() -> void:
 	Toast.show_message(self, "Session học bị gián đoạn -20 XP đã bị trừ", 3.0)
 
@@ -245,6 +286,11 @@ func _exit_tree() -> void:
 	if _active_banner != null and is_instance_valid(_active_banner):
 		_active_banner.queue_free()
 		_active_banner = null
+	if WeatherManager.weather_changed.is_connected(_on_weather_changed):
+		WeatherManager.weather_changed.disconnect(_on_weather_changed)
+	if _active_weather_bubble != null and is_instance_valid(_active_weather_bubble):
+		_active_weather_bubble.queue_free()
+		_active_weather_bubble = null
 	if DecoManager.placements_loaded.is_connected(_on_placements_loaded):
 		DecoManager.placements_loaded.disconnect(_on_placements_loaded)
 	if DecoManager.deco_placed.is_connected(_on_deco_placed):
