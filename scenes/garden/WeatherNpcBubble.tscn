@@ -55,10 +55,10 @@ autowrap_mode = 3
 
 [node name="NpcButton" type="TextureButton" parent="PositionRoot"]
 layout_mode = 1
-offset_left = -96.0
+offset_left = -67.2
 offset_top = 0.0
-offset_right = 96.0
-offset_bottom = 192.0
+offset_right = 67.2
+offset_bottom = 134.4
 mouse_filter = 0
 texture_normal = ExtResource("2_eco_npc")
 ignore_texture_size = true
